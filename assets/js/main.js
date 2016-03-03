@@ -230,7 +230,7 @@
 			//console.log('Scroll event: '+this.playlist.scrollTop + ' by interval '+ height +' to '+height*this.curSong.index);
 
 			//Make the playlist scroll to the currently playing song.
-			this.playlist.scrollTo(0,height*this.curSong.index);
+			this.playlist.scrollTop = height*this.curSong.index;
 			Ps.update(this.playlist); // update the scrollbar
 
 		}.bind(this);
