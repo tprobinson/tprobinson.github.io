@@ -32,12 +32,15 @@
 		//Initialize variables
 		this.songs = '';
 		this.curSong = '';
-		this.autoplay = 1;
+		this.autoplay = true;
 		this.playing = 0;
 		this.prevVolume = 0;
 		this.lastTimeText = '';
 		this.lastLoadText = '';
 		this.fullyLoaded = 0;
+		this.optionsBoxShown = false;
+		this.animationsEnabled = true;
+		this.touchLayoutEnabled = false;
 
 
 		//Grab DOM elements
@@ -53,6 +56,58 @@
 		this.loadPct = document.getElementById("loadPct");
 		this.volumeBar = document.getElementById("volumeBar");
 
+		this.styleSheet = document.createElement('style');
+		document.head.appendChild(this.styleSheet);
+		this.styles = {
+			"focus": { // Orange: #FF9148
+				"default": "#FF9148",
+				"set": "#FF9148",
+				"cssText": [
+					"g, path { fill: ","; transition: fill 0.5s ease; }\n"+
+					".controls-container, .playlist-container { color: ","; transition: color 0.5s ease; }\n"+
+					"#playedBar, #playhead, .active-song { background-color: ","; transition: background-color 0.5s ease; }\n"+
+					"#volumeBar { border-color: transparent "," transparent transparent; transition: border-color 0.5s ease; }"
+				]
+			},
+			"background": { // Lighter, main blue: #183C63
+				"default": "#183C63",
+				"set": "#183C63",
+				"cssText": [
+					".playlist-container { background-color: ##COLOR##; transition: background-color 0.5s ease; }"
+				]
+			},
+			"contrast": { // Dark, bordery color: #036
+				"default": "#003366",
+				"set": "#003366",
+				"cssText": [
+					".playlist>li:hover, .active-song { color: ","; }\n"+
+					".playlist>li { border-bottom: 1px solid ","; transition: border-color 0.5s ease; }"
+				]
+
+			},
+			"active": { // Bright, activey blue: #4687ef
+				"default": "#4687ef",
+				"set": "#4687ef",
+				"cssText": [
+					".playlist>li:hover { background-color: ","; }"
+				]
+			},
+			"scrollbar": { // Dull orange, the back of the scrollbar: #7f6157
+				"default": "#7f6157",
+				"set": "#7f6157",
+				"cssText": [
+
+				]
+			},
+			"loadbar": { // Dull purple, for things like timeline bg: #635d62
+				"default": "#635d62",
+				"set": "#635d62",
+				"cssText": [
+					"#loadBar { background-color: ","; transition: background-color 0.5s ease; }"
+				]
+			}
+		};
+
 		//Initalize scrollbar
 		Ps.initialize(this.playlist, {
 			theme: 'vip',
@@ -63,6 +118,9 @@
 		addEvent(window,"resize", function() {
 			Ps.update(this.playlist);
 		}.bind(this));
+
+		//Check if the body has the touch class as given by Modernizr
+		if( hasClass(document.body,'touch') ) { this.touchLayoutEnabled = true; }
 
 		//Hook audio player
 		//This will be called whenever a song ends.
@@ -229,30 +287,29 @@
 
 			//console.log('Scroll event: '+this.playlist.scrollTop + ' by interval '+ height +' to '+height*this.curSong.index);
 
-			//Make the playlist scroll to the currently playing song.
-			this.playlist.scrollTop = height*this.curSong.index;
-			Ps.update(this.playlist); // update the scrollbar
-
+			if( this.animationsEnabled )
+			{
+				//Make the playlist scroll to the currently playing song.
+				scrollToSmooth(this.playlist,height * this.curSong.index, 600);
+			}
+			else
+			{
+				this.playlist.scrollTop = height*this.curSong.index;
+				// Ps.update(this.playlist); // update the scrollbar
+			}
 		}.bind(this);
 
+		this.toggleOptionsBox = function() {
+			this.optionsBoxShown = !this.optionsBoxShown;
+		}.bind(this);
 
+		this.toggleTouchLayout = function() {
+			toggleClass(document.body,'touch');
 
+			//Trigger the playlist to scroll in case the layout is messed up
+			this.scrollToSong(this.curSong);
+		}.bind(this);
 
-		//
-		//
-		// function moveplayhead(e) {
-		// 	var newMargLeft = e.pageX - timeline.offsetLeft;
-		//
-		// 	if (newMargLeft = 0 amp;amp; newMargLeft = timelineWidth) {
-		// 		playhead.style.marginLeft = newMargLeft + "px";
-		// 	}
-		// 	if (newMargLeft  0) {
-		// 		playhead.style.marginLeft = "0px";
-		// 	}
-		// 	if (newMargLeft  timelineWidth) {
-		// 		playhead.style.marginLeft = timelineWidth + "px";
-		// 	}
-		// }
 		/////
 		// Audio player control functions, in button order, then helper function order.
 		// Assistance from: http://www.alexkatz.me/html5-audio/building-a-custom-html5-audio-player-with-javascript/
@@ -313,6 +370,19 @@
 			return zeroPad(min,2)+':'+zeroPad(sec,2);
 		}.bind(this);
 
+		this.styleSet = function() {
+			var string = '';
+			angular.forEach(this.styles, function(k,type) {
+				if( this.styles[type].set !== null && this.styles[type].cssText !== null )
+				{
+					string += this.styles[type].cssText.join(this.styles[type].set);
+				}
+			}.bind(this));
+
+			this.styleSheet.innerHTML = ''; // dumps memory of this object
+			this.styleSheet.innerHTML = string;
+		}.bind(this);
+
 		/////
 		// Get our list of songs and initialize.
 		$http.get('roster.xml')
@@ -325,28 +395,81 @@
 })();
 
 // Animation functions
-
-// Adapted from http://stackoverflow.com/questions/21474678/scrolltop-animation-without-jquery
-function scrollToSmooth(scrollLocation,scrollDuration) {
+function scrollToSmooth(el,targetScroll,duration) {
     // const   scrollHeight = window.scrollY,
-	var		scrollHeight = window.scrollY,
-            scrollStep = Math.PI / ( scrollDuration / 15 ),
-            cosParameter = scrollHeight / 2;
-    var     scrollCount = 0,
-            scrollMargin;
+	var		beginScroll = el.scrollTop,
+			beginTime = Date.now();
+
+	// console.log('Beginning animation: '+beginTime+' '+beginScroll+' to '+targetScroll);
     requestAnimationFrame(step);
     function step () {
         setTimeout(function() {
-            if ( window.scrollY != scrollLocation ) {
-                    requestAnimationFrame(step);
-                scrollCount = scrollCount + 1;
-                scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
-                window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
+			//Get our time diff to scale against.
+			var now = Date.now();
+
+            // if ( el.scrollTop < targetScroll && now <= beginTime + duration) {
+			if ( now <= beginTime + duration) {
+				//Queue the next frame ahead of time
+				requestAnimationFrame(step);
+
+				//This is probably overcomplicated, but this gets the amount we need to add to the initial scroll for our time
+                var mod =
+
+					//Sin easeIn
+					// Math.sin (
+					// 	(2 * Math.PI) + 						//beginning at 2Pi to ease in.
+					// 	(
+					// 		Math.PI/2 							//ending at 3/2Pi
+					// 		* ((now - beginTime) / duration)	// multiplied by delta to get where we are on curve
+					// 	)
+					// ) * (Math.abs(targetScroll-beginScroll));	// scaled up to the amount that we need to move.
+
+					//Exponential easeIn
+					(-1 * Math.pow(((now - beginTime) / duration) - 1,2) + 1)	// y = -x^2 + 1
+					* (Math.abs(targetScroll-beginScroll));						// scaled up to the amount that we need to move.
+
+
+				//  console.log('anim: '+ (now-beginTime) +' + '+mod);
+
+				//Set the scroll
+				if( beginScroll < targetScroll ) { el.scrollTop = beginScroll + mod; }
+				else { el.scrollTop = beginScroll - mod; }
+
+            } else {
+				//Final frame, don't schedule another.
+				// console.log('Ending animation: d:'+deadlock+' end:'+ (now > (beginTime + duration))+' s:'+el.scrollTop);
+            	el.scrollTop = targetScroll;
             }
         }, 15 );
     }
 }
 
+// function testEase(begin,duration,end) {
+// 	var now = begin;
+// 	var done = 0;
+// 	var i = 0;
+// 	while ( !done ) {
+// 		i++;
+// 		if (i > 1000 ) { done = 1;}
+//
+// 		var pct = (now-begin) / (end-begin);
+//
+// 		var mod =
+// 			pct *
+// 			//the cosine curve scaled by how far we are.
+// 			((Math.cos (
+// 				Math.PI + //beginning at Pi to ease in
+// 				(Math.PI * Math.abs(pct))
+// 			) + 1 ) / 2)
+// 		;
+// 		var delta =
+// 		now += mod;
+// 			console.log('pct: '+pct+', now: '+now+', mod: '+mod);
+// 			if( now  >= end ) { done = 1; }
+// 	}
+// }
+
+//Class manipulation convenience functions
 function hasClass(el, className) {
   if (el.classList)
     return el.classList.contains(className);
@@ -367,6 +490,16 @@ function removeClass(el, className) {
     var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
     el.className=el.className.replace(reg, ' ');
   }
+}
+
+function toggleClass(el, className) {
+	console.log(el);
+	console.log(className);
+	if( hasClass(el,className) ) {
+		removeClass(el,className);
+	} else {
+		addClass(el,className);
+	}
 }
 
 function addEvent(object, type, callback) {
@@ -447,3 +580,16 @@ function zeroPadNonLog(num, numZeros) {
 	}
   });
 });
+
+//
+// function easeOutBounce(t, b, c, d) {
+//     if ((t/=d) < (1/2.75)) {
+// 		return c*(7.5625*t*t) + b;
+// 	} else if (t < (2/2.75)) {
+// 		return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+// 	} else if (t < (2.5/2.75)) {
+// 		return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+// 	} else {
+// 		return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+// 	}
+// }
