@@ -14,6 +14,12 @@
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
 <meta name="apple-mobile-web-app-title" content="Aersia Player">
 <meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
 <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
@@ -78,7 +84,7 @@
             </header>
         </div> -->
 
-        <div class="optionsbox" ng-show="aersiaCtrl.optionsBoxShown">
+        <div class="optionsbox hidden">
             <div class="effeckt-tabs-wrap" data-effeckt-type="slide-left">
                 <div class="effeckt-tabs">
                     <li><a data-tab-id="#tab-songinfo" class="effeckt-tab">Current Song</a></li>
@@ -153,15 +159,8 @@
                     </div>
 
                     <div id="tab-layout" class="effeckt-tab-content">
-                        <div class="infopane-h space">
-
-                            <!-- put boxes here for each layout, create switcher method in js -->
-                            <div class="vbox centertext" ng-repeat="(name,obj) in aersiaCtrl.layouts" ng-click="aersiaCtrl.switchLayout(name)">
-                                <div>
-                                    <svg width="120px" height="120px" ><use xlink:href="{{'#' + obj.href}}" /></svg>
-                                </div>
-                                <div>{{name}}</div>
-                            </div>
+                        <div id="layoutbox" class="infopane-h space">
+                            <!-- boxes aare created here for each layout -->
                         </div>
                     </div>
 <!--
