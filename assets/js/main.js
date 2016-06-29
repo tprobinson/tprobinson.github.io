@@ -1,5 +1,5 @@
 /////
-// Aersia Player v0.0.6
+// Aersia Player v0.1.0
 //
 //To do tags:
 //	CSS: Ongoing changes to the CSS.
@@ -18,7 +18,7 @@
 
 	app.controller("aersiaController", ['$scope','$http', function($scope,$http) {
 		this.friendlyname = "Aersia Player";
-		this.version = "0.0.6";
+		this.version = "0.1.0";
 
 		// Create a bogus link to download stuff with
 		this.download = document.head.appendChild(document.createElement('a'));
@@ -921,7 +921,7 @@
 			this.fullyLoaded = 0;
 
 			// If this is a retry, we've already done this stuff and don't want to do it again.
-			if( retry )
+			if( ! retry )
 			{
 				// Set the shuffle control to reflect the disabled state
 				if( this.noShuffles[this.selectedPlaylist] != null && this.noShuffles[this.selectedPlaylist].indexOf(this.curSong) > -1 )
