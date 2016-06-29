@@ -1,5 +1,5 @@
 /*!
- * Aersia Player v0.0.5
+ * Aersia Player v0.0.6
  * This file is compiled using Grunt.
  */
 // Avoid `console` errors in browsers that lack a console.
@@ -24,6 +24,24 @@
         }
     }
 }());
+// https://gist.github.com/O-Zone/7230245
+(function (window) {
+  var transitions = {
+    'transition': 'transitionend',
+    'WebkitTransition': 'webkitTransitionEnd',
+    'MozTransition': 'transitionend',
+    'OTransition': 'otransitionend'
+  },
+  elem = document.createElement('div');
+
+  for(var t in transitions){
+    if(typeof elem.style[t] !== 'undefined'){
+      window.transitionEnd = transitions[t];
+      break;
+    }
+  }
+})(window);
+
 ;(function(window){
 
   var

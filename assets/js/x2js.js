@@ -50,7 +50,7 @@
 
     // We return a constructor that can be used to make X2JS instances.
     return function X2JS(config) {
-		var VERSION = "2.0.0";
+		var VERSION = "2.0.1";
 
 		config = config || {};
 
@@ -673,6 +673,11 @@
 			XML->DOM - implemented by browser.
 		*/
 
+		// Transformns an XML string into DOM-tree
+		this.xml2dom = function(xml) {
+			return parseXml(xml);
+		};
+			
 		// Transforms a DOM tree to JavaScript objects.
 		this.dom2js = function dom2js(domNode) {
 			return deserializeDomChildren(domNode, null);

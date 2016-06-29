@@ -35,6 +35,14 @@
 		// Create x2js instance with default config
 		var x2js = new X2JS();
 
+		// Create the lightbox
+		this.lightbox = new Lightbox();
+		this.lightbox.load({
+			'preload': false,
+			'controls': false,
+			'nextOnClick': false
+		});
+
 		// Initialize the share button
 		var clipboard = new Clipboard(document.getElementById('copyBtn'), {
 			text: function(btn) {
@@ -52,9 +60,10 @@
 		        if (context.name) messages.unshift('[' + context.name + ']');
 		    }
 		});
-		Logger.get('internals').setLevel(Logger.INFO);
-		Logger.get('player').setLevel(Logger.INFO);
+		Logger.get('internals').setLevel(Logger.ERROR);
+		Logger.get('player').setLevel(Logger.ERROR);
 		Logger.get('animation').setLevel(Logger.ERROR);
+		Logger.get('songart').setLevel(Logger.ERROR);
 
 		//Initialize variables
 		this.songs = [];
@@ -62,6 +71,7 @@
 		this.curSong = 0;
 		this.autoplay = true;
 		this.playing = false;
+		this.playtries = 0;
 		this.prevVolume = 0;
 		this.history = [];
 		this.historyPosition = 0;
@@ -72,24 +82,36 @@
 		this.lastLoadText = '';
 		this.fullyLoaded = 0;
 		this.optionsBoxShown = false;
-		this.animationsEnabled = true;
+
+		this.songArt = {
+			placeholder: true,
+			placeholdersrc: 'assets/img/placeholder.png',
+
+			rotating: false,
+			curArt: false,
+			nextArt: false,
+
+			timer: false,
+			period: 10000,
+		};
+
 		this.selectedLayout = "Classic";
 
 		this.layouts = {
 			"Classic": {
 				"class": "layout-classic",
 				"href": "layout-classic",
-				"features": ["controls","timeline","timeTextUpdate","progressUpdate","playlist","animations","options"]
+				"features": ["controls","timeline","timeTextUpdate","progressUpdate","playlist","animations","options","songImg"]
 			},
 			"Touch": {
 				"class": "layout-touch",
 				"href": "layout-touch",
-				"features": ["controls","timeline","timeTextUpdate","progressUpdate","playlist","animations","options"]
+				"features": ["controls","timeline","timeTextUpdate","progressUpdate","playlist","animations","options","songImg"]
 			},
 			"Streambox": {
 				"class": "layout-streambox",
 				"href": "layout-streambox",
-				"features": ["timeTextUpdate", "progressUpdate", "streambox","options"]
+				"features": ["timeTextUpdate", "progressUpdate", "streambox","options","songImg"]
 			},
 			"Streambar": {
 				"class": "layout-streambar",
@@ -107,7 +129,8 @@
 		this.selectedPlaylist = "VIP";
 		this.playlists = {
 			"VIP": {
-				"url": "http://vip.aersia.net/roster.xml",
+				"url": "/roster.json",
+				//"url": "http://vip.aersia.net/roster.xml",
 				"longName": "Vidya Intarweb Playlist",
 			},
 			"VIP - Source": {
@@ -154,9 +177,97 @@
 
 		this.toggleShuffleBtn = document.getElementById("toggleShuffle");
 
-		this.curSongTitle = document.getElementById("oboxSongTitle");
-		this.curSongCreator = document.getElementById("oboxSongCreator");
-		// this.curSongRating = document.getElementById("oboxSongRating");
+		this.songUI = {
+			'Streambox': {
+				'title': document.getElementById("sboxSongTitle"),
+				'creator': document.getElementById("sboxSongCreator"),
+				'img': document.getElementById("sboxSongImg"),
+			},
+			'Streambar': {
+				'title': document.getElementById("controlsSongTitle"),
+				'creator': document.getElementById("controlsSongCreator"),
+			},
+			'default': {
+				'title': document.getElementById("oboxSongTitle"),
+				'creator': document.getElementById("oboxSongCreator"),
+				'img': document.getElementById("oboxSongImg"),
+			}
+		};
+
+		this.hookSongArtElement = function(el) {
+			addEvent(el, window.transitionEnd, function() {
+				if( classie.hasClass(el,"fadeout") )
+				{
+					if( ! this.songArt.rotating )
+					{
+						// If the rotation was cancelled for any reason, break out.
+						return;
+					}
+
+					// Grab the art in question
+					if( this.curSong == null || this.songArt.nextArt === false ||
+						this.songs[this.curSong] == null || this.songs[this.curSong].art == null ||
+						this.songs[this.curSong].art[this.songArt.nextArt] == null
+					)
+					{
+						Logger.get("songart").error("Faded out, but "+this.curSong+" + "+this.songArt.nextArt+" did not point to valid art!");
+						return;
+					}
+
+					Logger.get("songart").debug("Faded out, switched song art.");
+					this.songArt.placeholder = false;
+					el.src = 'http://mobygames.com'+this.songs[this.curSong].art[this.songArt.nextArt].thumbnail;
+
+					// Pick next art, wrap index if necessary.
+					this.songArt.curArt = this.songArt.nextArt;
+					this.songArt.nextArt++;
+					if( this.songArt.nextArt > this.songs[this.curSong].art.length - 1 )
+					{ this.songArt.nextArt = 0; }
+				}
+			}.bind(this));
+
+			// Fade back in whenever the image finishes loading.
+			addEvent(el,"load", function() {
+				Logger.get("songart").debug("Song art loaded, fading in.");
+
+				// Trigger the object-fit polyfill
+				objectFitImages(el);
+
+				classie.removeClass(el,"fadeout");
+			}.bind(this) );
+
+			addEvent(el,"error", function() {
+				Logger.get('songart').error("Unable to load song art, setting placeholder.");
+				this.stopSongArt();
+			}.bind(this) );
+
+			// Trigger the object-fit polyfill for the first time
+			objectFitImages(el);
+
+			// Load the image lightbox on click.
+			addEvent(el,'click',function(){
+				if( this.songArt.placeholder === true )
+				{ return;	}
+
+				if(
+					this.curSong == null || this.songArt.curArt === false ||
+					this.songs[this.curSong] == null || this.songs[this.curSong].art == null ||
+					this.songs[this.curSong].art[this.songArt.curArt] == null
+				)
+				{ return; }
+
+				Logger.get("songart").debug("Opened full art Lightbox");
+
+				this.lightbox.open('http://mobygames.com'+this.songs[this.curSong].art[this.songArt.curArt].fullsize);
+			}.bind(this));
+
+		}.bind(this);
+
+		// Hook any layouts that have the songImg
+		Object.keys(this.songUI).forEach(function(val) {
+			if( this.songUI[val].img != null )
+			{ this.hookSongArtElement( this.songUI[val].img ); }
+		}.bind(this));
 
 
 		/////
@@ -412,6 +523,9 @@
 			this.messagebox.children[0].innerHTML = str;
 		}.bind(this);
 
+		this.mboxclosebutton = document.getElementById('mboxclose');
+		addEvent(this.mboxclosebutton,"click",this.closembox);
+
 
 		/////
 		// To enable layouts to swap functions on and off, here is an object of status and hooks.
@@ -429,9 +543,6 @@
 					classie.removeClass(this.timebox,"hidden");
 					classie.addClass(this.controlsInfoBox,"hidden");
 
-					this.curSongTitle = document.getElementById("oboxSongTitle");
-					this.curSongCreator = document.getElementById("oboxSongCreator");
-
 					this.timeText = document.getElementById("timeProgText");
 					this.loadPct = document.getElementById("timeLoadPct");
 
@@ -443,9 +554,6 @@
 				"disable": function() {
 					classie.addClass(this.timebox,"hidden");
 					classie.removeClass(this.controlsInfoBox,"hidden");
-
-					this.curSongTitle = document.getElementById("controlsSongTitle");
-					this.curSongCreator = document.getElementById("controlsSongCreator");
 
 					this.timeText = document.getElementById("controlsProgText");
 					this.loadPct = document.getElementById("controlsLoadPct");
@@ -476,14 +584,9 @@
 			"streambox": {
 				"enable": function() {
 					classie.removeClass(this.streambox,"hidden");
-
-					this.curSongTitle = document.getElementById("sboxSongTitle");
-					this.curSongCreator = document.getElementById("sboxSongCreator");
 				},
 				"disable": function() {
 					classie.addClass(this.streambox,"hidden");
-
-					// Don't reset the curSongTitle and creator, as another function has does it by now
 				},
 			},
 			"timeTextUpdate": {
@@ -514,6 +617,16 @@
 				},
 			},
 
+			"songImg": {
+				"enable": function() {
+					// this.animationsEnabled = true;
+					this.updateCurSongInfo();
+				},
+				"disable": function() {
+					// this.animationsEnabled = false;
+				},
+			},
+
 		};
 
 		// Forces a feature on or off regardless. This is only set by the user.
@@ -522,7 +635,9 @@
 		this.enableFeature = function(feature) {
 			if( this.features[feature] != null && this.features[feature].enabled !== true )
 			{
-				this.features[feature].enable.call(this);
+				if( this.features[feature].enable != null )
+				{ this.features[feature].enable.call(this); }
+
 				this.features[feature].enabled = true;
 				Logger.get("internals").info(feature+" enabled.");
 			}
@@ -531,7 +646,9 @@
 		this.disableFeature = function(feature) {
 			if( this.features[feature] != null && this.features[feature].enabled !== false )
 			{
-				this.features[feature].disable.call(this);
+				if( this.features[feature].disable != null )
+				{ this.features[feature].disable.call(this); }
+
 				this.features[feature].enabled = false;
 				Logger.get("internals").info(feature+" disabled.");
 			}
@@ -554,9 +671,15 @@
 		//Hook audio player
 
 		//This will be called whenever a song ends.
-		addEvent(this.player,"ended", function() {
+		addEvent(this.player, "ended", function() {
 			if( this.autoplay )
 			{ this.shuffleSong(); }
+		}.bind(this));
+
+		// This will be called if the player breaks for any reason
+		addEvent(this.player, "error", function(ev) {
+			// Just retry. If this is called twice without a full playthrough, it will just stop.
+			this.playSong(this.curSong,true);
 		}.bind(this));
 
 		//This will be called every time a new song loads, and when the song is seeked and begins playing?
@@ -687,9 +810,13 @@
 				$http.get(this.playlists[this.selectedPlaylist].url)
 					.then(function(res) {
 						// Prepare the playlist for use
+						var playlist = res.data;
 
-						//Convert it from XML to JSON
-						var playlist = x2js.xml2js(res.data).playlist.trackList.track;
+						//Convert it from XML to JSON if necessary
+						if( /.xml$/.test(this.playlists[this.selectedPlaylist].url) )
+						{
+							playlist = x2js.xml2js(playlist).playlist.trackList.track;
+						}
 
 						//Set the song list
 						this.songs = playlist;
@@ -709,7 +836,14 @@
 							{ window.setTimeout(this.shuffleSong,500); }
 							// But give Angular's list a little time to update, since it's stupid.
 						}
-					}.bind(this));
+					}.bind(this),
+
+					function(res) {
+						//If the request fails for some reason
+						this.error("The playlist was not able to be loaded. Please try again or reload the page.");
+
+					}.bind(this)
+				);
 			}
 			else if( start != null && start !== false )
 			{
@@ -747,11 +881,26 @@
 			}
 		}.bind(this);
 
-
-		this.playSong = function(index) {
+		// retry overrides attempting to play the same song.
+		this.playSong = function(index,retry) {
 			if( index == null || index === false ) { return; }
 			index = parseInt(index);
-			if( index === this.curSong ) { return; }
+			if( index === this.curSong && ( retry == null || retry === false )) { return; }
+
+			if( retry == null ) { retry = false; }
+
+			// Error handling
+			if( retry && this.playtries > 0 ) {
+				// If we've already retried for any reason, don't try again.
+				Logger.get("player").error("Cannot play song: "+this.songs[index].title);
+				return;
+			} else if ( retry ) {
+				// If this is our first retry, let's keep track of that.
+				this.playtries = 1;
+			} else {
+				// If we're being asked to play a song and this isn't a retry, let's reset our tries counter.
+				this.playtries = 0;
+			}
 
 			//Stop and unregister the old song.
 			this.pause();
@@ -760,7 +909,10 @@
 			{ classie.removeClass(this.playlist.children[this.curSong],'active-song'); }
 
 			//log
-			Logger.info("Playing song: "+this.songs[index].title);
+			if( retry )
+			{ Logger.get("player").error("Retrying song: "+this.songs[index].title); }
+			else
+			{ Logger.get("player").info("Playing song: "+this.songs[index].title); }
 
 			// Set the interface for the new song
 			this.curSong = index;
@@ -768,18 +920,22 @@
 
 			this.fullyLoaded = 0;
 
-			// Set the shuffle control to reflect the disabled state
-			if( this.noShuffles[this.selectedPlaylist] != null && this.noShuffles[this.selectedPlaylist].indexOf(this.curSong) > -1 )
-			{ classie.addClass(this.toggleShuffleBtn, "toggled"); }
-			else
-			{ classie.removeClass(this.toggleShuffleBtn, "toggled"); }
+			// If this is a retry, we've already done this stuff and don't want to do it again.
+			if( retry )
+			{
+				// Set the shuffle control to reflect the disabled state
+				if( this.noShuffles[this.selectedPlaylist] != null && this.noShuffles[this.selectedPlaylist].indexOf(this.curSong) > -1 )
+				{ classie.addClass(this.toggleShuffleBtn, "toggled"); }
+				else
+				{ classie.removeClass(this.toggleShuffleBtn, "toggled"); }
 
-			// Highlight the active song
-			if( this.curSong != null && this.playlist.children[this.curSong] != null )
-			{ classie.addClass(this.playlist.children[this.curSong],'active-song'); }
+				// Highlight the active song
+				if( this.curSong != null && this.playlist.children[this.curSong] != null )
+				{ classie.addClass(this.playlist.children[this.curSong],'active-song'); }
 
-			// Put this song in history
-			this.historyTrack(this.curSong);
+				// Put this song in history
+				this.historyTrack(this.curSong);
+			}
 
 			// Play
 			if( this.songs[this.curSong].formats != null )
@@ -817,7 +973,6 @@
 		}.bind(this);
 
 		this.shuffleSong = function() {
-			Logger.get("internals").time('Shuffle');
 			var list = this.songs;
 
 			//Ensure we don't play the same song again.
@@ -832,7 +987,6 @@
 			}
 
 			var selected = Math.floor(Math.random() * list.length);
-			Logger.get("internals").time('Shuffle');
 
 			//Start our random song.
 			this.playSong(selected);
@@ -1238,24 +1392,87 @@
 		}.bind(this);
 
 		this.updateCurSongInfo = function() {
-			//Update the song panel
-			if( this.curSong != null && this.songs[this.curSong] != null && (
+			// Update the song panel
+			if( this.curSong != null && this.songs[this.curSong] != null && this.songs[this.curSong].art != null && this.songs[this.curSong].art.length > 0 && (
 				 ( (this.selectedLayout === "Classic" || this.selectedLayout === "Touch") && this.optionsBoxShown ) || // In Classic or Touch interface, don't update unless it's visible.
 				 ( this.selectedLayout === "Streambox" || this.selectedLayout === "Streambar" )	//In Streambox or Streambar, update.
 			 )
 			 ){
-				this.curSongTitle.innerHTML = this.songs[this.curSong].title;
-				this.curSongCreator.innerHTML = this.songs[this.curSong].creator;
+				this.getUIElement('title').innerHTML = this.songs[this.curSong].title;
+				this.getUIElement('creator').innerHTML = this.songs[this.curSong].creator;
 				// this.curSongRating.innerHTML = "0"; //this.songs[this.curSong].rating;
+
+				this.setSongArt();
 			}
 		};
+
+		// Function to get the right elements from the current layouts
+		this.getUIElement = function(type) {
+			if( this.songUI[this.selectedLayout] != null )
+			{
+				return this.songUI[this.selectedLayout][type];
+			} else {
+				return this.songUI.default[type];
+			}
+		}.bind(this);
+
+		// Function to control the song rotation
+		this.setSongArt = function() {
+			this.stopSongArt();
+
+			this.rotateSongArt();
+		}.bind(this);
+
+		// Function to do the actual rotation
+		this.rotateSongArt = function() {
+			if( this.songArt.rotating === true )
+			{
+				// We don't need to do anything but trigger the next fade.
+				classie.addClass(this.getUIElement('img'),"fadeout");
+			}
+			else {
+
+				// Set up the cover art rotator. If it's set to placeholder, we'll stomp it immediately.
+				if( this.songArt.placeholder === true )
+				{
+					Logger.get("songart").debug("Stomping song art");
+					// Set these variables since we've already done the first rotation.
+					this.songArt.placeholder = false;
+					this.songArt.curArt = 0;
+					this.songArt.nextArt = 1;
+					this.getUIElement('img').src = 'http://mobygames.com'+this.songs[this.curSong].art[0].thumbnail;
+				}
+				else {
+					// Fade out. The rest will be triggered automatically.
+					Logger.get("songart").debug("Fading out song art.");
+					classie.addClass(this.getUIElement('img'),"fadeout");
+				}
+
+				if( this.songs[this.curSong].art.length > 1 )
+				{
+					this.songArt.rotating = true;
+					this.songArt.timer = window.setTimeout(this.rotateSongArt, this.songArt.rotateperiod);
+				}
+			}
+		}.bind(this);
+
+		this.stopSongArt = function() {
+			// Stop the timer, reset attributes, and show the placeholder.
+			window.clearTimeout(this.songArt.timer);
+			this.songArt.timer = false;
+			this.songArt.rotating = false;
+			this.songArt.curArt = false;
+			this.songArt.nextArt = 0;
+			this.songArt.placeholder = true;
+			this.getUIElement('img').src = this.songArt.placeholdersrc;
+		}.bind(this);
 
 		/////
 		// Initialization
 
 		this.init = function() {
 
-			//Assign the default preset to the "current style";
+			// Assign the default preset to the "current style";
 			this.currentStyles = this.presetStyles[this.selectedPreset];
 
 			// Get any stored values that will override our defaults.

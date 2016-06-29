@@ -6,21 +6,12 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Aersia Player v0.0.6</title>
+        <title>Aersia Player v0.1.0</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Generated favicons -->
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
-<meta name="apple-mobile-web-app-title" content="Aersia Player">
-<meta name="application-name" content="Aersia Player">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
-<meta name="apple-mobile-web-app-title" content="Aersia Player">
-<meta name="application-name" content="Aersia Player">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
-<meta name="apple-mobile-web-app-title" content="Aersia Player">
-<meta name="application-name" content="Aersia Player">
-<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
 <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
@@ -74,16 +65,17 @@
                 <div class="effeckt-tabs">
                     <li><a data-tab-id="#tab-songinfo" class="effeckt-tab">Current Song</a></li>
                     <li><a data-tab-id="#tab-layout" class="effeckt-tab">Layout</a></li>
-                    <!-- <li><a data-tab-id="#tab-player" class="effeckt-tab">Player</a></li> -->
                     <li><a data-tab-id="#tab-theme" class="effeckt-tab">Theme</a></li>
                     <li><a data-tab-id="#tab-news" class="effeckt-tab">Recent News</a></li>
                 </div>
                 <div class="effeckt-tabs-container">
 
                     <div id="tab-songinfo" class="effeckt-tab-content">
-                        <div class="hbox nogrow"> <!-- Image and controls near image -->
-                            <div class="vbox"><img id="songimg" src="assets/img/placeholder.png" /></div>
-                        </div>
+                        <!-- <div class="hbox nogrow"> <!-- Image and controls near image --><!--
+                            <div class="vbox"></div>
+                        </div> -->
+
+                        <img id="oboxSongImg" class="fade" src="assets/img/placeholder.png" />
 
                         <!-- Song information, links, etc. -->
                         <div class="infopane-h">
@@ -145,7 +137,7 @@
 
                     <div id="tab-layout" class="effeckt-tab-content">
                         <div id="layoutbox" class="infopane-h space">
-                            <!-- boxes aare created here for each layout -->
+                            <!-- boxes are created here for each layout -->
                         </div>
                     </div>
 
@@ -199,11 +191,11 @@
         <div class="vbox">
 
             <!-- this can be moved under controls-container if I want the gradient to inherit -->
-            <div id="messagebox" class="hidden"><span></span><div class='closebutton ui-icon ui-icon-circle-close'></div></div>
+            <div id="messagebox" class="hidden"><span></span><div id="mboxclose" class='closebutton ui-icon ui-icon-circle-close'></div></div>
 
             <div id="streambox" class="hidden">
                 <div class="hbox nogrow"> <!-- Image and controls near image -->
-                    <div class="vbox"><img id="songimg" src="assets/img/placeholder.png" /></div>
+                    <div class="vbox"><img id="sboxSongImg" class="fade" src="assets/img/placeholder.png" /></div>
                 </div>
 
                 <!-- Song information, links, etc. -->
@@ -216,7 +208,7 @@
                 </div>
 
                 <div class="controls-container">
-                    <div><div class="controls-text">Aersia Player v0.0.6</div></div>
+                    <div><div class="controls-text">Aersia Player v0.1.0</div></div>
 
                     <div class="options" ng-click="aersiaCtrl.toggleOptionsBox();">
                         <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
@@ -262,7 +254,7 @@
                         <span class="controls-text"><strike>album name?</strike></span>
                     </div>
 
-                    <div class="controls-text">Aersia Player v0.0.6</div>
+                    <div class="controls-text">Aersia Player v0.1.0</div>
                 </div>
                 <div ng-click="aersiaCtrl.toggleOptionsBox();">
                 <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
@@ -285,7 +277,7 @@
             <div class="playlist-container hbox">
                 <div class="playlist vbox" id="playlist">
                     <li ng-click="aersiaCtrl.playSong($index)"
-                        ng-repeat="song in aersiaCtrl.songs track by $index">{{song.creator}} - {{song.title}}</li>
+                        ng-repeat="song in aersiaCtrl.songs | orderBy:creator track by $index">{{song.creator}} - {{song.title}}</li>
                 </div>
             </div>
         </div>
@@ -294,9 +286,11 @@
         <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="assets/js/js.cookie.js"></script>
+        <script src="assets/js/lightbox.js"></script>
         <script src="assets/js/logger.js"></script>
         <script src="assets/js/x2js.js"></script>
         <script src="assets/js/perfect-scrollbar.js"></script>
+        <script src="assets/js/ofi.browser.js"></script>
         <script src="assets/js/angular.js"></script>
         <script src="assets/js/plugins.js"></script>
         <script src="assets/js/main.js"></script>
