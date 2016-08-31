@@ -1,5 +1,5 @@
 /////
-// Aersia Player v0.1.0
+// Aersia Player v0.1.1
 //
 //To do tags:
 //	CSS: Ongoing changes to the CSS.
@@ -13,27 +13,16 @@
 */
 /* jshint -W116 */
 (function() {
+
 	//Initialize Angular app
 	var app = angular.module("aersia", [ ]);
 
 	app.controller("aersiaController", ['$scope','$http', function($scope,$http) {
 		this.friendlyname = "Aersia Player";
-		this.version = "0.1.0";
+		this.version = "0.1.1";
 
-		// Create a bogus link to download stuff with
-		this.download = document.head.appendChild(document.createElement('a'));
-		this.download.style = "display:none;visibility:hidden;";
-		this.download.download = "aersiaStyle.json";
-
-		// Create a bogus file input to upload stuff with
-		this.upload = document.head.appendChild(document.createElement('input'));
-		this.upload.style = "display:none;visibility:hidden;";
-		this.upload.type = "file";
-		this.styleReader = new FileReader();
-
-
-		// Create x2js instance with default config
-		var x2js = new X2JS();
+		/////
+		// Library initializations
 
 		// Create the lightbox
 		this.lightbox = new Lightbox();
@@ -64,6 +53,10 @@
 		Logger.get('player').setLevel(Logger.ERROR);
 		Logger.get('animation').setLevel(Logger.ERROR);
 		Logger.get('songart').setLevel(Logger.ERROR);
+
+		//js-cookie variables
+		this.cookieName = "aersia";
+		this.cookieConfig = { };
 
 		//Initialize variables
 		this.songs = [];
@@ -120,10 +113,6 @@
 			},
 		};
 
-		//js-cookie variables
-		this.cookieName = "aersia";
-		this.cookieConfig = { };
-
 		//Playlists
 		this.lastPlaylist = "";
 		this.selectedPlaylist = "VIP";
@@ -151,6 +140,17 @@
 			}
 		};
 
+		// Create a bogus link to download stuff with
+		this.download = document.head.appendChild(document.createElement('a'));
+		this.download.style = "display:none;visibility:hidden;";
+		this.download.download = "aersiaStyle.json";
+
+		// Create a bogus file input to upload stuff with
+		this.upload = document.head.appendChild(document.createElement('input'));
+		this.upload.style = "display:none;visibility:hidden;";
+		this.upload.type = "file";
+		this.styleReader = new FileReader();
+
 		//Grab DOM elements
 		this.player = document.getElementsByTagName("audio")[0];
 		this.playlist = document.getElementById("playlist");
@@ -176,6 +176,19 @@
 		this.messagebox = document.getElementById("messagebox");
 
 		this.toggleShuffleBtn = document.getElementById("toggleShuffle");
+
+		this.loadglobal = document.getElementById("loadglobal");
+
+		this.timelinerect = this.timeline.getBoundingClientRect();
+
+		this.updateTimelineRect = function() {
+			// var rect = this.timeline.getBoundingClientRect();
+			// Logger.get("rectresize").debug('L:'+rect.left+' R:'+rect.right+' T:'+rect.top+' B:'+rect.bottom+' X:'+rect.x+' Y:'+rect.y+' W:'+rect.width+' H:'+rect.height);
+			this.timelinerect = this.timeline.getBoundingClientRect();
+		}.bind(this);
+
+		//Bind it to update when window resizes.
+		addEvent(window,"resize", this.updateTimelineRect );
 
 		this.songUI = {
 			'Streambox': {
@@ -696,7 +709,7 @@
 
 			Logger.get("player").debug('Timeline seek: '+amt);
 			this.player.currentTime = this.player.duration * amt;
-			this.timeUpdate(e);
+			this.timelineUpdate(e);
 
 		}.bind(this);
 		addEvent(this.timeline,"click", this.seekBar);
@@ -705,7 +718,7 @@
 		this.progressUpdate = function(e,amt) {
 			var newText = '';
 
-			//Respond to either click or direct invocation.
+			//Respond to either event or direct invocation.
 			if( e !== '' )
 			{
 				var bufend = 0;
@@ -720,7 +733,7 @@
 					}
 					else
 					{
-						//We are fully loaded. Show a timestamp instead.
+						// We are fully loaded. Show a timestamp instead.
 						newText = this.timeFormat(this.player.duration);
 					}
 				}
@@ -744,6 +757,9 @@
 				this.loadPct.textContent = newText;
 				this.lastLoadText = newText;
 
+				// The text will probably have pushed on the timeline's rectangle, so let's update it.
+				this.updateTimelineRect();
+
 				//Move loadBar in timeline
 				this.loadBar.style.right = (100 - amt) + '%'; // inverse percentage
 			}
@@ -762,6 +778,7 @@
 		}.bind(this);
 
 		this.timelineUpdate = function(e,amt) {
+			if( this.timelinerect == null ) { return; }
 
 			if( e != null && e !== '' )
 			{ amt = this.player.currentTime / this.player.duration; }
@@ -774,15 +791,13 @@
 			// //Move the playedBar in the timeline
 			// this.playedBar.style.right = amt + "%";
 
-			//REWORK: somehow we need to cache the boundingrect, but for some reason if I don't use it every frame it gets off by a lot.
 			//This pixel-perfect version is just to achieve that one-pixel offset effect in the original .swf
 			//Move the playhead
-			var rect = this.timeline.getBoundingClientRect();
-			var clickpx = (rect.right - rect.left) * amt;
+			var clickpx = (this.timelinerect.right - this.timelinerect.left) * amt;
 			this.playhead.style.left = clickpx + "px";
 
 			//Move the playedBar in the timeline
-			this.playedBar.style.right = (((rect.right - rect.left) - clickpx) + 1) + "px";
+			this.playedBar.style.right = (((this.timelinerect.right - this.timelinerect.left) - clickpx) + 1) + "px";
 
 		}.bind(this);
 
@@ -802,6 +817,7 @@
 			if( this.selectedPlaylist !== this.lastPlaylist )
 			{
 				// Loading a new playlist
+				this.showLoading();
 
 				//Stop the song.
 				this.pause();
@@ -815,7 +831,14 @@
 						//Convert it from XML to JSON if necessary
 						if( /.xml$/.test(this.playlists[this.selectedPlaylist].url) )
 						{
+							var x2js = new X2JS();
 							playlist = x2js.xml2js(playlist).playlist.trackList.track;
+						}
+
+						// Give each song an index -- this is necessary so Angular can track the objects.
+						// I really want this bit of code to die.
+						for ( var i=0; i<playlist.length; i++ ) {
+							playlist[i].index = i;
 						}
 
 						//Set the song list
@@ -825,6 +848,9 @@
 
 						// Update the window's title.
 						document.title = this.playlists[this.selectedPlaylist].longName + ' - ' + this.friendlyname + ' v' + this.version;
+
+						// Hide loading, in a little while.
+						window.setTimeout(this.hideLoading,1000);
 
 						// If we're allowed, start playing.
 						if( this.autoplay )
@@ -893,6 +919,7 @@
 			if( retry && this.playtries > 0 ) {
 				// If we've already retried for any reason, don't try again.
 				Logger.get("player").error("Cannot play song: "+this.songs[index].title);
+				this.error("Cannot play song: "+this.songs[index].title);
 				return;
 			} else if ( retry ) {
 				// If this is our first retry, let's keep track of that.
@@ -946,8 +973,8 @@
 						if( this.songs[this.curSong].formats[format] != null )
 						{ selFormat = format; throw BreakException; }
 					});
-				} catch(e) { // alert for now, use a message box later
-					if (e!==BreakException) throw e;
+				} catch(e) {
+					if (e!==BreakException) throw e;  // a crude break in the loop structure. If it wasn't a break, explode.
 				}
 
 				if( selFormat === '' )
@@ -973,23 +1000,32 @@
 		}.bind(this);
 
 		this.shuffleSong = function() {
-			var list = this.songs;
 
-			//Ensure we don't play the same song again.
-			list.splice(list.indexOf(this.curSong),1);
+			//Generate a list of indexes we're allowed to play.
 
-			if( this.noShuffles[this.selectedPlaylist] != null )
-			{
-				//Generate a list of songs we're allowed to play.
-				list = clone(this.songs);
+			// Make sure this list is defined first.
+			if( this.noShuffles[this.selectedPlaylist] == null )
+			{ this.noShuffles[this.selectedPlaylist] = []; }
 
-				this.noShuffles[this.selectedPlaylist].forEach(function(val){ list.splice(list.indexOf(val),1); }.bind(this));
+			var list = [];
+			for ( var i=0; i<this.songs.length; i++ ) {
+				if
+				(
+					// Ensure we don't play the same song again and
+					i !== this.curSong &&
+
+					// it's not in our list of things not to shuffle
+					this.noShuffles[this.selectedPlaylist].indexOf(i) === -1
+				)
+				{
+					list.push(i);
+				}
 			}
 
 			var selected = Math.floor(Math.random() * list.length);
 
 			//Start our random song.
-			this.playSong(selected);
+			this.playSong( list[selected] );
 		}.bind(this);
 
 		// Forbids or allows a song to be played.
@@ -1059,9 +1095,6 @@
 
 		// Traverses the history queue, or just plays a new song.
 		this.seek = function(amt) {
-			// var index = this.curSong + amt;
-			// if( index >= 0 && index <= this.songs.length )
-			// { this.playSong(index); }
 			if( amt < 0 )
 			{
 				if( (this.history.length-1) >= 0 -(this.historyPosition + amt)  )
@@ -1148,19 +1181,30 @@
 
 		this.scrollToSong = function(index) {
 
+			// this function is called when the layout is set, which happens before the songs are even loaded once.
+			if( this.songs.length === 0 )
+			{ return; }
+
 			//Get the elements' height, since this could change.
 			var height = this.playlist.firstElementChild.offsetHeight;
 
-			Logger.get("animation").debug('Scroll event: '+this.playlist.scrollTop + ' by interval '+ height +' to '+height*index);
+			var targetY = height * index;
+
+			// If this element would be closer to the end of the list than the viewport allows, just scroll to the bottom to avoid overflowing.
+			// The browser should realistically stop this, but every 'set' seems to move a pixel beyond the limit, and the smooth animation sets rapidly, causing a big overflow.
+			if( (height * (this.songs.length - 1)) - targetY < this.playlist.offsetHeight )
+			{ targetY = this.playlist.scrollHeight - this.playlist.offsetHeight; }
+
+			Logger.get("animation").debug('Scroll event: '+this.playlist.scrollTop + ' by interval '+ height +' to '+targetY);
 
 			if( this.features.animations.enabled )
 			{
 				//Make the playlist scroll to the currently playing song.
-				scrollToSmooth(this.playlist,height * index, 600);
+				scrollToSmooth(this.playlist, targetY, 600);
 			}
 			else
 			{
-				this.playlist.scrollTop = height * index;
+				this.playlist.scrollTop = targetY;
 			}
 		}.bind(this);
 
@@ -1274,7 +1318,7 @@
 			var result;
 
 			try { result = JSON.parse(event.target.result); }
-			catch ( e ) { alert("File does not contain a valid style structure."); }
+			catch ( e ) { this.error("The style you uploaded does not contain a valid JSON structure."); }
 
 			if( result != null )
 			{
@@ -1289,9 +1333,9 @@
 					this.reloadStyle();
 					Logger.get('internals').info('Style imported successfully.');
 					this.setCookie();
-				} catch(e) { // alert for now, use a message box later
-					if (e!==BreakException) throw e;
-					alert("Imported style was not formatted correctly.");
+				} catch(e) {
+					if (e!==BreakException) throw e; // a crude break in the loop structure. If it wasn't a break, explode.
+					this.error("The style you uploaded was not formatted correctly.");
 				}
 			}
 		}.bind(this);
@@ -1400,7 +1444,7 @@
 			 ){
 				this.getUIElement('title').innerHTML = this.songs[this.curSong].title;
 				this.getUIElement('creator').innerHTML = this.songs[this.curSong].creator;
-				// this.curSongRating.innerHTML = "0"; //this.songs[this.curSong].rating;
+				// this.getUIElement('rating').innerHTML = "0"; //this.songs[this.curSong].rating;
 
 				if( this.songs[this.curSong].art != null && this.songs[this.curSong].art.length > 0 )
 				{
@@ -1409,13 +1453,12 @@
 					this.stopSongArt();
 				}
 
-
 			}
 		};
 
 		// Function to get the right elements from the current layouts
 		this.getUIElement = function(type) {
-			if( this.songUI[this.selectedLayout] != null )
+			if( this.songUI[this.selectedLayout] != null && this.songUI[this.selectedLayout][type] != null )
 			{
 				return this.songUI[this.selectedLayout][type];
 			} else {
@@ -1475,6 +1518,17 @@
 		}.bind(this);
 
 		/////
+		// Loading spinner
+		this.showLoading = function() {
+			classie.removeClass(this.loadglobal,"hidden");
+		}.bind(this);
+
+		this.hideLoading = function() {
+			classie.addClass(this.loadglobal,"hidden");
+		}.bind(this);
+
+
+		/////
 		// Initialization
 
 		this.init = function() {
@@ -1521,70 +1575,36 @@ function scrollToSmooth(el,targetScroll,duration) {
     requestAnimationFrame(step);
     function step () {
         setTimeout(function() {
-			//Get our time diff to scale against.
-			var now = Date.now();
+					//Get our time diff to scale against.
+					var now = Date.now();
 
-            // if ( el.scrollTop < targetScroll && now <= beginTime + duration) {
-			if ( now <= beginTime + duration) {
-				//Queue the next frame ahead of time
-				requestAnimationFrame(step);
+					if ( now <= beginTime + duration) {
+						//Queue the next frame ahead of time
+						requestAnimationFrame(step);
 
-				//This is probably overcomplicated, but this gets the amount we need to add to the initial scroll for our time
-                var mod =
+						//This is probably overcomplicated, but this gets the amount we need to add to the initial scroll for our time
+		        var mod = easeInOut( now, beginTime,duration, beginScroll,targetScroll );
 
-					//Sin easeIn
-					// Math.sin (
-					// 	(2 * Math.PI) + 						//beginning at 2Pi to ease in.
-					// 	(
-					// 		Math.PI/2 							//ending at 3/2Pi
-					// 		* ((now - beginTime) / duration)	// multiplied by delta to get where we are on curve
-					// 	)
-					// ) * (Math.abs(targetScroll-beginScroll));	// scaled up to the amount that we need to move.
+						Logger.get("animation").debug('anim: '+ (now-beginTime) +' + '+mod);
 
-					//Exponential easeIn
-					(-1 * Math.pow(((now - beginTime) / duration) - 1,2) + 1)	// y = -x^2 + 1
-					* (Math.abs(targetScroll-beginScroll));						// scaled up to the amount that we need to move.
+						//Set the scroll absolutely
+						if( beginScroll < targetScroll ) { el.scrollTop = beginScroll + mod; }
+						else { el.scrollTop = beginScroll - mod; }
 
+		      } else {
+						//Final frame, don't schedule another.
+						Logger.get("animation").debug('Ending animation: end:'+ (now > (beginTime + duration))+' s:'+el.scrollTop);
 
-				Logger.get("animation").debug('anim: '+ (now-beginTime) +' + '+mod);
-
-				//Set the scroll
-				if( beginScroll < targetScroll ) { el.scrollTop = beginScroll + mod; }
-				else { el.scrollTop = beginScroll - mod; }
-
-            } else {
-				//Final frame, don't schedule another.
-				Logger.get("animation").debug('Ending animation: end:'+ (now > (beginTime + duration))+' s:'+el.scrollTop);
-            	el.scrollTop = targetScroll;
-            }
-        }, 15 );
-    }
+						el.scrollTop = targetScroll;
+		      }
+		  	}, 15 );
+		}
 }
 
-// function testEase(begin,duration,end) {
-// 	var now = begin;
-// 	var done = 0;
-// 	var i = 0;
-// 	while ( !done ) {
-// 		i++;
-// 		if (i > 1000 ) { done = 1;}
-//
-// 		var pct = (now-begin) / (end-begin);
-//
-// 		var mod =
-// 			pct *
-// 			//the cosine curve scaled by how far we are.
-// 			((Math.cos (
-// 				Math.PI + //beginning at Pi to ease in
-// 				(Math.PI * Math.abs(pct))
-// 			) + 1 ) / 2)
-// 		;
-// 		var delta =
-// 		now += mod;
-// 			Logger.get('animations').debug('pct: '+pct+', now: '+now+', mod: '+mod);
-// 			if( now  >= end ) { done = 1; }
-// 	}
-// }
+function easeInOut(now, beginX,targetX, beginY,targetY ) {
+	return ( -1 * Math.pow(((now - beginX) / targetX) - 1,2) + 1 )	// y = -x^2 + 1
+	* (Math.abs(targetY-beginY));						// scaled up to the amount that we need to move.
+}
 
 function addEvent(object, type, callback) {
     if (object == null || typeof(object) == 'undefined') return;
