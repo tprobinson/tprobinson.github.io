@@ -1,17 +1,32 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="" ng-app="vip"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="" ng-app="vip"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang="" ng-app="vip"> <![endif]-->
+<!--[if lt IE 7]>    <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="" ng-app="vip"> <![endif]-->
+<!--[if IE 7]>     <html class="no-js lt-ie9 lt-ie8" lang="" ng-app="vip"> <![endif]-->
+<!--[if IE 8]>     <html class="no-js lt-ie9" lang="" ng-app="vip"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="" ng-app="aersia"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Aersia Player v0.1.1</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Aersia Player v0.1.2</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Generated favicons -->
-        <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+    <!-- Generated favicons -->
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
+<meta name="apple-mobile-web-app-title" content="Aersia Player">
+<meta name="application-name" content="Aersia Player">
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
 <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
 <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
@@ -22,7 +37,6 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
 <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
 <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
 <link rel="manifest" href="/manifest.json">
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#183_c63">
@@ -32,268 +46,245 @@
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#ffffff">
 
-        <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="assets/css/tidy.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
 
-        <script src="assets/js/modernizr.js"></script>
-    </head>
-    <body ng-controller="aersiaController as aersiaCtrl">
-      <!-- Invisible helper objects -->
-        <svg style="visibility:hidden;width:0;height:0;" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"><symbol viewBox="0 0 17 17" id="icon-download"><title>download</title>  <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path fill="#ff9148" d="M10,2,10,8,12,8,8.5,12,5,8,7,8,7,2z"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" height="2" width="13" y="12" x="2" fill="#ff9148"/> </symbol><symbol viewBox="0 0 17 17" id="icon-fullscreen"><title>fullscreen</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <rect style="color:#000000;" height="5" width="5" y="5" x="5"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-gear"><title>gear</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" display="none" transform="translate(0,2)"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" display="none" transform="translate(0,2)"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" display="none" transform="translate(0,2)"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" display="none" transform="translate(0,2)"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill="#ff9148" d="m6.938,3.484-0.625,0.5,0.3438,1.031c-0.307,0.167-0.593,0.357-0.845,0.594l-0.8438-0.625-0.6875,0.4062-0.2188,0.7812,0.875,0.6562c-0.135,0.296-0.218,0.61-0.28,0.939h-1.094l-0.3125,0.75,0.3125,0.75h1.094c0.06199,0.3283,0.1443,0.6428,0.2812,0.9375l-0.875,0.6562,0.2812,0.7188,0.625,0.4688,0.8438-0.625c0.2514,0.2376,0.5373,0.4273,0.8438,0.5938l-0.3438,1.031,0.6562,0.4062,0.75,0.0625,0.3438-1.062c0.1645,0.02061,0.3299,0.0625,0.5,0.0625s0.3355-0.04189,0.5-0.0625l0.3438,1.062,0.75-0.0625,0.6562-0.4062-0.3438-1.031c0.3064-0.1664,0.5923-0.3562,0.8438-0.5938l0.8438,0.625,0.625-0.4688,0.2812-0.7188-0.875-0.6562c0.137-0.2947,0.2193-0.6092,0.2812-0.9375h1.094l0.1875-0.75-0.1875-0.75h-1.094c-0.05-0.315-0.14-0.629-0.27-0.924l0.875-0.6562-0.2188-0.7812-0.6875-0.4062-0.8438,0.625c-0.25-0.238-0.53-0.428-0.84-0.594l0.3438-1.031-0.625-0.5-0.7812,0.03125-0.3438,1.062c-0.1645-0.02061-0.3299-0.0625-0.5-0.0625s-0.3355,0.04189-0.5,0.0625l-0.336-1.062-0.781-0.032zm1.625,3.438,0.9375,0.3125,0.5938,0.7812,0,1-0.5938,0.7812-0.9375,0.3125-0.9375-0.3125-0.5938-0.7812,0-1,0.5938-0.7812,0.9375-0.3125z"/> </symbol><symbol viewBox="0 0 17 17" id="icon-next"><title>next</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-pause"><title>pause</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <rect style="color:#000000;" height="7" width="2" y="4" x="5"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-play"><title>play</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(378,-499.4)"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-poweroff"><title>poweroff</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill="#ff9148" d="M6.5,3.391c-2.295,0.844-4,3.029-4,5.609,0,3.302,2.698,6,6,6s6-2.698,6-6c0-2.58-1.705-4.765-4-5.609v2.219c1.161,0.6975,2,1.928,2,3.391,0,2.221-1.779,4-4,4s-4-1.779-4-4c0-1.462,0.8391-2.693,2-3.391z"/> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-poweron"><title>poweron</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill="#ff9148" d="M6.5,3.391c-2.295,0.844-4,3.029-4,5.609,0,3.302,2.698,6,6,6s6-2.698,6-6c0-2.58-1.705-4.765-4-5.609v2.219c1.161,0.6975,2,1.928,2,3.391,0,2.221-1.779,4-4,4s-4-1.779-4-4c0-1.462,0.8391-2.693,2-3.391z"/> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <rect style="color:#000000;enable-background:accumulate;" fill-rule="nonzero" height="6" width="2" y="2" x="7.5" fill="#ff9148"/> </symbol><symbol viewBox="0 0 17 17" id="icon-prev"><title>prev</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-ratedown"><title>ratedown</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path fill="#ff9148" d="M4,2,6,2v7h-2z"/> <path fill="#ff9148" d="m13,2-2,0,0,7,2,0z"/> <path fill="#ff9148" d="M14,15,3,15c0-5,11-5,11,0z"/> </symbol><symbol viewBox="0 0 17 17" id="icon-rateup"><title>rateup</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z" fill-rule="evenodd"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path d="M4,2,6,2v7h-2z" fill="#ff9148"/> <path d="m13,2-2,0,0,7,2,0z" fill="#ff9148"/> <path fill="#ff9148" d="m14,11.25-11,0c0,5,11,5,11,0z"/> </symbol><symbol viewBox="0 0 17 17" id="icon-share"><title>share</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <path id="share-path3828" style="enable-background:accumulate;color:#000000;" d="m5.667,4.748a0.9955,0.9955,0,1,1,-1.991,0,0.9955,0.9955,0,1,1,1.991,0z" fill-rule="nonzero" transform="matrix(2.0090498,0,0,2.0090498,-4.3846154,-1.0384618)" fill="#ff9148"/> <g transform="translate(377,-498.4)" display="none"> <path fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z" fill-rule="evenodd"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill="#ff9148" d="m5.375,7.844-0.75,1.312,7,4,0.75-1.312-7-4z"/> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill="#ff9148" d="m11.62,3.844-7,4,0.75,1.312,7-4-0.75-1.312z"/> <use xlink:href="#share-path3828" transform="translate(6.9999997,-4.0000002)" height="17" width="17" y="0" x="0"/> <use xlink:href="#share-path3828" transform="translate(6.9999997,3.9999998)" height="17" width="17" y="0" x="0"/> </symbol><symbol viewBox="0 0 17 17" id="icon-shuffle"><title>shuffle</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" d="m-372,504.4,5,3.5-5,3.5z" fill="#ff9148"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g fill="#ff9148" transform="translate(0,2)" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <path fill="#ff9148" d="m2,3,4,0,5,9,3,0,0-1,2,2-2,2,0-1-4,0l-5-9h-3z"/> <path fill="#ff9148" d="m2,14,4,0,5-9,3,0,0,1,2-2-2-2,0,1-4,0-5,9-3,0z"/> </symbol><symbol viewBox="0 0 17 17" id="icon-vol"><title>vol</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z" fill-rule="evenodd"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M10,4,5,7.5,10,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <path d="M5,4,10,7.5,5,11z" fill-rule="evenodd"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g display="none" transform="translate(0,2)" fill="#ff9148"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <rect style="color:#000000;" height="3" width="2" y="6" x="5"/> <path style="color:#000000;" d="M8,5,11,2,11,13,8,10z"/> </g> </symbol><symbol viewBox="0 0 17 17" id="icon-volMute"><title>volMute</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(377,-498.4)" display="none"> <path fill-rule="evenodd" fill="#ff9148" d="m-372,504.4,5,3.5-5,3.5z"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M10,4,5,7.5,10,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="5" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <path fill-rule="evenodd" d="M5,4,10,7.5,5,11z"/> <rect style="color:#000000;" height="7" width="2" y="4" x="8" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="5" width="5" y="5" x="5" display="inline"/> <path style="color:#000000;" d="M5,3h-2v2h1v-1h1z" display="inline"/> <path style="color:#000000;" d="M12,5v-2h-2v1h1v1z" display="inline"/> <path style="color:#000000;" d="m10,12h2v-2h-1v1h-1z" display="inline"/> <path style="color:#000000;" d="m3,10v2h2v-1h-1v-1z" display="inline"/> </g> <g transform="translate(0,2)" fill="#ff9148" display="none"> <rect style="color:#000000;" height="3" width="2" y="6" x="5" display="inline"/> <path style="color:#000000;" d="m8,6,2-2v7l-2-2z" display="inline"/> </g> <g fill="#ff9148" transform="translate(1,1)"> <rect style="color:#000000;" height="3" width="2" y="6" x="5"/> <rect style="color:#000000;" height="5" width="2" y="5" x="8"/> </g> </symbol></svg>
-        <svg style="visibility:hidden;width:0;height:0;" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><symbol viewBox="0 0 120 120" id="layout-classic"><title>layout-classic</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(0,-932.36218)"> <rect style="enable-background:accumulate;color:#000000;" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="2" y="4" x="4" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="M9,4,7,5,9,6z" fill-rule="nonzero" fill-opacity="0.84577113" transform="translate(0,932.36218)" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="m10,4,0,2,2-1z" fill-rule="nonzero" fill-opacity="0.84577113" transform="translate(0,932.36218)" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="3" y="4" x="13" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="1" width="82" y="4" x="18" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="3" y="4" x="101" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="3" width="1" y="3" x="28" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="2" y="4" x="105" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="2" y="4" x="108" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" transform="translate(0,932.36218)" height="2" width="1" y="4" x="111" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="m112,5,4-1,0,2z" fill-rule="nonzero" fill-opacity="0.84577113" transform="translate(0,932.36218)" fill="#000"/> <rect id="layout-classic-rect3843" style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1493" transform="translate(0,932.36218)" height="1" width="114" y="7" x="3" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1393" height="110" width="114" y="939.4" x="3" fill="#000"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,6)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,12)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,18)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,24)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,30)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,36)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,42)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,48)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,54)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,60)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,66)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,72)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,78)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,84)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,90)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,96)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,102)" y="0" x="0"/> <use xlink:href="#layout-classic-rect3843" transform="translate(0,108)" y="0" x="0"/> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill-opacity="0.56218904" fill="#000" d="m1,933.4,0,1,0,116,0,1,1,0,116,0,1,0,0-1,0-116,0-1-1,0-116,0-1,0zm2,2,114,0,0,114-114,0,0-114z"/> </g> </symbol><symbol viewBox="0 0 120 120" id="layout-streambar"><title>layout-streambar</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g fill="#000" transform="translate(0,-932.36218)"> <rect style="enable-background:accumulate;color:#000000;" fill-opacity="0.8458" height="2" width="2" y="991.4" x="4"/> <path style="enable-background:accumulate;color:#000000;" d="m9,991.4-2,1,2,1z" fill-opacity="0.84577116" fill-rule="nonzero"/> <path style="enable-background:accumulate;color:#000000;" d="m10,991.4,0,2,2-1z" fill-opacity="0.84577116" fill-rule="nonzero"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="991.4" x="13"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="991.4" x="101"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="2" y="991.4" x="105"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="2" y="991.4" x="108"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="1" y="991.4" x="111"/> <path style="enable-background:accumulate;color:#000000;" d="m112,992.4,4-1,0,2z" fill-opacity="0.84577116" fill-rule="nonzero"/> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" d="m1,988.4,0,1,0,5.9,0,1,1,0,116,0,1,0,0-1,0-5.9,0-1-1,0-116,0zm2,2,114,0,0,3.9-114,0z" fill-opacity="0.56218902"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="36" y="991.4" x="64"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="26" y="991.4" x="37"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="16" y="991.4" x="20"/> </g> </symbol><symbol viewBox="0 0 120 120" id="layout-streambox"><title>layout-streambox</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g fill="#000" transform="translate(0,-932.36218)"> <rect style="enable-background:accumulate;color:#000000;" fill-opacity="0.8458" height="2" width="2" y="972.4" x="4"/> <path style="enable-background:accumulate;color:#000000;" d="m9,972.4-2,1,2,1z" fill-opacity="0.84577116" fill-rule="nonzero"/> <path style="enable-background:accumulate;color:#000000;" d="m10,972.4,0,2,2-1z" fill-opacity="0.84577116" fill-rule="nonzero"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="972.4" x="13"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="1" width="82" y="972.4" x="18"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="972.4" x="101"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="3" width="1" y="971.4" x="28"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="2" y="972.4" x="105"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="2" y="972.4" x="108"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="1" y="972.4" x="111"/> <path style="enable-background:accumulate;color:#000000;" d="m112,973.4,4-1,0,2z" fill-opacity="0.84577116" fill-rule="nonzero"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1493" height="1" width="114" y="975.4" x="3"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1393" height="38" width="114" y="975.4" x="3"/> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" d="m1,969.4,0,1,0,44,0,1,1,0,116,0,1,0,0-1,0-44,0-1-1,0-116,0zm2,2,114,0,0,42-114,0z" fill-opacity="0.56218902"/> <rect style="enable-background:accumulate;color:#000000;" fill-opacity="0.8458" height="26" width="26" y="980.4" x="5"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="72.5" y="998.4" x="38"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="72.5" y="991.4" x="38"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="72.5" y="984.4" x="38"/> </g> </symbol><symbol viewBox="0 0 120 120" id="layout-touch"><title>layout-touch</title> <metadata> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/> <dc:title/> </cc:Work> </rdf:RDF> </metadata> <g transform="translate(0,-932.36218)"> <rect id="layout-touch-rect3843" style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1493" transform="translate(0,932.36218)" height="1" width="114" y="7" x="3" fill="#000"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,6)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,12)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,18)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,24)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,30)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,36)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,42)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,48)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,54)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,60)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,66)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,72)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,78)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,84)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,90)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,96)" height="120" width="120" y="0" x="0"/> <use xlink:href="#layout-touch-rect3843" transform="translate(0,102)" height="120" width="120" y="0" x="0"/> <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" fill-opacity="0.56218902" fill="#000" d="m1,933.4,0,1,0,116,0,1,1,0,116,0,1,0,0-1,0-116,0-1-1,0-116,0-1,0zm2,2,114,0,0,114-114,0,0-114z"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.1393" height="107" width="114" y="935.4" x="3" fill="#000"/> </g> <rect style="enable-background:accumulate;color:#000000;" fill-opacity="0.8458" height="5" width="5" y="111" x="4" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="m15,111-5,2.5,5,2.5z" fill-opacity="0.84577116" fill-rule="nonzero" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="m16,111,0,5,5-2.5z" fill-opacity="0.84577116" fill-rule="nonzero" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="113" x="22" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="3" width="59" y="112" x="26" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="5" width="1" y="111" x="29" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="2" width="3" y="112" x="87" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="5" width="5" y="111" x="92" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="5" width="5" y="111" x="98" fill="#000"/> <rect style="enable-background:accumulate;color:#000000;" fill-rule="nonzero" fill-opacity="0.8458" height="5" width="2" y="111" x="104" fill="#000"/> <path style="enable-background:accumulate;color:#000000;" d="m106,113.5,10-2.5,0,5z" fill-opacity="0.84577116" fill-rule="nonzero" fill="#000"/> </symbol></svg>
-      <!-- End invisible helpers -->
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="assets/css/tidy.min.css">
 
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
 
-    <!-- Modal dialog. Future functionality?
-    		<div class="effeckt-modal-wrap" id="effeckt-modal-wrap"> <!-- for centering transform --><!--
-    			<div class="effeckt-modal topcoat-overlay" id="effeckt-modal">
-    				<h1></h1>
-    				<div class="effeckt-modal-content">
-    					<p>Are you sure?</p>
-    				</div>
-    				<div class="topcoat-overlay-buttons">
-    					<button class="effeckt-modal-cancel topcoat-button">Cancel</button>
-    					<button class="effeckt-modal-confirm topcoat-button--cta">Commit</button>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="effeckt-overlay" id="effeckt-overlay"></div>
-        -->
-        <div class="loading hidden" id="loadglobal">
-          <img src="assets/img/aersia.svg" />
+    <script src="assets/js/modernizr.js"></script>
+  </head>
+  <body ng-controller="aersiaController as aersiaCtrl">
+    <!-- Invisible helper objects -->
+    <svg style="visibility:hidden;width:0;height:0;" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"><symbol viewBox="0 0 17 17" id="icon-download"><title>download</title><path fill="#ff9148" d="M10 2v6h2l-3.5 4L5 8h2V2z"/><path fill="#ff9148" color="#000" d="M2 12h13v2H2z"/></symbol><symbol viewBox="0 0 17 17" id="icon-fullscreen"><title>fullscreen</title><g fill="#ff9148" color="#000"><path d="M6 6h5v5H6zM6 4H4v2h1V5h1zM13 6V4h-2v1h1v1zM11 13h2v-2h-1v1h-1zM4 11v2h2v-1H5v-1z"/></g></symbol><symbol viewBox="0 0 17 17" id="icon-gear"><title>gear</title><path fill="#ff9148" d="M6.938 3.484l-.625.5.344 1.031a4.017 4.017 0 0 0-.845.594l-.844-.625-.688.406-.218.781.875.657c-.135.296-.218.61-.28.939H3.563l-.313.75.313.75h1.094c.062.328.144.642.28.937l-.874.656.281.72.625.468.844-.625c.251.238.537.427.844.594l-.344 1.03.656.407.75.062.344-1.062c.164.021.33.063.5.063s.335-.042.5-.063l.344 1.062.75-.062.656-.406-.344-1.031c.307-.167.592-.356.844-.594l.844.625.625-.469.28-.719-.874-.656c.137-.295.22-.61.281-.937h1.094l.188-.75-.188-.75H12.47a3.764 3.764 0 0 0-.27-.924l.875-.657-.219-.78-.687-.407-.844.625a3.794 3.794 0 0 0-.84-.594l.344-1.031-.625-.5-.781.031-.344 1.062c-.165-.02-.33-.062-.5-.062s-.336.042-.5.062L7.742 3.53l-.781-.032zm1.625 3.438l.937.313.594.78v1l-.594.782-.937.312-.938-.312-.593-.781v-1l.593-.781.938-.313z" color="#000"/></symbol><symbol viewBox="0 0 17 17" id="icon-next"><title>next</title><g fill="#ff9148"><path fill-rule="evenodd" d="M6 5l5 3.5L6 12z"/><path color="#000" d="M9 5h2v7H9z"/></g></symbol><symbol viewBox="0 0 17 17" id="icon-pause"><title>pause</title><g fill="#ff9148" color="#000"><path d="M6 5h2v7H6zM9 5h2v7H9z"/></g></symbol><symbol viewBox="0 0 17 17" id="icon-play"><title>play</title><path fill-rule="evenodd" fill="#ff9148" d="M6 5l5 3.5L6 12z"/></symbol><symbol viewBox="0 0 17 17" id="icon-poweroff"><title>poweroff</title><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill="#ff9148" d="M6.5 3.391c-2.295.844-4 3.029-4 5.609 0 3.302 2.698 6 6 6s6-2.698 6-6c0-2.58-1.705-4.765-4-5.609V5.61c1.161.697 2 1.928 2 3.391 0 2.221-1.779 4-4 4s-4-1.779-4-4c0-1.462.84-2.693 2-3.391z" color="#000"/></symbol><symbol viewBox="0 0 17 17" id="icon-poweron"><title>poweron</title><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill="#ff9148" d="M6.5 3.391c-2.295.844-4 3.029-4 5.609 0 3.302 2.698 6 6 6s6-2.698 6-6c0-2.58-1.705-4.765-4-5.609V5.61c1.161.697 2 1.928 2 3.391 0 2.221-1.779 4-4 4s-4-1.779-4-4c0-1.462.84-2.693 2-3.391z" color="#000"/><path fill="#ff9148" color="#000" d="M7.5 2h2v6h-2z"/></symbol><symbol viewBox="0 0 17 17" id="icon-prev"><title>prev</title><g fill="#ff9148"><path fill-rule="evenodd" d="M11 5L6 8.5l5 3.5z"/><path color="#000" d="M6 5h2v7H6z"/></g></symbol><symbol viewBox="0 0 17 17" id="icon-ratedown"><title>ratedown</title><path fill="#ff9148" d="M4 2h2v7H4zM13 2h-2v7h2zM14 15H3c0-5 11-5 11 0z"/></symbol><symbol viewBox="0 0 17 17" id="icon-rateup"><title>rateup</title><path d="M4 2h2v7H4zM13 2h-2v7h2zM14 11.25H3c0 5 11 5 11 0z" fill="#ff9148"/></symbol><symbol viewBox="0 0 17 17" id="icon-share"><title>share</title><path id="share-a" d="M5.667 4.748a.996.996 0 1 1-1.991 0 .996.996 0 1 1 1.991 0z" transform="matrix(2.00905 0 0 2.00905 -4.385 -1.038)" fill="#ff9148" color="#000"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill="#ff9148" d="M5.375 7.844l-.75 1.312 7 4 .75-1.312-7-4z" color="#000"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill="#ff9148" d="M11.62 3.844l-7 4 .75 1.312 7-4-.75-1.312z" color="#000"/><use xlink:href="#share-a" transform="translate(7 -4)" height="17" width="17"/><use xlink:href="#share-a" transform="translate(7 4)" height="17" width="17"/></symbol><symbol viewBox="0 0 17 17" id="icon-shuffle"><title>shuffle</title><path fill="#ff9148" d="M2 3h4l5 9h3v-1l2 2-2 2v-1h-4L5 5H2z"/><path fill="#ff9148" d="M2 14h4l5-9h3v1l2-2-2-2v1h-4l-5 9H2z"/></symbol><symbol viewBox="0 0 17 17" id="icon-vol"><title>vol</title><g fill="#ff9148" color="#000"><path d="M6 7h2v3H6zM9 6l3-3v11l-3-3z"/></g></symbol><symbol viewBox="0 0 17 17" id="icon-volMute"><title>volMute</title><g fill="#ff9148" color="#000"><path d="M6 7h2v3H6zM9 6h2v5H9z"/></g></symbol></svg>
+    <svg style="visibility:hidden;width:0;height:0;" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><symbol viewBox="0 0 120 120" id="layout-classic"><title>layout-classic</title><g transform="translate(0 -932.362)"><path fill-opacity=".846" color="#000" d="M4 936.362h2v2H4zM9 936.362l-2 1 2 1zM10 936.362v2l2-1zM13 936.362h3v2h-3zM18 936.362h82v1H18zM101 936.362h3v2h-3z"/><path fill-opacity=".846" color="#000" d="M28 935.362h1v3h-1zM105 936.362h2v2h-2zM108 936.362h2v2h-2zM111 936.362h1v2h-1zM112 937.362l4-1v2z"/><path id="layout-classic-a" fill-opacity=".149" transform="translate(0 932.362)" color="#000" d="M3 7h114v1H3z"/><path fill-opacity=".139" color="#000" d="M3 939.4h114v110H3z"/><use xlink:href="#layout-classic-a" transform="translate(0 6)"/><use xlink:href="#layout-classic-a" transform="translate(0 12)"/><use xlink:href="#layout-classic-a" transform="translate(0 18)"/><use xlink:href="#layout-classic-a" transform="translate(0 24)"/><use xlink:href="#layout-classic-a" transform="translate(0 30)"/><use xlink:href="#layout-classic-a" transform="translate(0 36)"/><use xlink:href="#layout-classic-a" transform="translate(0 42)"/><use xlink:href="#layout-classic-a" transform="translate(0 48)"/><use xlink:href="#layout-classic-a" transform="translate(0 54)"/><use xlink:href="#layout-classic-a" transform="translate(0 60)"/><use xlink:href="#layout-classic-a" transform="translate(0 66)"/><use xlink:href="#layout-classic-a" transform="translate(0 72)"/><use xlink:href="#layout-classic-a" transform="translate(0 78)"/><use xlink:href="#layout-classic-a" transform="translate(0 84)"/><use xlink:href="#layout-classic-a" transform="translate(0 90)"/><use xlink:href="#layout-classic-a" transform="translate(0 96)"/><use xlink:href="#layout-classic-a" transform="translate(0 102)"/><use xlink:href="#layout-classic-a" transform="translate(0 108)"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill-opacity=".562" d="M1 933.4v118h118v-118H1zm2 2h114v114H3v-114z" color="#000"/></g></symbol><symbol viewBox="0 0 120 120" id="layout-streambar"><title>layout-streambar</title><g color="#000"><path fill-opacity=".846" d="M4 59.038h2v2H4zM9 59.038l-2 1 2 1zM10 59.038v2l2-1zM13 59.038h3v2h-3zM101 59.038h3v2h-3zM105 59.038h2v2h-2zM108 59.038h2v2h-2zM111 59.038h1v2h-1zM112 60.038l4-1v2z"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" d="M1 56.038v7.9h118v-7.9H2zm2 2h114v3.9H3z" fill-opacity=".562"/><path fill-opacity=".846" d="M64 59.038h36v2H64zM37 59.038h26v2H37zM20 59.038h16v2H20z"/></g></symbol><symbol viewBox="0 0 120 120" id="layout-streambox"><title>layout-streambox</title><g color="#000"><path fill-opacity=".846" d="M4 40.038h2v2H4zM9 40.038l-2 1 2 1zM10 40.038v2l2-1zM13 40.038h3v2h-3zM18 40.038h82v1H18zM101 40.038h3v2h-3z"/><path fill-opacity=".846" d="M28 39.038h1v3h-1zM105 40.038h2v2h-2zM108 40.038h2v2h-2zM111 40.038h1v2h-1zM112 41.038l4-1v2z"/><path fill-opacity=".149" d="M3 43.038h114v1H3z"/><path fill-opacity=".139" d="M3 43.038h114v38H3z"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" d="M1 37.038v46h118v-46H2zm2 2h114v42H3z" fill-opacity=".562"/><path fill-opacity=".846" d="M5 48.038h26v26H5zM38 66.038h72.5v2H38zM38 59.038h72.5v2H38zM38 52.038h72.5v2H38z"/></g></symbol><symbol viewBox="0 0 120 120" id="layout-touch"><title>layout-touch</title><g transform="translate(0 -932.362)"><path id="layout-touch-a" fill-opacity=".149" transform="translate(0 932.362)" color="#000" d="M3 7h114v1H3z"/><use xlink:href="#layout-touch-a" transform="translate(0 6)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 12)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 18)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 24)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 30)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 36)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 42)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 48)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 54)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 60)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 66)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 72)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 78)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 84)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 90)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 96)" height="120" width="120"/><use xlink:href="#layout-touch-a" transform="translate(0 102)" height="120" width="120"/><path style="block-progression:tb;text-indent:0;text-align:start;text-transform:none" fill-opacity=".562" d="M1 933.4v118h118v-118H1zm2 2h114v114H3v-114z" color="#000"/><path fill-opacity=".139" color="#000" d="M3 935.4h114v107H3z"/></g><path fill-opacity=".846" color="#000" d="M4 111h5v5H4zM15 111l-5 2.5 5 2.5zM16 111v5l5-2.5zM22 113h3v2h-3zM26 112h59v3H26z"/><path fill-opacity=".846" color="#000" d="M29 111h1v5h-1zM87 112h3v2h-3zM92 111h5v5h-5zM98 111h5v5h-5zM104 111h2v5h-2zM106 113.5l10-2.5v5z"/></symbol></svg>
+    <!-- End invisible helpers -->
+
+    <!--[if lt IE 8]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div class="loading hidden" id="loadglobal">
+      <img src="assets/img/aersia.svg" />
+    </div>
+
+    <div class="optionsbox hidden">
+      <div class="effeckt-tabs-wrap" data-effeckt-type="slide-left">
+        <div class="effeckt-tabs">
+          <li><a data-tab-id="#tab-songinfo" class="effeckt-tab">Current Song</a></li>
+          <li><a data-tab-id="#tab-layout" class="effeckt-tab">Layout</a></li>
+          <li><a data-tab-id="#tab-theme" class="effeckt-tab">Theme</a></li>
         </div>
+        <div class="effeckt-tabs-container">
 
-        <div class="optionsbox hidden">
-            <div class="effeckt-tabs-wrap" data-effeckt-type="slide-left">
-                <div class="effeckt-tabs">
-                    <li><a data-tab-id="#tab-songinfo" class="effeckt-tab">Current Song</a></li>
-                    <li><a data-tab-id="#tab-layout" class="effeckt-tab">Layout</a></li>
-                    <li><a data-tab-id="#tab-theme" class="effeckt-tab">Theme</a></li>
-                    <!-- <li><a data-tab-id="#tab-news" class="effeckt-tab">Recent News</a></li> -->
+          <div id="tab-songinfo" class="effeckt-tab-content">
+
+            <img id="oboxSongImg" class="fade" src="assets/img/placeholder.png" />
+
+            <!-- Song information, links, etc. -->
+            <div class="infopane-h">
+              <div class="vbox">
+                <div class="vbox songinfo">
+                  <li id="oboxSongTitle">Loading...</li>
+                  <li id="oboxSongCreator">Loading...</li>
                 </div>
-                <div class="effeckt-tabs-container">
-
-                    <div id="tab-songinfo" class="effeckt-tab-content">
-
-                        <img id="oboxSongImg" class="fade" src="assets/img/placeholder.png" />
-
-                        <!-- Song information, links, etc. -->
-                        <div class="infopane-h">
-                            <div class="vbox">
-                                <div class="vbox songinfo">
-                                  <li id="oboxSongTitle">Loading...</li>
-                                  <li id="oboxSongCreator">Loading...</li>
-                                </div>
-                                <div class="controls-container">
-                                    <div id="toggleShuffle" class="controlsToggle" ng-click="aersiaCtrl.toggleShuffle();">
-                                        <svg width="17px" height="17px" ><use xlink:href="#icon-poweron" /></svg>
-                                        <svg width="17px" height="17px" ><use xlink:href="#icon-poweroff" /></svg>
-                                    </div>
-
-                                    <div class="hidden">
-                                        <div class="spacer"></div>
-                                        <div id="rateup" ng-click="aersiaCtrl.rateUp();">
-                                            <svg width="17px" height="17px" ><use xlink:href="#icon-rateup" /></svg>
-                                        </div>
-                                        <div id="ratedown" ng-click="aersiaCtrl.rateDown();">
-                                            <svg width="17px" height="17px" ><use xlink:href="#icon-ratedown" /></svg>
-                                        </div>
-                                        <div class="controls-text" id="curSongRating" >0</div>
-                                    </div>
-                                    <div class="spacer"></div>
-                                    <!-- <div ng-click="aersiaCtrl.triggerLinkDownload(aersiaCtrl.songs[aersiaCtrl.curSong].location)" >
-                                        <svg width="17px" height="17px" ><use xlink:href="#icon-download" /></svg>
-                                    </div> -->
-                                    <div id="copyBtn" >
-                                        <svg width="17px" height="17px" ><use xlink:href="#icon-share" /></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="vbox">
-                                <section>
-                                    <div><label>
-                                        Playlists
-                                        <select name="preset" ng-model="aersiaCtrl.selectedPlaylist" ng-change="aersiaCtrl.changePlaylist();" />
-                                            <option ng-repeat="(option,null) in aersiaCtrl.playlists" value="{{option}}">{{aersiaCtrl.playlists[option].longName}}</option>
-                                        </select>
-                                    </label></div>
-                                </section>
-                                <div class='sep'></div>
-                                <section>
-                                    <div><label class="topcoat-checkbox"><input type="checkbox" name="autoplay" ng-model="aersiaCtrl.autoplay" /><div class="topcoat-checkbox__checkmark"></div>Autoplay</label></div>
-                                    <div><label class="topcoat-checkbox"><input type="checkbox" name="anims" ng-model="aersiaCtrl.features.animations.enabled" ng-change="aersiaCtrl.toggleScrollSmooth()" /><div class="topcoat-checkbox__checkmark"></div>Scroll Smooth</label></div>
-                                </section>
-                            </div>
-                            <!-- Song remix information -->
-                            <div class="infopane-v space" ng-show="aersiaCtrl.songs[aersiaCtrl.curSong].remixes.length >= 0">
-                                <div>Remixes
-                                    <div class="playlist">
-                                        <li ng-click="aersiaCtrl.playSong($index)"
-                                            ng-repeat="song in aersiaCtrl.songs[aersiaCtrl.curSong].remixes track by $index">{{song.creator}} - {{song.title}}</li>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-layout" class="effeckt-tab-content">
-                        <div id="layoutbox" class="infopane-h space">
-                            <!-- boxes are created here for each layout -->
-                        </div>
-                    </div>
-
-                    <div id="tab-theme" class="effeckt-tab-content">
-                        <section>
-                            <div><label>
-                                Presets
-                                <select name="preset" ng-model="aersiaCtrl.selectedPreset" ng-change="aersiaCtrl.loadPreset();" />
-                                    <option ng-repeat="(option,style) in aersiaCtrl.presetStyles" value="{{option}}">{{option}}</option>
-                                </select>
-                            </label></div>
-                        </section>
-                        <div class="sep"></div>
-                        <section>
-                            <div><label><input type="color" name="colorfocus" ng-model="aersiaCtrl.currentStyles.focus" ng-change="aersiaCtrl.changeStyle('focus');" />Focus</label></div>
-                            <div><label><input type="color" name="colorbackground" ng-model="aersiaCtrl.currentStyles.background" ng-change="aersiaCtrl.changeStyle('background');" />Background</label></div>
-                            <div><label><input type="color" name="colorcontrast" ng-model="aersiaCtrl.currentStyles.contrast" ng-change="aersiaCtrl.changeStyle('contrast');" />Contrast</label></div>
-                            <div><label><input type="color" name="coloractive" ng-model="aersiaCtrl.currentStyles.active" ng-change="aersiaCtrl.changeStyle('active');" />Active</label></div>
-                            <div><label><input type="color" name="colorscrollbar" ng-model="aersiaCtrl.currentStyles.scrollbar" ng-change="aersiaCtrl.changeStyle('scrollbar');" />Scrollbar</label></div>
-                            <div><label><input type="color" name="colorloadbar" ng-model="aersiaCtrl.currentStyles.loadbar" ng-change="aersiaCtrl.changeStyle('loadbar');" />Loadbar</label></div>
-                            <div class='sep'></div>
-                            <section>
-                                <span>Controls Border</span>
-                                <div>
-                                    <input type="color" name="colorcontrolsoutstart" ng-model="aersiaCtrl.currentStyles.controlsout['']" ng-change="aersiaCtrl.changeGradient('controlsout');" />
-                                    <input type="color" name="colorcontrolsoutend" ng-model="aersiaCtrl.currentStyles.controlsout['10']" ng-change="aersiaCtrl.changeGradient('controlsout');" />
-                                </div>
-                            </section>
-                            <section>
-                                <span>Controls</span>
-                                <div>
-                                    <input type="color" name="colorcontrolsinstart" ng-model="aersiaCtrl.currentStyles.controlsin['']" ng-change="aersiaCtrl.changeGradient('controlsin');" />
-                                    <input type="color" name="colorcontrolsinend" ng-model="aersiaCtrl.currentStyles.controlsin['10']" ng-change="aersiaCtrl.changeGradient('controlsin');" />
-                                </div>
-                            </section>
-                            <div class="sep"></div>
-                            <section>
-                                <button class="topcoat-button" ng-click="aersiaCtrl.triggerUpload()">Import</button>
-                                <button class="topcoat-button" ng-click="aersiaCtrl.exportStyles()">Export</button>
-                            </section>
-                        </section>
-                    </div>
-
-                    <!-- <div id="tab-news" class="effeckt-tab-content">
-                        <div style="font-size:48px;text-align:center">Recent News</div>
-                    </div> -->
-
-                </div>
-            </div>
-        </div>
-        <div class="vbox">
-
-            <!-- this can be moved under controls-container if I want the gradient to inherit -->
-            <div id="messagebox" class="hidden"><span></span><div id="mboxclose" class='closebutton ui-icon ui-icon-circle-close'></div></div>
-
-            <div id="streambox" class="hidden">
-                <div class="hbox nogrow"> <!-- Image and controls near image -->
-                    <div class="vbox"><img id="sboxSongImg" class="fade" src="assets/img/placeholder.png" /></div>
-                </div>
-
-                <!-- Song information, links, etc. -->
-                <div class="infopane-h">
-                    <div class="vbox songinfo">
-                        <li id="sboxSongTitle">Loading...</li>
-                        <li id="sboxSongCreator">Loading...</li>
-                    </div>
-                </div>
-
                 <div class="controls-container">
-                    <div><div class="controls-text">Aersia Player v0.1.1</div></div>
+                  <div id="toggleShuffle" class="controlsToggle" ng-click="aersiaCtrl.toggleShuffle();">
+                    <svg width="17px" height="17px" ><use xlink:href="#icon-poweron" /></svg>
+                    <svg width="17px" height="17px" ><use xlink:href="#icon-poweroff" /></svg>
+                  </div>
 
-                    <div class="options" ng-click="aersiaCtrl.toggleOptionsBox();">
-                        <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
+                  <div class="hidden">
+                    <div class="spacer"></div>
+                    <div id="rateup" ng-click="aersiaCtrl.rateUp();">
+                      <svg width="17px" height="17px" ><use xlink:href="#icon-rateup" /></svg>
                     </div>
+                    <div id="ratedown" ng-click="aersiaCtrl.rateDown();">
+                      <svg width="17px" height="17px" ><use xlink:href="#icon-ratedown" /></svg>
+                    </div>
+                    <div class="controls-text" id="curSongRating" >0</div>
+                  </div>
+                  <div class="spacer"></div>
+                  <!-- <div ng-click="aersiaCtrl.triggerLinkDownload(aersiaCtrl.songs[aersiaCtrl.curSong].location)" >
+                    <svg width="17px" height="17px" ><use xlink:href="#icon-download" /></svg>
+                  </div> -->
+                  <div id="copyBtn" >
+                    <svg width="17px" height="17px" ><use xlink:href="#icon-share" /></svg>
+                  </div>
                 </div>
+              </div>
+              <div class="vbox">
+                <section>
+                  <div><label>
+                    Playlists
+                    <select name="preset" ng-model="aersiaCtrl.selectedPlaylist" ng-change="aersiaCtrl.changePlaylist();" />
+                      <option ng-repeat="(option,null) in aersiaCtrl.playlists" value="{{option}}">{{aersiaCtrl.playlists[option].longName}}</option>
+                    </select>
+                  </label></div>
+                </section>
+                <div class='sep'></div>
+                <section>
+                  <div><label class="topcoat-checkbox"><input type="checkbox" name="autoplay" ng-model="aersiaCtrl.autoplay" /><div class="topcoat-checkbox__checkmark"></div>Autoplay</label></div>
+                  <div><label class="topcoat-checkbox"><input type="checkbox" name="anims" ng-model="aersiaCtrl.features.animations.enabled" ng-change="aersiaCtrl.toggleScrollSmooth()" /><div class="topcoat-checkbox__checkmark"></div>Scroll Smooth</label></div>
+                </section>
+              </div>
+              <!-- Song remix information -->
+              <div class="infopane-v space" ng-show="aersiaCtrl.songs[aersiaCtrl.curSong].remixes.length >= 0">
+                <div>Remixes
+                  <div class="playlist">
+                    <li ng-click="aersiaCtrl.playSong($index)"
+                      ng-repeat="song in aersiaCtrl.songs[aersiaCtrl.curSong].remixes track by $index">{{song.creator}} - {{song.title}}</li>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div class="controls-container fullwidth" id="mainControls">
-    			<audio> <p>Your browser does not support the <code>audio</code> element.</p> </audio>
-                <div id="playpause" class="controlsToggle" ng-click="aersiaCtrl.togglePlay();">
-                    <svg width="17px" height="17px" ><use xlink:href="#icon-play" /></svg>
-                    <svg width="17px" height="17px" ><use xlink:href="#icon-pause" /></svg>
-                </div>
-                <div id="prev" ng-click="aersiaCtrl.seek(-1);">
-                    <svg width="17px" height="17px" ><use xlink:href="#icon-prev" /></svg>
-                </div>
-                <div id="next" ng-click="aersiaCtrl.seek(1);">
-                    <svg width="17px" height="17px" ><use xlink:href="#icon-next" /></svg>
-                </div>
-                <div id="timebox">
-                    <div class="controls-text" id="timeProgText"></div>
-                    <div class="vbox">
-                        <div id="timeline" ng-click="aersiaCtrl.seekBar($event);">
-                            <div id="loadBar"></div>
-                            <div id="playedBar"></div>
-                        </div>
-                        <div id="playhead"></div>
-                    </div>
-                    <div class="controls-text" id="timeLoadPct"></div>
-                </div>
-                <div id="controlsInfoBox" class="hidden">
-                    <div>
-                        <span class="controls-text" id="controlsProgText"></span>
-                        <span class="controls-text divide" >/</span>
-                        <span class="controls-text" id="controlsLoadPct"></span>
-                    </div>
-
-                    <div>
-                        <span class="controls-text" id="controlsSongTitle">Loading...</span>
-                        <span class="controls-text divide" >-</span>
-                        <span class="controls-text" id="controlsSongCreator">Loading...</span>
-                    </div>
-
-                    <div class="controls-text">Aersia Player v0.1.1</div>
-                </div>
-                <div ng-click="aersiaCtrl.toggleOptionsBox();">
-                <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
-                </div>
-                <div id="fullscreen" ng-click="aersiaCtrl.toggleFullscreen();">
-                <svg width="17px" height="17px" ><use xlink:href="#icon-fullscreen" /></svg>
-                </div>
-                <div class="volbox hbox">
-                    <div id="volumeMute" class="controlsToggle" ng-click="aersiaCtrl.toggleMute();" ng-class="{ toggled: aersiaCtrl.prevVolume === 0 }">
-                        <svg width="17px" height="17px" ><use xlink:href="#icon-volMute" /></svg>
-                        <svg width="17px" height="17px" ><use xlink:href="#icon-vol" /></svg>
-                    </div>
-                    <div id="volumeBar" ng-click="aersiaCtrl.volume($event);">
-                    </div>
-                    <div id="volumeMax" ng-click="aersiaCtrl.volume('',1);">
-                    </div>
-                </div>
+          <div id="tab-layout" class="effeckt-tab-content">
+            <div id="layoutbox" class="infopane-h space">
+              <!-- boxes are created here for each layout -->
             </div>
+          </div>
 
-            <div class="playlist-container hbox">
-                <div class="playlist vbox hidden" id="playlist">
-                    <li ng-click="aersiaCtrl.playSong(song.index)"
-                        ng-repeat="song in aersiaCtrl.songs | orderBy:'song.creator' track by $index">{{song.creator}} - {{song.title}}</li>
+          <div id="tab-theme" class="effeckt-tab-content">
+            <section>
+              <div><label>
+                Presets
+                <select name="preset" ng-model="aersiaCtrl.selectedPreset" ng-change="aersiaCtrl.loadPreset();" />
+                  <option ng-repeat="(option,style) in aersiaCtrl.presetStyles" value="{{option}}">{{option}}</option>
+                </select>
+              </label></div>
+            </section>
+            <div class="sep"></div>
+            <section>
+              <div><label><input type="color" name="colorfocus" ng-model="aersiaCtrl.currentStyles.focus" ng-change="aersiaCtrl.changeStyle('focus');" />Focus</label></div>
+              <div><label><input type="color" name="colorbackground" ng-model="aersiaCtrl.currentStyles.background" ng-change="aersiaCtrl.changeStyle('background');" />Background</label></div>
+              <div><label><input type="color" name="colorcontrast" ng-model="aersiaCtrl.currentStyles.contrast" ng-change="aersiaCtrl.changeStyle('contrast');" />Contrast</label></div>
+              <div><label><input type="color" name="coloractive" ng-model="aersiaCtrl.currentStyles.active" ng-change="aersiaCtrl.changeStyle('active');" />Active</label></div>
+              <div><label><input type="color" name="colorscrollbar" ng-model="aersiaCtrl.currentStyles.scrollbar" ng-change="aersiaCtrl.changeStyle('scrollbar');" />Scrollbar</label></div>
+              <div><label><input type="color" name="colorloadbar" ng-model="aersiaCtrl.currentStyles.loadbar" ng-change="aersiaCtrl.changeStyle('loadbar');" />Loadbar</label></div>
+              <div class='sep'></div>
+              <section>
+                <span>Controls Border</span>
+                <div>
+                  <input type="color" name="colorcontrolsoutstart" ng-model="aersiaCtrl.currentStyles.controlsout['']" ng-change="aersiaCtrl.changeGradient('controlsout');" />
+                  <input type="color" name="colorcontrolsoutend" ng-model="aersiaCtrl.currentStyles.controlsout['10']" ng-change="aersiaCtrl.changeGradient('controlsout');" />
                 </div>
-            </div>
+              </section>
+              <section>
+                <span>Controls</span>
+                <div>
+                  <input type="color" name="colorcontrolsinstart" ng-model="aersiaCtrl.currentStyles.controlsin['']" ng-change="aersiaCtrl.changeGradient('controlsin');" />
+                  <input type="color" name="colorcontrolsinend" ng-model="aersiaCtrl.currentStyles.controlsin['10']" ng-change="aersiaCtrl.changeGradient('controlsin');" />
+                </div>
+              </section>
+              <div class="sep"></div>
+              <section>
+                <button class="topcoat-button" ng-click="aersiaCtrl.triggerUpload()">Import</button>
+                <button class="topcoat-button" ng-click="aersiaCtrl.exportStyles()">Export</button>
+              </section>
+            </section>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="vbox">
+
+      <!-- this can be moved under controls-container if I want the gradient to inherit -->
+      <div id="messagebox" class="hidden"><span></span><div id="mboxclose" class='closebutton ui-icon ui-icon-circle-close'></div></div>
+
+      <div id="streambox" class="hidden">
+        <div class="hbox nogrow"> <!-- Image and controls near image -->
+          <div class="vbox"><img id="sboxSongImg" class="fade" src="assets/img/placeholder.png" /></div>
         </div>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <!-- Song information, links, etc. -->
+        <div class="infopane-h">
+          <div class="vbox songinfo">
+            <li id="sboxSongTitle">Loading...</li>
+            <li id="sboxSongCreator">Loading...</li>
+          </div>
+        </div>
 
-        <script src="assets/js/js.cookie.js"></script>
-        <script src="assets/js/lightbox.js"></script>
-        <script src="assets/js/logger.js"></script>
-        <script src="assets/js/x2js.js"></script>
-        <script src="assets/js/perfect-scrollbar.js"></script>
-        <script src="assets/js/ofi.browser.js"></script>
-        <script src="assets/js/angular.js"></script>
-        <script src="assets/js/plugins.js"></script>
-        <script src="assets/js/main.js"></script>
-    </body>
+        <div class="controls-container">
+          <div><div class="controls-text">Aersia Player v0.1.2</div></div>
+
+          <div class="options" ng-click="aersiaCtrl.toggleOptionsBox();">
+            <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-container fullwidth" id="mainControls">
+  			<audio> <p>Your browser does not support the <code>audio</code> element.</p> </audio>
+        <div id="playpause" class="controlsToggle" ng-click="aersiaCtrl.togglePlay();">
+          <svg width="17px" height="17px" ><use xlink:href="#icon-play" /></svg>
+          <svg width="17px" height="17px" ><use xlink:href="#icon-pause" /></svg>
+        </div>
+        <div id="prev" ng-click="aersiaCtrl.seek(-1);">
+          <svg width="17px" height="17px" ><use xlink:href="#icon-prev" /></svg>
+        </div>
+        <div id="next" ng-click="aersiaCtrl.seek(1);">
+          <svg width="17px" height="17px" ><use xlink:href="#icon-next" /></svg>
+        </div>
+        <div id="timebox">
+          <div class="controls-text" id="timeProgText"></div>
+          <div class="vbox">
+            <div id="timeline" ng-click="aersiaCtrl.seekBar($event);">
+              <div id="loadBar"></div>
+              <div id="playedBar"></div>
+            </div>
+            <div id="playhead"></div>
+          </div>
+          <div class="controls-text" id="timeLoadPct"></div>
+        </div>
+        <div id="controlsInfoBox" class="hidden">
+          <div>
+            <span class="controls-text" id="controlsProgText"></span>
+            <span class="controls-text divide" >/</span>
+            <span class="controls-text" id="controlsLoadPct"></span>
+          </div>
+
+          <div>
+            <span class="controls-text" id="controlsSongTitle">Loading...</span>
+            <span class="controls-text divide" >-</span>
+            <span class="controls-text" id="controlsSongCreator">Loading...</span>
+          </div>
+
+          <div class="controls-text">Aersia Player v0.1.2</div>
+        </div>
+        <div ng-click="aersiaCtrl.toggleOptionsBox();">
+        <svg width="17px" height="17px" ><use xlink:href="#icon-gear" /></svg>
+        </div>
+        <div id="fullscreen" ng-click="aersiaCtrl.toggleFullscreen();">
+        <svg width="17px" height="17px" ><use xlink:href="#icon-fullscreen" /></svg>
+        </div>
+        <div class="volbox hbox">
+          <div id="volumeMute" class="controlsToggle" ng-click="aersiaCtrl.toggleMute();" ng-class="{ toggled: aersiaCtrl.prevVolume === 0 }">
+            <svg width="17px" height="17px" ><use xlink:href="#icon-volMute" /></svg>
+            <svg width="17px" height="17px" ><use xlink:href="#icon-vol" /></svg>
+          </div>
+          <div id="volumeBar" ng-click="aersiaCtrl.volume($event);">
+          </div>
+          <div id="volumeMax" ng-click="aersiaCtrl.volume('',1);">
+          </div>
+        </div>
+      </div>
+
+      <div class="playlist-container hbox">
+        <div class="release">βeta</div>
+        <div class="playlist vbox hidden" id="playlist">
+          <li ng-click="aersiaCtrl.playSong(song.index)"
+            ng-repeat="song in aersiaCtrl.songs | orderBy:'song.creator' track by $index">{{song.creator}} - {{song.title}}</li>
+        </div>
+      </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+    <!-- JS Scripts -->
+    <script src="assets/js/main.min.js"></script>
+
+  </body>
 </html>

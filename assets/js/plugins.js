@@ -1,7 +1,127 @@
 /*!
- * Aersia Player v0.0.6
+ * Aersia Player v0.1.2
  * This file is compiled using Grunt.
  */
+// function easeOutBounce(t, b, c, d) {
+//     if ((t/=d) < (1/2.75)) {
+// 		return c*(7.5625*t*t) + b;
+// 	} else if (t < (2/2.75)) {
+// 		return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+// 	} else if (t < (2.5/2.75)) {
+// 		return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+// 	} else {
+// 		return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+// 	}
+// }
+
+function easeInOut(now, beginX,targetX, beginY,targetY ) {
+	return ( -1 * Math.pow(((now - beginX) / targetX) - 1,2) + 1 )	// y = -x^2 + 1
+		* (Math.abs(targetY-beginY));						// scaled up to the amount that we need to move.
+}
+
+function addEvent(object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.addEventListener) {
+        object.addEventListener(type, callback, false);
+    } else if (object.attachEvent) {
+        object.attachEvent("on" + type, callback);
+    } else {
+        object["on"+type] = callback;
+    }
+}
+
+function removeEvent(object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.removeEventListener) {
+        object.removeEventListener(type, callback, false);
+    } else if (object.detachEvent) {
+        object.detachEvent("on" + type, callback);
+    } else {
+        object["on"+type] = null;
+    }
+}
+
+//https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API
+function toggleFullScreen() {
+  if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+}
+
+// http://stackoverflow.com/questions/12606245/detect-if-browser-is-running-on-an-android-or-ios-device
+var isMobile = {
+    Windows: function() {
+        return /IEMobile/i.test(navigator.userAgent);
+    },
+    Android: function() {
+        return /Android/i.test(navigator.userAgent);
+    },
+    BlackBerry: function() {
+        return /BlackBerry/i.test(navigator.userAgent);
+    },
+    iOS: function() {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Windows());
+    }
+};
+
+//Test for SVG support and polyfill if no. https://css-tricks.com/svg-sprites-use-better-icon-fonts/
+/MSIE|Trident/.test(navigator.userAgent) && document.addEventListener('DOMContentLoaded', function () {
+  [].forEach.call(document.querySelectorAll('svg'), function (svg) {
+	var use = svg.querySelector('use');
+
+	if (use) {
+	  var object = document.createElement('object');
+	  object.data = use.getAttribute('xlink:href');
+	  object.className = svg.getAttribute('class');
+	  svg.parentNode.replaceChild(object, svg);
+	}
+  });
+});
+
+//coderjoe: http://stackoverflow.com/questions/1267283/how-can-i-create-a-zerofilled-value-using-javascript
+function zeroPad (num, numZeros) {
+	if( num === 0 ) { return zeroPadNonLog(num,numZeros); }
+    var an = Math.abs (num);
+    var digitCount = 1 + Math.floor (Math.log (an) / Math.LN10);
+    if (digitCount >= numZeros) {
+        return num;
+    }
+    var zeroString = Math.pow (10, numZeros - digitCount).toString ().substr (1);
+    return num < 0 ? '-' + zeroString + an : zeroString + an;
+}
+function zeroPadNonLog(num, numZeros) {
+    var n = Math.abs(num);
+    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+    var zeroString = Math.pow(10,zeros).toString().substr(1);
+    if( num < 0 ) {
+        zeroString = '-' + zeroString;
+    }
+
+    return zeroString+n;
+}
+
 // Avoid `console` errors in browsers that lack a console.
 (function() {
     var method;
@@ -41,6 +161,1454 @@
     }
   }
 })(window);
+
+var objectFitImages=function(){"use strict";var t="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";var e=t+t;var r=/(object-fit|object-position)\s*:\s*([-\w\s%]+)/g;var i=new Image;var n="object-fit"in i.style;var s="object-position"in i.style;var c=typeof i.currentSrc==="string";var o=i.getAttribute;var l=i.setAttribute;var a=false;function u(t){var e=getComputedStyle(t).fontFamily;var i;var n={};while((i=r.exec(e))!==null){n[i[1]]=i[2]}return n}function f(r,i){if(r[e].parsingSrcset){return}var s=u(r);if(!r[t]&&!r[e].skipTest){if(!s["object-fit"]||s["object-fit"]==="fill"){return}if(n&&!s["object-position"]){return}}var l=r.currentSrc||r.src;if(i){l=i}else if(r.srcset&&!c&&window.picturefill){r[e].parsingSrcset=true;if(!r[window.picturefill._.ns]||!r[window.picturefill._.ns].evaled){window.picturefill._.fillImg(r,{reselect:true})}var a=r[window.picturefill._.ns];if(!a.curSrc){a.supported=false;window.picturefill._.fillImg(r,{reselect:true})}delete r[e].parsingSrcset;l=a.curSrc||l}if(r[t]){r[t].s=l;if(i){r[t].srcAttr=i}}else{r[t]={s:l,srcAttr:i||o.call(r,"src"),srcsetAttr:r.srcset};r.src=t;if(r.srcset){r.srcset="";Object.defineProperty(r,"srcset",{value:r[t].srcsetAttr})}g(r)}r.style.backgroundImage='url("'+l+'")';r.style.backgroundPosition=s["object-position"]||"center";r.style.backgroundRepeat="no-repeat";if(/scale-down/.test(s["object-fit"])){if(!r[t].i){r[t].i=new Image;r[t].i.src=l}(function f(){if(r[t].i.naturalWidth){if(r[t].i.naturalWidth>r.width||r[t].i.naturalHeight>r.height){r.style.backgroundSize="contain"}else{r.style.backgroundSize="auto"}return}setTimeout(f,100)})()}else{r.style.backgroundSize=s["object-fit"].replace("none","auto").replace("fill","100% 100%")}}function g(e){var r={get:function(){return e[t].s},set:function(r){delete e[t].i;f(e,r);return r}};Object.defineProperty(e,"src",r);Object.defineProperty(e,"currentSrc",{get:r.get})}function A(t,e){window.addEventListener("resize",b.bind(null,t,e))}function d(t){if(t.target.tagName==="IMG"){f(t.target)}}function p(){if(!s){HTMLImageElement.prototype.getAttribute=function(e){if(this[t]&&(e==="src"||e==="srcset")){return this[t][e+"Attr"]}return o.call(this,e)};HTMLImageElement.prototype.setAttribute=function(e,r){if(this[t]&&(e==="src"||e==="srcset")){this[e==="src"?"src":e+"Attr"]=String(r)}else{l.call(this,e,r)}}}}function b(t,r){var i=!a&&!t;r=r||{};t=t||"img";if(s&&!r.skipTest){return false}if(typeof t==="string"){t=document.querySelectorAll("img")}else if(!t.length){t=[t]}for(var n=0;n<t.length;n++){t[n][e]=r;f(t[n])}if(i){document.body.addEventListener("load",d,true);a=true;t="img"}if(r.watchMQ){delete r.watchMQ;A(t,r)}}b.supportsObjectFit=n;b.supportsObjectPosition=s;p();return b}();
+
+/*
+	Copyright 2015 Axinom
+	Copyright 2011-2013 Abdulla Abdurakhmanov
+	Original sources are available at https://code.google.com/p/x2js/
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+*/
+
+// This fork is maintained at https://github.com/Axinom/x2js
+
+/*
+	Supported export methods:
+	* AMD
+	* <script> (window.X2JS)
+	* Node.js (requires manual install of xmldom module)
+
+	Limitations:
+	* Attribute namespace prefixes are not parsed as such.
+	* Overall the serialization/deserializaton code is "best effort" and not foolproof.
+*/
+
+// Module definition pattern used is returnExports from https://github.com/umdjs/umd
+(function (root, factory) {
+	"use strict";
+
+	/* global define */
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node. Does not work with strict CommonJS, but only CommonJS-like
+		// environments that support module.exports, like Node.
+        module.exports = factory(require("xmldom").DOMParser);
+    } else {
+        // Browser globals (root is window)
+        root.X2JS = factory();
+	}
+})(this, function (CustomDOMParser) {
+	"use strict";
+
+    // We return a constructor that can be used to make X2JS instances.
+    return function X2JS(config) {
+		var VERSION = "2.0.1";
+
+		config = config || {};
+
+		function initConfigDefaults() {
+			// If set to "property" then <element>_asArray will be created
+			// to allow you to access any element as an array (even if there is only one of it).
+			config.arrayAccessForm = config.arrayAccessForm || "none";
+
+			// If "text" then <empty></empty> will be transformed to "".
+			// If "object" then <empty></empty> will be transformed to {}.
+			config.emptyNodeForm = config.emptyNodeForm || "text";
+
+			// Allows attribute values to be converted on the fly during parsing to objects.
+			// 	"test": function(name, value) { return true; }
+			//	"convert": function(name, value) { return parseFloat(value);
+			// convert() will be called for every attribute where test() returns true
+			// and the return value from convert() will replace the original value of the attribute.
+			config.attributeConverters = config.attributeConverters || [];
+
+			// Any elements that match the paths here will have their text parsed
+			// as an XML datetime value (2011-11-12T13:00:00-07:00 style).
+			// The path can be a plain string (parent.child1.child2),
+			// a regex (/.*\.child2/) or function(elementPath).
+			config.datetimeAccessFormPaths = config.datetimeAccessFormPaths || [];
+
+			// Any elements that match the paths listed here will be stored in JavaScript objects
+			// as arrays even if there is only one of them. The path can be a plain string
+			// (parent.child1.child2), a regex (/.*\.child2/) or function(elementName, elementPath).
+			config.arrayAccessFormPaths = config.arrayAccessFormPaths || [];
+
+			// If true, a toString function is generated to print nodes containing text or cdata.
+			// Useful if you want to accept both plain text and CData as equivalent inputs.
+			if (config.enableToStringFunc === undefined) {
+				config.enableToStringFunc = true;
+			}
+
+			// If true, empty text tags are ignored for elements with child nodes.
+			if (config.skipEmptyTextNodesForObj === undefined) {
+				config.skipEmptyTextNodesForObj = true;
+			}
+
+			// If true, whitespace is trimmed from text nodes.
+			if (config.stripWhitespaces === undefined) {
+				config.stripWhitespaces = true;
+			}
+
+			// If true, double quotes are used in generated XML.
+			if (config.useDoubleQuotes === undefined) {
+				config.useDoubleQuotes = true;
+			}
+
+			// If true, the root element of the XML document is ignored when converting to objects.
+			// The result will directly have the root element's children as its own properties.
+			if (config.ignoreRoot === undefined) {
+				config.ignoreRoot = false;
+			}
+
+			// Whether XML characters in text are escaped when reading/writing XML.
+			if (config.escapeMode === undefined) {
+				config.escapeMode = true;
+			}
+
+			// Prefix to use for properties that are created to represent XML attributes.
+			if (config.attributePrefix === undefined) {
+				config.attributePrefix = "_";
+			}
+		}
+
+		function initRequiredPolyfills() {
+			function pad(number) {
+				var r = String(number);
+				if (r.length === 1) {
+					r = '0' + r;
+				}
+				return r;
+			}
+			// Hello IE8-
+			if (typeof String.prototype.trim !== 'function') {
+				String.prototype.trim = function trim() {
+					return this.replace(/^\s+|^\n+|(\s|\n)+$/g, '');
+				};
+			}
+			if (typeof Date.prototype.toISOString !== 'function') {
+				// Implementation from http://stackoverflow.com/questions/2573521/how-do-i-output-an-iso-8601-formatted-string-in-javascript
+				Date.prototype.toISOString = function toISOString() {
+					var MS_IN_S = 1000;
+
+					return this.getUTCFullYear()
+						+ '-' + pad(this.getUTCMonth() + 1)
+						+ '-' + pad(this.getUTCDate())
+						+ 'T' + pad(this.getUTCHours())
+						+ ':' + pad(this.getUTCMinutes())
+						+ ':' + pad(this.getUTCSeconds())
+						+ '.' + String((this.getUTCMilliseconds() / MS_IN_S).toFixed(3)).slice(2, 5)
+						+ 'Z';
+				};
+			}
+		}
+
+		initConfigDefaults();
+		initRequiredPolyfills();
+
+		var DOMNodeTypes = {
+			"ELEMENT_NODE": 1,
+			"TEXT_NODE": 3,
+			"CDATA_SECTION_NODE": 4,
+			"COMMENT_NODE": 8,
+			"DOCUMENT_NODE": 9
+		};
+
+		function getDomNodeLocalName(domNode) {
+			var localName = domNode.localName;
+			if (localName == null) {
+				// Yeah, this is IE!!
+				localName = domNode.baseName;
+			}
+			if (localName == null || localName === "") {
+				// ==="" is IE too
+				localName = domNode.nodeName;
+			}
+			return localName;
+		}
+
+		function getDomNodeNamespacePrefix(node) {
+			return node.prefix;
+		}
+
+		function escapeXmlChars(str) {
+			if (typeof str === "string")
+				return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+			else
+				return str;
+		}
+
+		function unescapeXmlChars(str) {
+			return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+		}
+
+		function ensureProperArrayAccessForm(element, childName, elementPath) {
+			switch (config.arrayAccessForm) {
+				case "property":
+					if (!(element[childName] instanceof Array))
+						element[childName + "_asArray"] = [element[childName]];
+					else
+						element[childName + "_asArray"] = element[childName];
+					break;
+			}
+
+			if (!(element[childName] instanceof Array) && config.arrayAccessFormPaths.length > 0) {
+				var match = false;
+
+				for (var i = 0; i < config.arrayAccessFormPaths.length; i++) {
+					var arrayPath = config.arrayAccessFormPaths[i];
+					if (typeof arrayPath === "string") {
+						if (arrayPath === elementPath) {
+							match = true;
+							break;
+						}
+					} else if (arrayPath instanceof RegExp) {
+						if (arrayPath.test(elementPath)) {
+							match = true;
+							break;
+						}
+					} else if (typeof arrayPath === "function") {
+						if (arrayPath(childName, elementPath)) {
+							match = true;
+							break;
+						}
+					}
+				}
+
+				if (match)
+					element[childName] = [element[childName]];
+			}
+		}
+
+		function xmlDateTimeToDate(prop) {
+			// Implementation based up on http://stackoverflow.com/questions/8178598/xml-datetime-to-javascript-date-object
+			// Improved to support full spec and optional parts
+			var MINUTES_PER_HOUR = 60;
+
+			var bits = prop.split(/[-T:+Z]/g);
+
+			var d = new Date(bits[0], bits[1] - 1, bits[2]);
+			var secondBits = bits[5].split("\.");
+			d.setHours(bits[3], bits[4], secondBits[0]);
+			if (secondBits.length > 1)
+				d.setMilliseconds(secondBits[1]);
+
+			// Get supplied time zone offset in minutes
+			if (bits[6] && bits[7]) {
+				var offsetMinutes = bits[6] * MINUTES_PER_HOUR + Number(bits[7]);
+				var sign = /\d\d-\d\d:\d\d$/.test(prop) ? '-' : '+';
+
+				// Apply the sign
+				offsetMinutes = 0 + (sign === '-' ? -1 * offsetMinutes : offsetMinutes);
+
+				// Apply offset and local timezone
+				d.setMinutes(d.getMinutes() - offsetMinutes - d.getTimezoneOffset());
+			} else if (prop.indexOf("Z", prop.length - 1) !== -1) {
+				d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
+			}
+
+			// d is now a local time equivalent to the supplied time
+			return d;
+		}
+
+		function convertToDateIfRequired(value, childName, fullPath) {
+			if (config.datetimeAccessFormPaths.length > 0) {
+				var pathWithoutTextNode = fullPath.split("\.#")[0];
+
+				for (var i = 0; i < config.datetimeAccessFormPaths.length; i++) {
+					var candidatePath = config.datetimeAccessFormPaths[i];
+					if (typeof candidatePath === "string") {
+						if (candidatePath === pathWithoutTextNode)
+							return xmlDateTimeToDate(value);
+					} else if (candidatePath instanceof RegExp) {
+						if (candidatePath.test(pathWithoutTextNode))
+							return xmlDateTimeToDate(value);
+					} else if (typeof candidatePath === "function") {
+						if (candidatePath(pathWithoutTextNode))
+							return xmlDateTimeToDate(value);
+					}
+				}
+			}
+
+			return value;
+		}
+
+		function deserializeRootElementChildren(rootElement) {
+			var result = {};
+			var children = rootElement.childNodes;
+
+			// Alternative for firstElementChild which is not supported in some environments
+			for (var i = 0; i < children.length; i++) {
+				var child = children.item(i);
+				if (child.nodeType === DOMNodeTypes.ELEMENT_NODE) {
+					var childName = getDomNodeLocalName(child);
+
+					if (config.ignoreRoot)
+						result = deserializeDomChildren(child, childName);
+					else
+						result[childName] = deserializeDomChildren(child, childName);
+				}
+			}
+
+			return result;
+		}
+
+		function deserializeElementChildren(element, elementPath) {
+			var result = {};
+			result.__cnt = 0;
+
+			var nodeChildren = element.childNodes;
+
+			// Child nodes.
+			for (var iChild = 0; iChild < nodeChildren.length; iChild++) {
+				var child = nodeChildren.item(iChild);
+				var childName = getDomNodeLocalName(child);
+
+				if (child.nodeType === DOMNodeTypes.COMMENT_NODE)
+					continue;
+
+				result.__cnt++;
+
+				// We deliberately do not accept everything falsey here because
+				// elements that resolve to empty string should still be preserved.
+				if (result[childName] == null) {
+					result[childName] = deserializeDomChildren(child, elementPath + "." + childName);
+					ensureProperArrayAccessForm(result, childName, elementPath + "." + childName);
+				} else {
+					if (!(result[childName] instanceof Array)) {
+						result[childName] = [result[childName]];
+						ensureProperArrayAccessForm(result, childName, elementPath + "." + childName);
+					}
+
+					result[childName][result[childName].length] = deserializeDomChildren(child, elementPath + "." + childName);
+				}
+			}
+
+			// Attributes
+			for (var iAttribute = 0; iAttribute < element.attributes.length; iAttribute++) {
+				var attribute = element.attributes.item(iAttribute);
+				result.__cnt++;
+
+				var adjustedValue = attribute.value;
+				for (var iConverter = 0; iConverter < config.attributeConverters.length; iConverter++) {
+					var converter = config.attributeConverters[iConverter];
+					if (converter.test.call(null, attribute.name, attribute.value))
+						adjustedValue = converter.convert.call(null, attribute.name, attribute.value);
+				}
+
+				result[config.attributePrefix + attribute.name] = adjustedValue;
+			}
+
+			// Node namespace prefix
+			var namespacePrefix = getDomNodeNamespacePrefix(element);
+			if (namespacePrefix) {
+				result.__cnt++;
+				result.__prefix = namespacePrefix;
+			}
+
+			if (result["#text"]) {
+				result.__text = result["#text"];
+
+				if (result.__text instanceof Array) {
+					result.__text = result.__text.join("\n");
+				}
+
+				if (config.escapeMode)
+					result.__text = unescapeXmlChars(result.__text);
+
+				if (config.stripWhitespaces)
+					result.__text = result.__text.trim();
+
+				delete result["#text"];
+
+				if (config.arrayAccessForm === "property")
+					delete result["#text_asArray"];
+
+				result.__text = convertToDateIfRequired(result.__text, "#text", elementPath + ".#text");
+			}
+
+			if (result["#cdata-section"]) {
+				result.__cdata = result["#cdata-section"];
+				delete result["#cdata-section"];
+
+				if (config.arrayAccessForm === "property")
+					delete result["#cdata-section_asArray"];
+			}
+
+			if (result.__cnt === 1 && result.__text) {
+				result = result.__text;
+			} else if (result.__cnt === 0 && config.emptyNodeForm === "text") {
+				result = '';
+			} else if (result.__cnt > 1 && result.__text !== undefined && config.skipEmptyTextNodesForObj) {
+				if (config.stripWhitespaces && result.__text === "" || result.__text.trim() === "") {
+					delete result.__text;
+				}
+			}
+			delete result.__cnt;
+
+			if (config.enableToStringFunc && (result.__text || result.__cdata)) {
+				result.toString = function toString() {
+					return (this.__text ? this.__text : '') + (this.__cdata ? this.__cdata : '');
+				};
+			}
+
+			return result;
+		}
+
+		function deserializeDomChildren(node, parentPath) {
+			if (node.nodeType === DOMNodeTypes.DOCUMENT_NODE) {
+				return deserializeRootElementChildren(node);
+			} else if (node.nodeType === DOMNodeTypes.ELEMENT_NODE) {
+				return deserializeElementChildren(node, parentPath);
+			} else if (node.nodeType === DOMNodeTypes.TEXT_NODE || node.nodeType === DOMNodeTypes.CDATA_SECTION_NODE) {
+				return node.nodeValue;
+			}
+		}
+
+		function serializeStartTag(jsObject, elementName, attributeNames, selfClosing) {
+			var resultStr = "<" + ((jsObject && jsObject.__prefix) ? (jsObject.__prefix + ":") : "") + elementName;
+
+			if (attributeNames) {
+				for (var i = 0; i < attributeNames.length; i++) {
+					var attributeName = attributeNames[i];
+					var attributeValue = jsObject[attributeName];
+
+					if (config.escapeMode)
+						attributeValue = escapeXmlChars(attributeValue);
+
+					resultStr += " " + attributeName.substr(config.attributePrefix.length) + "=";
+
+					if (config.useDoubleQuotes)
+						resultStr += '"' + attributeValue + '"';
+					else
+						resultStr += "'" + attributeValue + "'";
+				}
+			}
+
+			if (!selfClosing)
+				resultStr += ">";
+			else
+				resultStr += " />";
+
+			return resultStr;
+		}
+
+		function serializeEndTag(jsObject, elementName) {
+			return "</" + ((jsObject && jsObject.__prefix) ? (jsObject.__prefix + ":") : "") + elementName + ">";
+		}
+
+		function endsWith(str, suffix) {
+			return str.indexOf(suffix, str.length - suffix.length) !== -1;
+		}
+
+		function isSpecialProperty(jsonObj, propertyName) {
+			if ((config.arrayAccessForm === "property" && endsWith(propertyName.toString(), ("_asArray")))
+				|| propertyName.toString().indexOf(config.attributePrefix) === 0
+				|| propertyName.toString().indexOf("__") === 0
+				|| (jsonObj[propertyName] instanceof Function))
+				return true;
+			else
+				return false;
+		}
+
+		function getDataElementCount(jsObject) {
+			var count = 0;
+
+			if (jsObject instanceof Object) {
+				for (var propertyName in jsObject) {
+					if (isSpecialProperty(jsObject, propertyName))
+						continue;
+
+					count++;
+				}
+			}
+
+			return count;
+		}
+
+		function getDataAttributeNames(jsObject) {
+			var names = [];
+
+			if (jsObject instanceof Object) {
+				for (var attributeName in jsObject) {
+					if (attributeName.toString().indexOf("__") === -1
+						&& attributeName.toString().indexOf(config.attributePrefix) === 0) {
+						names.push(attributeName);
+					}
+				}
+			}
+
+			return names;
+		}
+
+		function serializeComplexTextNodeContents(textNode) {
+			var result = "";
+
+			if (textNode.__cdata) {
+				result += "<![CDATA[" + textNode.__cdata + "]]>";
+			}
+
+			if (textNode.__text) {
+				if (config.escapeMode)
+					result += escapeXmlChars(textNode.__text);
+				else
+					result += textNode.__text;
+			}
+
+			return result;
+		}
+
+		function serializeTextNodeContents(textNode) {
+			var result = "";
+
+			if (textNode instanceof Object) {
+				result += serializeComplexTextNodeContents(textNode);
+			} else if (textNode) {
+				if (config.escapeMode)
+					result += escapeXmlChars(textNode);
+				else
+					result += textNode;
+			}
+
+			return result;
+		}
+
+		function serializeArray(elementArray, elementName, attributes) {
+			var result = "";
+
+			if (elementArray.length === 0) {
+				result += serializeStartTag(elementArray, elementName, attributes, true);
+			} else {
+				for (var i = 0; i < elementArray.length; i++) {
+					result += serializeJavaScriptObject(elementArray[i], elementName, getDataAttributeNames(elementArray[i]));
+				}
+			}
+
+			return result;
+		}
+
+		function serializeJavaScriptObject(element, elementName, attributes) {
+			var result = "";
+
+			if (element === undefined || element === null || element === '') {
+				result += serializeStartTag(element, elementName, attributes, true);
+			} else if (element instanceof Object) {
+				if (element instanceof Array) {
+					result += serializeArray(element, elementName, attributes);
+				} else if (element instanceof Date) {
+					result += serializeStartTag(element, elementName, attributes, false);
+					result += element.toISOString();
+					result += serializeEndTag(element, elementName);
+				} else {
+					var childElementCount = getDataElementCount(element);
+					if (childElementCount > 0 || element.__text || element.__cdata) {
+						result += serializeStartTag(element, elementName, attributes, false);
+						result += serializeJavaScriptObjectChildren(element);
+						result += serializeEndTag(element, elementName);
+					} else {
+						result += serializeStartTag(element, elementName, attributes, true);
+					}
+				}
+			} else {
+				result += serializeStartTag(element, elementName, attributes, false);
+				result += serializeTextNodeContents(element);
+				result += serializeEndTag(element, elementName);
+			}
+
+			return result;
+		}
+
+		function serializeJavaScriptObjectChildren(jsObject) {
+			var result = "";
+
+			var elementCount = getDataElementCount(jsObject);
+
+			if (elementCount > 0) {
+				for (var elementName in jsObject) {
+					if (isSpecialProperty(jsObject, elementName))
+						continue;
+
+					var element = jsObject[elementName];
+					var attributes = getDataAttributeNames(element);
+
+					result += serializeJavaScriptObject(element, elementName, attributes);
+				}
+			}
+
+			result += serializeTextNodeContents(jsObject);
+
+			return result;
+		}
+
+		function parseXml(xml) {
+			if (xml === undefined) {
+				return null;
+			}
+
+			var parser = null;
+			var domNode = null;
+
+			if (CustomDOMParser) {
+				// This branch is used for node.js, with the xmldom parser.
+				parser = new CustomDOMParser();
+
+				domNode = parser.parseFromString(xml, "text/xml");
+			} else if (window && window.DOMParser) {
+				parser = new window.DOMParser();
+				var parsererrorNS = null;
+
+				var isIEParser = window.ActiveXObject || "ActiveXObject" in window;
+
+				// IE9+ now is here
+				if (!isIEParser) {
+					try {
+						parsererrorNS = parser.parseFromString("INVALID", "text/xml").childNodes[0].namespaceURI;
+					} catch (err) {
+						parsererrorNS = null;
+					}
+				}
+
+				try {
+					domNode = parser.parseFromString(xml, "text/xml");
+					if (parsererrorNS !== null && domNode.getElementsByTagNameNS(parsererrorNS, "parsererror").length > 0) {
+						domNode = null;
+					}
+				} catch (err) {
+					domNode = null;
+				}
+			} else {
+				// IE :(
+				if (xml.indexOf("<?") === 0) {
+					xml = xml.substr(xml.indexOf("?>") + 2);
+				}
+
+				/* global ActiveXObject */
+				domNode = new ActiveXObject("Microsoft.XMLDOM");
+				domNode.async = "false";
+				domNode.loadXML(xml);
+			}
+
+			return domNode;
+		}
+
+		this.asArray = function asArray(prop) {
+			if (prop === undefined || prop === null) {
+				return [];
+			} else if (prop instanceof Array) {
+				return prop;
+			} else {
+				return [prop];
+			}
+		};
+
+		this.toXmlDateTime = function toXmlDateTime(dt) {
+			if (dt instanceof Date) {
+				return dt.toISOString();
+			} else if (typeof (dt) === 'number') {
+				return new Date(dt).toISOString();
+			} else {
+				return null;
+			}
+		};
+
+		this.asDateTime = function asDateTime(prop) {
+			if (typeof (prop) === "string") {
+				return xmlDateTimeToDate(prop);
+			} else {
+				return prop;
+			}
+		};
+
+		/*
+			Internally the logic works in a cycle:
+			DOM->JS - implemented by custom logic (deserialization).
+			JS->XML - implemented by custom logic (serialization).
+			XML->DOM - implemented by browser.
+		*/
+
+		// Transformns an XML string into DOM-tree
+		this.xml2dom = function(xml) {
+			return parseXml(xml);
+		};
+			
+		// Transforms a DOM tree to JavaScript objects.
+		this.dom2js = function dom2js(domNode) {
+			return deserializeDomChildren(domNode, null);
+		};
+
+		// Transforms JavaScript objects to a DOM tree.
+		this.js2dom = function js2dom(jsObject) {
+			var xml = this.js2xml(jsObject);
+			return parseXml(xml);
+		};
+
+		// Transformns an XML string into JavaScript objects.
+		this.xml2js = function xml2js(xml) {
+			var domNode = parseXml(xml);
+			if (domNode != null)
+				return this.dom2js(domNode);
+			else
+				return null;
+		};
+
+		// Transforms JavaScript objects into an XML string.
+		this.js2xml = function js2xml(jsObject) {
+			return serializeJavaScriptObjectChildren(jsObject);
+		};
+
+		this.getVersion = function getVersion() {
+			return VERSION;
+		};
+	};
+});
+
+/*!
+ * classie v1.0.1
+ * class helper functions
+ * from bonzo https://github.com/ded/bonzo
+ * MIT license
+ * 
+ * classie.has( elem, 'my-class' ) -> true/false
+ * classie.add( elem, 'my-new-class' )
+ * classie.remove( elem, 'my-unwanted-class' )
+ * classie.toggle( elem, 'my-class' )
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true */
+/*global define: false, module: false */
+
+( function( window ) {
+
+'use strict';
+
+// class helper functions from bonzo https://github.com/ded/bonzo
+
+function classReg( className ) {
+  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
+}
+
+// classList support for class management
+// altho to be fair, the api sucks because it won't accept multiple classes at once
+var hasClass, addClass, removeClass;
+
+if ( 'classList' in document.documentElement ) {
+  hasClass = function( elem, c ) {
+    return elem.classList.contains( c );
+  };
+  addClass = function( elem, c ) {
+    elem.classList.add( c );
+  };
+  removeClass = function( elem, c ) {
+    elem.classList.remove( c );
+  };
+}
+else {
+  hasClass = function( elem, c ) {
+    return classReg( c ).test( elem.className );
+  };
+  addClass = function( elem, c ) {
+    if ( !hasClass( elem, c ) ) {
+      elem.className = elem.className + ' ' + c;
+    }
+  };
+  removeClass = function( elem, c ) {
+    elem.className = elem.className.replace( classReg( c ), ' ' );
+  };
+}
+
+function toggleClass( elem, c ) {
+  var fn = hasClass( elem, c ) ? removeClass : addClass;
+  fn( elem, c );
+}
+
+var classie = {
+  // full names
+  hasClass: hasClass,
+  addClass: addClass,
+  removeClass: removeClass,
+  toggleClass: toggleClass,
+  // short names
+  has: hasClass,
+  add: addClass,
+  remove: removeClass,
+  toggle: toggleClass
+};
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( classie );
+} else if ( typeof exports === 'object' ) {
+  // CommonJS
+  module.exports = classie;
+} else {
+  // browser global
+  window.classie = classie;
+}
+
+})( window );
+
+/*!
+ * jQuery hashchange event - v1.3 - 7/21/2010
+ * http://benalman.com/projects/jquery-hashchange-plugin/
+ *
+ * Copyright (c) 2010 "Cowboy" Ben Alman
+ * Dual licensed under the MIT and GPL licenses.
+ * http://benalman.com/about/license/
+ */
+
+// Script: jQuery hashchange event
+//
+// *Version: 1.3, Last updated: 7/21/2010*
+//
+// Project Home - http://benalman.com/projects/jquery-hashchange-plugin/
+// GitHub       - http://github.com/cowboy/jquery-hashchange/
+// Source       - http://github.com/cowboy/jquery-hashchange/raw/master/jquery.ba-hashchange.js
+// (Minified)   - http://github.com/cowboy/jquery-hashchange/raw/master/jquery.ba-hashchange.min.js (0.8kb gzipped)
+//
+// About: License
+//
+// Copyright (c) 2010 "Cowboy" Ben Alman,
+// Dual licensed under the MIT and GPL licenses.
+// http://benalman.com/about/license/
+//
+// About: Examples
+//
+// These working examples, complete with fully commented code, illustrate a few
+// ways in which this plugin can be used.
+//
+// hashchange event - http://benalman.com/code/projects/jquery-hashchange/examples/hashchange/
+// document.domain - http://benalman.com/code/projects/jquery-hashchange/examples/document_domain/
+//
+// About: Support and Testing
+//
+// Information about what version or versions of jQuery this plugin has been
+// tested with, what browsers it has been tested in, and where the unit tests
+// reside (so you can test it yourself).
+//
+// jQuery Versions - 1.2.6, 1.3.2, 1.4.1, 1.4.2
+// Browsers Tested - Internet Explorer 6-8, Firefox 2-4, Chrome 5-6, Safari 3.2-5,
+//                   Opera 9.6-10.60, iPhone 3.1, Android 1.6-2.2, BlackBerry 4.6-5.
+// Unit Tests      - http://benalman.com/code/projects/jquery-hashchange/unit/
+//
+// About: Known issues
+//
+// While this jQuery hashchange event implementation is quite stable and
+// robust, there are a few unfortunate browser bugs surrounding expected
+// hashchange event-based behaviors, independent of any JavaScript
+// window.onhashchange abstraction. See the following examples for more
+// information:
+//
+// Chrome: Back Button - http://benalman.com/code/projects/jquery-hashchange/examples/bug-chrome-back-button/
+// Firefox: Remote XMLHttpRequest - http://benalman.com/code/projects/jquery-hashchange/examples/bug-firefox-remote-xhr/
+// WebKit: Back Button in an Iframe - http://benalman.com/code/projects/jquery-hashchange/examples/bug-webkit-hash-iframe/
+// Safari: Back Button from a different domain - http://benalman.com/code/projects/jquery-hashchange/examples/bug-safari-back-from-diff-domain/
+//
+// Also note that should a browser natively support the window.onhashchange
+// event, but not report that it does, the fallback polling loop will be used.
+//
+// About: Release History
+//
+// 1.3   - (7/21/2010) Reorganized IE6/7 Iframe code to make it more
+//         "removable" for mobile-only development. Added IE6/7 document.title
+//         support. Attempted to make Iframe as hidden as possible by using
+//         techniques from http://www.paciellogroup.com/blog/?p=604. Added
+//         support for the "shortcut" format $(window).hashchange( fn ) and
+//         $(window).hashchange() like jQuery provides for built-in events.
+//         Renamed jQuery.hashchangeDelay to <jQuery.fn.hashchange.delay> and
+//         lowered its default value to 50. Added <jQuery.fn.hashchange.domain>
+//         and <jQuery.fn.hashchange.src> properties plus document-domain.html
+//         file to address access denied issues when setting document.domain in
+//         IE6/7.
+// 1.2   - (2/11/2010) Fixed a bug where coming back to a page using this plugin
+//         from a page on another domain would cause an error in Safari 4. Also,
+//         IE6/7 Iframe is now inserted after the body (this actually works),
+//         which prevents the page from scrolling when the event is first bound.
+//         Event can also now be bound before DOM ready, but it won't be usable
+//         before then in IE6/7.
+// 1.1   - (1/21/2010) Incorporated document.documentMode test to fix IE8 bug
+//         where browser version is incorrectly reported as 8.0, despite
+//         inclusion of the X-UA-Compatible IE=EmulateIE7 meta tag.
+// 1.0   - (1/9/2010) Initial Release. Broke out the jQuery BBQ event.special
+//         window.onhashchange functionality into a separate plugin for users
+//         who want just the basic event & back button support, without all the
+//         extra awesomeness that BBQ provides. This plugin will be included as
+//         part of jQuery BBQ, but also be available separately.
+
+(function($,window,undefined){
+  '$:nomunge'; // Used by YUI compressor.
+
+  // Reused string.
+  var str_hashchange = 'hashchange',
+
+    // Method / object references.
+    doc = document,
+    fake_onhashchange,
+    special = $.event.special,
+
+    // Does the browser support window.onhashchange? Note that IE8 running in
+    // IE7 compatibility mode reports true for 'onhashchange' in window, even
+    // though the event isn't supported, so also test document.documentMode.
+    doc_mode = doc.documentMode,
+    supports_onhashchange = 'on' + str_hashchange in window && ( doc_mode === undefined || doc_mode > 7 );
+
+  // Get location.hash (or what you'd expect location.hash to be) sans any
+  // leading #. Thanks for making this necessary, Firefox!
+  function get_fragment( url ) {
+    url = url || location.href;
+    return '#' + url.replace( /^[^#]*#?(.*)$/, '$1' );
+  };
+
+  // Method: jQuery.fn.hashchange
+  //
+  // Bind a handler to the window.onhashchange event or trigger all bound
+  // window.onhashchange event handlers. This behavior is consistent with
+  // jQuery's built-in event handlers.
+  //
+  // Usage:
+  //
+  // > jQuery(window).hashchange( [ handler ] );
+  //
+  // Arguments:
+  //
+  //  handler - (Function) Optional handler to be bound to the hashchange
+  //    event. This is a "shortcut" for the more verbose form:
+  //    jQuery(window).bind( 'hashchange', handler ). If handler is omitted,
+  //    all bound window.onhashchange event handlers will be triggered. This
+  //    is a shortcut for the more verbose
+  //    jQuery(window).trigger( 'hashchange' ). These forms are described in
+  //    the <hashchange event> section.
+  //
+  // Returns:
+  //
+  //  (jQuery) The initial jQuery collection of elements.
+
+  // Allow the "shortcut" format $(elem).hashchange( fn ) for binding and
+  // $(elem).hashchange() for triggering, like jQuery does for built-in events.
+  $.fn[ str_hashchange ] = function( fn ) {
+    return fn ? this.bind( str_hashchange, fn ) : this.trigger( str_hashchange );
+  };
+
+  // Property: jQuery.fn.hashchange.delay
+  //
+  // The numeric interval (in milliseconds) at which the <hashchange event>
+  // polling loop executes. Defaults to 50.
+
+  // Property: jQuery.fn.hashchange.domain
+  //
+  // If you're setting document.domain in your JavaScript, and you want hash
+  // history to work in IE6/7, not only must this property be set, but you must
+  // also set document.domain BEFORE jQuery is loaded into the page. This
+  // property is only applicable if you are supporting IE6/7 (or IE8 operating
+  // in "IE7 compatibility" mode).
+  //
+  // In addition, the <jQuery.fn.hashchange.src> property must be set to the
+  // path of the included "document-domain.html" file, which can be renamed or
+  // modified if necessary (note that the document.domain specified must be the
+  // same in both your main JavaScript as well as in this file).
+  //
+  // Usage:
+  //
+  // jQuery.fn.hashchange.domain = document.domain;
+
+  // Property: jQuery.fn.hashchange.src
+  //
+  // If, for some reason, you need to specify an Iframe src file (for example,
+  // when setting document.domain as in <jQuery.fn.hashchange.domain>), you can
+  // do so using this property. Note that when using this property, history
+  // won't be recorded in IE6/7 until the Iframe src file loads. This property
+  // is only applicable if you are supporting IE6/7 (or IE8 operating in "IE7
+  // compatibility" mode).
+  //
+  // Usage:
+  //
+  // jQuery.fn.hashchange.src = 'path/to/file.html';
+
+  $.fn[ str_hashchange ].delay = 50;
+  /*
+  $.fn[ str_hashchange ].domain = null;
+  $.fn[ str_hashchange ].src = null;
+  */
+
+  // Event: hashchange event
+  //
+  // Fired when location.hash changes. In browsers that support it, the native
+  // HTML5 window.onhashchange event is used, otherwise a polling loop is
+  // initialized, running every <jQuery.fn.hashchange.delay> milliseconds to
+  // see if the hash has changed. In IE6/7 (and IE8 operating in "IE7
+  // compatibility" mode), a hidden Iframe is created to allow the back button
+  // and hash-based history to work.
+  //
+  // Usage as described in <jQuery.fn.hashchange>:
+  //
+  // > // Bind an event handler.
+  // > jQuery(window).hashchange( function(e) {
+  // >   var hash = location.hash;
+  // >   ...
+  // > });
+  // >
+  // > // Manually trigger the event handler.
+  // > jQuery(window).hashchange();
+  //
+  // A more verbose usage that allows for event namespacing:
+  //
+  // > // Bind an event handler.
+  // > jQuery(window).bind( 'hashchange', function(e) {
+  // >   var hash = location.hash;
+  // >   ...
+  // > });
+  // >
+  // > // Manually trigger the event handler.
+  // > jQuery(window).trigger( 'hashchange' );
+  //
+  // Additional Notes:
+  //
+  // * The polling loop and Iframe are not created until at least one handler
+  //   is actually bound to the 'hashchange' event.
+  // * If you need the bound handler(s) to execute immediately, in cases where
+  //   a location.hash exists on page load, via bookmark or page refresh for
+  //   example, use jQuery(window).hashchange() or the more verbose
+  //   jQuery(window).trigger( 'hashchange' ).
+  // * The event can be bound before DOM ready, but since it won't be usable
+  //   before then in IE6/7 (due to the necessary Iframe), recommended usage is
+  //   to bind it inside a DOM ready handler.
+
+  // Override existing $.event.special.hashchange methods (allowing this plugin
+  // to be defined after jQuery BBQ in BBQ's source code).
+  special[ str_hashchange ] = $.extend( special[ str_hashchange ], {
+
+    // Called only when the first 'hashchange' event is bound to window.
+    setup: function() {
+      // If window.onhashchange is supported natively, there's nothing to do..
+      if ( supports_onhashchange ) { return false; }
+
+      // Otherwise, we need to create our own. And we don't want to call this
+      // until the user binds to the event, just in case they never do, since it
+      // will create a polling loop and possibly even a hidden Iframe.
+      $( fake_onhashchange.start );
+    },
+
+    // Called only when the last 'hashchange' event is unbound from window.
+    teardown: function() {
+      // If window.onhashchange is supported natively, there's nothing to do..
+      if ( supports_onhashchange ) { return false; }
+
+      // Otherwise, we need to stop ours (if possible).
+      $( fake_onhashchange.stop );
+    }
+
+  });
+
+  // fake_onhashchange does all the work of triggering the window.onhashchange
+  // event for browsers that don't natively support it, including creating a
+  // polling loop to watch for hash changes and in IE 6/7 creating a hidden
+  // Iframe to enable back and forward.
+  fake_onhashchange = (function(){
+    var self = {},
+      timeout_id,
+
+      // Remember the initial hash so it doesn't get triggered immediately.
+      last_hash = get_fragment(),
+
+      fn_retval = function(val){ return val; },
+      history_set = fn_retval,
+      history_get = fn_retval;
+
+    // Start the polling loop.
+    self.start = function() {
+      timeout_id || poll();
+    };
+
+    // Stop the polling loop.
+    self.stop = function() {
+      timeout_id && clearTimeout( timeout_id );
+      timeout_id = undefined;
+    };
+
+    // This polling loop checks every $.fn.hashchange.delay milliseconds to see
+    // if location.hash has changed, and triggers the 'hashchange' event on
+    // window when necessary.
+    function poll() {
+      var hash = get_fragment(),
+        history_hash = history_get( last_hash );
+
+      if ( hash !== last_hash ) {
+        history_set( last_hash = hash, history_hash );
+
+        $(window).trigger( str_hashchange );
+
+      } else if ( history_hash !== last_hash ) {
+        location.href = location.href.replace( /#.*/, '' ) + history_hash;
+      }
+
+      timeout_id = setTimeout( poll, $.fn[ str_hashchange ].delay );
+    };
+
+    //// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    //// vvvvvvvvvvvvvvvvvvv REMOVE IF NOT SUPPORTING IE6/7/8 vvvvvvvvvvvvvvvvvvv
+    //// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    //$.browser.msie && !supports_onhashchange && (function(){
+      //// Not only do IE6/7 need the "magical" Iframe treatment, but so does IE8
+      //// when running in "IE7 compatibility" mode.
+
+      //var iframe,
+        //iframe_src;
+
+      //// When the event is bound and polling starts in IE 6/7, create a hidden
+      //// Iframe for history handling.
+      //self.start = function(){
+        //if ( !iframe ) {
+          //iframe_src = $.fn[ str_hashchange ].src;
+          //iframe_src = iframe_src && iframe_src + get_fragment();
+
+          //// Create hidden Iframe. Attempt to make Iframe as hidden as possible
+          //// by using techniques from http://www.paciellogroup.com/blog/?p=604.
+          //iframe = $('<iframe tabindex="-1" title="empty"/>').hide()
+
+            //// When Iframe has completely loaded, initialize the history and
+            //// start polling.
+            //.one( 'load', function(){
+              //iframe_src || history_set( get_fragment() );
+              //poll();
+            //})
+
+            //// Load Iframe src if specified, otherwise nothing.
+            //.attr( 'src', iframe_src || 'javascript:0' )
+
+            //// Append Iframe after the end of the body to prevent unnecessary
+            //// initial page scrolling (yes, this works).
+            //.insertAfter( 'body' )[0].contentWindow;
+
+          //// Whenever `document.title` changes, update the Iframe's title to
+          //// prettify the back/next history menu entries. Since IE sometimes
+          //// errors with "Unspecified error" the very first time this is set
+          //// (yes, very useful) wrap this with a try/catch block.
+          //doc.onpropertychange = function(){
+            //try {
+              //if ( event.propertyName === 'title' ) {
+                //iframe.document.title = doc.title;
+              //}
+            //} catch(e) {}
+          //};
+
+        //}
+      //};
+
+      //// Override the "stop" method since an IE6/7 Iframe was created. Even
+      //// if there are no longer any bound event handlers, the polling loop
+      //// is still necessary for back/next to work at all!
+      //self.stop = fn_retval;
+
+      //// Get history by looking at the hidden Iframe's location.hash.
+      //history_get = function() {
+        //return get_fragment( iframe.location.href );
+      //};
+
+      //// Set a new history item by opening and then closing the Iframe
+      //// document, *then* setting its location.hash. If document.domain has
+      //// been set, update that as well.
+      //history_set = function( hash, history_hash ) {
+        //var iframe_doc = iframe.document,
+          //domain = $.fn[ str_hashchange ].domain;
+
+        //if ( hash !== history_hash ) {
+          //// Update Iframe with any initial `document.title` that might be set.
+          //iframe_doc.title = doc.title;
+
+          //// Opening the Iframe's document after it has been closed is what
+          //// actually adds a history entry.
+          //iframe_doc.open();
+
+          //// Set document.domain for the Iframe document as well, if necessary.
+          //domain && iframe_doc.write( '<script>document.domain="' + domain + '"</script>' );
+
+          //iframe_doc.close();
+
+          //// Update the Iframe's hash, for great justice.
+          //iframe.location.hash = hash;
+        //}
+      //};
+
+    //})();
+    //// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    //// ^^^^^^^^^^^^^^^^^^^ REMOVE IF NOT SUPPORTING IE6/7/8 ^^^^^^^^^^^^^^^^^^^
+    //// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    return self;
+  })();
+
+})(jQuery,this);
+
+/*!
+ * js-logger - http://github.com/jonnyreeves/js-logger
+ * Jonny Reeves, http://jonnyreeves.co.uk/
+ * js-logger may be freely distributed under the MIT license.
+ */
+(function (global) {
+	"use strict";
+
+	// Top level module for the global, static logger instance.
+	var Logger = { };
+
+	// For those that are at home that are keeping score.
+	Logger.VERSION = "1.3.0";
+
+	// Function which handles all incoming log messages.
+	var logHandler;
+
+	// Map of ContextualLogger instances by name; used by Logger.get() to return the same named instance.
+	var contextualLoggersByNameMap = {};
+
+	// Polyfill for ES5's Function.bind.
+	var bind = function(scope, func) {
+		return function() {
+			return func.apply(scope, arguments);
+		};
+	};
+
+	// Super exciting object merger-matron 9000 adding another 100 bytes to your download.
+	var merge = function () {
+		var args = arguments, target = args[0], key, i;
+		for (i = 1; i < args.length; i++) {
+			for (key in args[i]) {
+				if (!(key in target) && args[i].hasOwnProperty(key)) {
+					target[key] = args[i][key];
+				}
+			}
+		}
+		return target;
+	};
+
+	// Helper to define a logging level object; helps with optimisation.
+	var defineLogLevel = function(value, name) {
+		return { value: value, name: name };
+	};
+
+	// Predefined logging levels.
+	Logger.DEBUG = defineLogLevel(1, 'DEBUG');
+	Logger.INFO = defineLogLevel(2, 'INFO');
+	Logger.TIME = defineLogLevel(3, 'TIME');
+	Logger.WARN = defineLogLevel(4, 'WARN');
+	Logger.ERROR = defineLogLevel(8, 'ERROR');
+	Logger.OFF = defineLogLevel(99, 'OFF');
+
+	// Inner class which performs the bulk of the work; ContextualLogger instances can be configured independently
+	// of each other.
+	var ContextualLogger = function(defaultContext) {
+		this.context = defaultContext;
+		this.setLevel(defaultContext.filterLevel);
+		this.log = this.info;  // Convenience alias.
+	};
+
+	ContextualLogger.prototype = {
+		// Changes the current logging level for the logging instance.
+		setLevel: function (newLevel) {
+			// Ensure the supplied Level object looks valid.
+			if (newLevel && "value" in newLevel) {
+				this.context.filterLevel = newLevel;
+			}
+		},
+
+		// Is the logger configured to output messages at the supplied level?
+		enabledFor: function (lvl) {
+			var filterLevel = this.context.filterLevel;
+			return lvl.value >= filterLevel.value;
+		},
+
+		debug: function () {
+			this.invoke(Logger.DEBUG, arguments);
+		},
+
+		info: function () {
+			this.invoke(Logger.INFO, arguments);
+		},
+
+		warn: function () {
+			this.invoke(Logger.WARN, arguments);
+		},
+
+		error: function () {
+			this.invoke(Logger.ERROR, arguments);
+		},
+
+		time: function (label) {
+			if (typeof label === 'string' && label.length > 0) {
+				this.invoke(Logger.TIME, [ label, 'start' ]);
+			}
+		},
+
+		timeEnd: function (label) {
+			if (typeof label === 'string' && label.length > 0) {
+				this.invoke(Logger.TIME, [ label, 'end' ]);
+			}
+		},
+
+		// Invokes the logger callback if it's not being filtered.
+		invoke: function (level, msgArgs) {
+			if (logHandler && this.enabledFor(level)) {
+				logHandler(msgArgs, merge({ level: level }, this.context));
+			}
+		}
+	};
+
+	// Protected instance which all calls to the to level `Logger` module will be routed through.
+	var globalLogger = new ContextualLogger({ filterLevel: Logger.OFF });
+
+	// Configure the global Logger instance.
+	(function() {
+		// Shortcut for optimisers.
+		var L = Logger;
+
+		L.enabledFor = bind(globalLogger, globalLogger.enabledFor);
+		L.debug = bind(globalLogger, globalLogger.debug);
+		L.time = bind(globalLogger, globalLogger.time);
+		L.timeEnd = bind(globalLogger, globalLogger.timeEnd);
+		L.info = bind(globalLogger, globalLogger.info);
+		L.warn = bind(globalLogger, globalLogger.warn);
+		L.error = bind(globalLogger, globalLogger.error);
+
+		// Don't forget the convenience alias!
+		L.log = L.info;
+	}());
+
+	// Set the global logging handler.  The supplied function should expect two arguments, the first being an arguments
+	// object with the supplied log messages and the second being a context object which contains a hash of stateful
+	// parameters which the logging function can consume.
+	Logger.setHandler = function (func) {
+		logHandler = func;
+	};
+
+	// Sets the global logging filter level which applies to *all* previously registered, and future Logger instances.
+	// (note that named loggers (retrieved via `Logger.get`) can be configured independently if required).
+	Logger.setLevel = function(level) {
+		// Set the globalLogger's level.
+		globalLogger.setLevel(level);
+
+		// Apply this level to all registered contextual loggers.
+		for (var key in contextualLoggersByNameMap) {
+			if (contextualLoggersByNameMap.hasOwnProperty(key)) {
+				contextualLoggersByNameMap[key].setLevel(level);
+			}
+		}
+	};
+
+	// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
+	// default context and log handler.
+	Logger.get = function (name) {
+		// All logger instances are cached so they can be configured ahead of use.
+		return contextualLoggersByNameMap[name] ||
+			(contextualLoggersByNameMap[name] = new ContextualLogger(merge({ name: name }, globalLogger.context)));
+	};
+
+	// CreateDefaultHandler returns a handler function which can be passed to `Logger.setHandler()` which will
+	// write to the window's console object (if present); the optional options object can be used to customise the
+	// formatter used to format each log message.
+	Logger.createDefaultHandler = function (options) {
+		options = options || {};
+
+		options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
+			// Prepend the logger's name to the log message for easy identification.
+			if (context.name) {
+				messages.unshift("[" + context.name + "]");
+			}
+		};
+
+		// Map of timestamps by timer labels used to track `#time` and `#timeEnd()` invocations in environments
+		// that don't offer a native console method.
+		var timerStartTimeByLabelMap = {};
+
+		// Support for IE8+ (and other, slightly more sane environments)
+		var invokeConsoleMethod = function (hdlr, messages) {
+			Function.prototype.apply.call(hdlr, console, messages);
+		};
+
+		// Check for the presence of a logger.
+		if (typeof console === "undefined") {
+			return function () { /* no console */ };
+		}
+
+		return function(messages, context) {
+			// Convert arguments object to Array.
+			messages = Array.prototype.slice.call(messages);
+
+			var hdlr = console.log;
+			var timerLabel;
+
+			if (context.level === Logger.TIME) {
+				timerLabel = (context.name ? '[' + context.name + '] ' : '') + messages[0];
+
+				if (messages[1] === 'start') {
+					if (console.time) {
+						console.time(timerLabel);
+					}
+					else {
+						timerStartTimeByLabelMap[timerLabel] = new Date().getTime();
+					}
+				}
+				else {
+					if (console.timeEnd) {
+						console.timeEnd(timerLabel);
+					}
+					else {
+						invokeConsoleMethod(hdlr, [ timerLabel + ': ' +
+							(new Date().getTime() - timerStartTimeByLabelMap[timerLabel]) + 'ms' ]);
+					}
+				}
+			}
+			else {
+				// Delegate through to custom warn/error loggers if present on the console.
+				if (context.level === Logger.WARN && console.warn) {
+					hdlr = console.warn;
+				} else if (context.level === Logger.ERROR && console.error) {
+					hdlr = console.error;
+				} else if (context.level === Logger.INFO && console.info) {
+					hdlr = console.info;
+				}
+
+				options.formatter(messages, context);
+				invokeConsoleMethod(hdlr, messages);
+			}
+		};
+	};
+
+	// Configure and example a Default implementation which writes to the `window.console` (if present).  The
+	// `options` hash can be used to configure the default logLevel and provide a custom message formatter.
+	Logger.useDefaults = function(options) {
+		Logger.setLevel(options && options.defaultLevel || Logger.DEBUG);
+		Logger.setHandler(Logger.createDefaultHandler(options));
+	};
+
+	// Export to popular environments boilerplate.
+	if (typeof define === 'function' && define.amd) {
+		define(Logger);
+	}
+	else if (typeof module !== 'undefined' && module.exports) {
+		module.exports = Logger;
+	}
+	else {
+		Logger._prevLogger = global.Logger;
+
+		Logger.noConflict = function () {
+			global.Logger = Logger._prevLogger;
+			return Logger;
+		};
+
+		global.Logger = Logger;
+	}
+}(this));
 
 ;(function(window){
 
@@ -202,92 +1770,6 @@ var Tabs = {
 };
 
 Tabs.init();
-
-/*!
- * classie v1.0.1
- * class helper functions
- * from bonzo https://github.com/ded/bonzo
- * MIT license
- * 
- * classie.has( elem, 'my-class' ) -> true/false
- * classie.add( elem, 'my-new-class' )
- * classie.remove( elem, 'my-unwanted-class' )
- * classie.toggle( elem, 'my-class' )
- */
-
-/*jshint browser: true, strict: true, undef: true, unused: true */
-/*global define: false, module: false */
-
-( function( window ) {
-
-'use strict';
-
-// class helper functions from bonzo https://github.com/ded/bonzo
-
-function classReg( className ) {
-  return new RegExp("(^|\\s+)" + className + "(\\s+|$)");
-}
-
-// classList support for class management
-// altho to be fair, the api sucks because it won't accept multiple classes at once
-var hasClass, addClass, removeClass;
-
-if ( 'classList' in document.documentElement ) {
-  hasClass = function( elem, c ) {
-    return elem.classList.contains( c );
-  };
-  addClass = function( elem, c ) {
-    elem.classList.add( c );
-  };
-  removeClass = function( elem, c ) {
-    elem.classList.remove( c );
-  };
-}
-else {
-  hasClass = function( elem, c ) {
-    return classReg( c ).test( elem.className );
-  };
-  addClass = function( elem, c ) {
-    if ( !hasClass( elem, c ) ) {
-      elem.className = elem.className + ' ' + c;
-    }
-  };
-  removeClass = function( elem, c ) {
-    elem.className = elem.className.replace( classReg( c ), ' ' );
-  };
-}
-
-function toggleClass( elem, c ) {
-  var fn = hasClass( elem, c ) ? removeClass : addClass;
-  fn( elem, c );
-}
-
-var classie = {
-  // full names
-  hasClass: hasClass,
-  addClass: addClass,
-  removeClass: removeClass,
-  toggleClass: toggleClass,
-  // short names
-  has: hasClass,
-  add: addClass,
-  remove: removeClass,
-  toggle: toggleClass
-};
-
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( classie );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = classie;
-} else {
-  // browser global
-  window.classie = classie;
-}
-
-})( window );
 
 /*!
  * clipboard.js v1.5.10
@@ -1169,798 +2651,2446 @@ module.exports = E;
 	return init();
 }));
 
-/*!
- * jQuery hashchange event - v1.3 - 7/21/2010
- * http://benalman.com/projects/jquery-hashchange-plugin/
- *
- * Copyright (c) 2010 "Cowboy" Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
- */
-
-// Script: jQuery hashchange event
-//
-// *Version: 1.3, Last updated: 7/21/2010*
-//
-// Project Home - http://benalman.com/projects/jquery-hashchange-plugin/
-// GitHub       - http://github.com/cowboy/jquery-hashchange/
-// Source       - http://github.com/cowboy/jquery-hashchange/raw/master/jquery.ba-hashchange.js
-// (Minified)   - http://github.com/cowboy/jquery-hashchange/raw/master/jquery.ba-hashchange.min.js (0.8kb gzipped)
-//
-// About: License
-//
-// Copyright (c) 2010 "Cowboy" Ben Alman,
-// Dual licensed under the MIT and GPL licenses.
-// http://benalman.com/about/license/
-//
-// About: Examples
-//
-// These working examples, complete with fully commented code, illustrate a few
-// ways in which this plugin can be used.
-//
-// hashchange event - http://benalman.com/code/projects/jquery-hashchange/examples/hashchange/
-// document.domain - http://benalman.com/code/projects/jquery-hashchange/examples/document_domain/
-//
-// About: Support and Testing
-//
-// Information about what version or versions of jQuery this plugin has been
-// tested with, what browsers it has been tested in, and where the unit tests
-// reside (so you can test it yourself).
-//
-// jQuery Versions - 1.2.6, 1.3.2, 1.4.1, 1.4.2
-// Browsers Tested - Internet Explorer 6-8, Firefox 2-4, Chrome 5-6, Safari 3.2-5,
-//                   Opera 9.6-10.60, iPhone 3.1, Android 1.6-2.2, BlackBerry 4.6-5.
-// Unit Tests      - http://benalman.com/code/projects/jquery-hashchange/unit/
-//
-// About: Known issues
-//
-// While this jQuery hashchange event implementation is quite stable and
-// robust, there are a few unfortunate browser bugs surrounding expected
-// hashchange event-based behaviors, independent of any JavaScript
-// window.onhashchange abstraction. See the following examples for more
-// information:
-//
-// Chrome: Back Button - http://benalman.com/code/projects/jquery-hashchange/examples/bug-chrome-back-button/
-// Firefox: Remote XMLHttpRequest - http://benalman.com/code/projects/jquery-hashchange/examples/bug-firefox-remote-xhr/
-// WebKit: Back Button in an Iframe - http://benalman.com/code/projects/jquery-hashchange/examples/bug-webkit-hash-iframe/
-// Safari: Back Button from a different domain - http://benalman.com/code/projects/jquery-hashchange/examples/bug-safari-back-from-diff-domain/
-//
-// Also note that should a browser natively support the window.onhashchange
-// event, but not report that it does, the fallback polling loop will be used.
-//
-// About: Release History
-//
-// 1.3   - (7/21/2010) Reorganized IE6/7 Iframe code to make it more
-//         "removable" for mobile-only development. Added IE6/7 document.title
-//         support. Attempted to make Iframe as hidden as possible by using
-//         techniques from http://www.paciellogroup.com/blog/?p=604. Added
-//         support for the "shortcut" format $(window).hashchange( fn ) and
-//         $(window).hashchange() like jQuery provides for built-in events.
-//         Renamed jQuery.hashchangeDelay to <jQuery.fn.hashchange.delay> and
-//         lowered its default value to 50. Added <jQuery.fn.hashchange.domain>
-//         and <jQuery.fn.hashchange.src> properties plus document-domain.html
-//         file to address access denied issues when setting document.domain in
-//         IE6/7.
-// 1.2   - (2/11/2010) Fixed a bug where coming back to a page using this plugin
-//         from a page on another domain would cause an error in Safari 4. Also,
-//         IE6/7 Iframe is now inserted after the body (this actually works),
-//         which prevents the page from scrolling when the event is first bound.
-//         Event can also now be bound before DOM ready, but it won't be usable
-//         before then in IE6/7.
-// 1.1   - (1/21/2010) Incorporated document.documentMode test to fix IE8 bug
-//         where browser version is incorrectly reported as 8.0, despite
-//         inclusion of the X-UA-Compatible IE=EmulateIE7 meta tag.
-// 1.0   - (1/9/2010) Initial Release. Broke out the jQuery BBQ event.special
-//         window.onhashchange functionality into a separate plugin for users
-//         who want just the basic event & back button support, without all the
-//         extra awesomeness that BBQ provides. This plugin will be included as
-//         part of jQuery BBQ, but also be available separately.
-
-(function($,window,undefined){
-  '$:nomunge'; // Used by YUI compressor.
-
-  // Reused string.
-  var str_hashchange = 'hashchange',
-
-    // Method / object references.
-    doc = document,
-    fake_onhashchange,
-    special = $.event.special,
-
-    // Does the browser support window.onhashchange? Note that IE8 running in
-    // IE7 compatibility mode reports true for 'onhashchange' in window, even
-    // though the event isn't supported, so also test document.documentMode.
-    doc_mode = doc.documentMode,
-    supports_onhashchange = 'on' + str_hashchange in window && ( doc_mode === undefined || doc_mode > 7 );
-
-  // Get location.hash (or what you'd expect location.hash to be) sans any
-  // leading #. Thanks for making this necessary, Firefox!
-  function get_fragment( url ) {
-    url = url || location.href;
-    return '#' + url.replace( /^[^#]*#?(.*)$/, '$1' );
-  };
-
-  // Method: jQuery.fn.hashchange
-  //
-  // Bind a handler to the window.onhashchange event or trigger all bound
-  // window.onhashchange event handlers. This behavior is consistent with
-  // jQuery's built-in event handlers.
-  //
-  // Usage:
-  //
-  // > jQuery(window).hashchange( [ handler ] );
-  //
-  // Arguments:
-  //
-  //  handler - (Function) Optional handler to be bound to the hashchange
-  //    event. This is a "shortcut" for the more verbose form:
-  //    jQuery(window).bind( 'hashchange', handler ). If handler is omitted,
-  //    all bound window.onhashchange event handlers will be triggered. This
-  //    is a shortcut for the more verbose
-  //    jQuery(window).trigger( 'hashchange' ). These forms are described in
-  //    the <hashchange event> section.
-  //
-  // Returns:
-  //
-  //  (jQuery) The initial jQuery collection of elements.
-
-  // Allow the "shortcut" format $(elem).hashchange( fn ) for binding and
-  // $(elem).hashchange() for triggering, like jQuery does for built-in events.
-  $.fn[ str_hashchange ] = function( fn ) {
-    return fn ? this.bind( str_hashchange, fn ) : this.trigger( str_hashchange );
-  };
-
-  // Property: jQuery.fn.hashchange.delay
-  //
-  // The numeric interval (in milliseconds) at which the <hashchange event>
-  // polling loop executes. Defaults to 50.
-
-  // Property: jQuery.fn.hashchange.domain
-  //
-  // If you're setting document.domain in your JavaScript, and you want hash
-  // history to work in IE6/7, not only must this property be set, but you must
-  // also set document.domain BEFORE jQuery is loaded into the page. This
-  // property is only applicable if you are supporting IE6/7 (or IE8 operating
-  // in "IE7 compatibility" mode).
-  //
-  // In addition, the <jQuery.fn.hashchange.src> property must be set to the
-  // path of the included "document-domain.html" file, which can be renamed or
-  // modified if necessary (note that the document.domain specified must be the
-  // same in both your main JavaScript as well as in this file).
-  //
-  // Usage:
-  //
-  // jQuery.fn.hashchange.domain = document.domain;
-
-  // Property: jQuery.fn.hashchange.src
-  //
-  // If, for some reason, you need to specify an Iframe src file (for example,
-  // when setting document.domain as in <jQuery.fn.hashchange.domain>), you can
-  // do so using this property. Note that when using this property, history
-  // won't be recorded in IE6/7 until the Iframe src file loads. This property
-  // is only applicable if you are supporting IE6/7 (or IE8 operating in "IE7
-  // compatibility" mode).
-  //
-  // Usage:
-  //
-  // jQuery.fn.hashchange.src = 'path/to/file.html';
-
-  $.fn[ str_hashchange ].delay = 50;
-  /*
-  $.fn[ str_hashchange ].domain = null;
-  $.fn[ str_hashchange ].src = null;
-  */
-
-  // Event: hashchange event
-  //
-  // Fired when location.hash changes. In browsers that support it, the native
-  // HTML5 window.onhashchange event is used, otherwise a polling loop is
-  // initialized, running every <jQuery.fn.hashchange.delay> milliseconds to
-  // see if the hash has changed. In IE6/7 (and IE8 operating in "IE7
-  // compatibility" mode), a hidden Iframe is created to allow the back button
-  // and hash-based history to work.
-  //
-  // Usage as described in <jQuery.fn.hashchange>:
-  //
-  // > // Bind an event handler.
-  // > jQuery(window).hashchange( function(e) {
-  // >   var hash = location.hash;
-  // >   ...
-  // > });
-  // >
-  // > // Manually trigger the event handler.
-  // > jQuery(window).hashchange();
-  //
-  // A more verbose usage that allows for event namespacing:
-  //
-  // > // Bind an event handler.
-  // > jQuery(window).bind( 'hashchange', function(e) {
-  // >   var hash = location.hash;
-  // >   ...
-  // > });
-  // >
-  // > // Manually trigger the event handler.
-  // > jQuery(window).trigger( 'hashchange' );
-  //
-  // Additional Notes:
-  //
-  // * The polling loop and Iframe are not created until at least one handler
-  //   is actually bound to the 'hashchange' event.
-  // * If you need the bound handler(s) to execute immediately, in cases where
-  //   a location.hash exists on page load, via bookmark or page refresh for
-  //   example, use jQuery(window).hashchange() or the more verbose
-  //   jQuery(window).trigger( 'hashchange' ).
-  // * The event can be bound before DOM ready, but since it won't be usable
-  //   before then in IE6/7 (due to the necessary Iframe), recommended usage is
-  //   to bind it inside a DOM ready handler.
-
-  // Override existing $.event.special.hashchange methods (allowing this plugin
-  // to be defined after jQuery BBQ in BBQ's source code).
-  special[ str_hashchange ] = $.extend( special[ str_hashchange ], {
-
-    // Called only when the first 'hashchange' event is bound to window.
-    setup: function() {
-      // If window.onhashchange is supported natively, there's nothing to do..
-      if ( supports_onhashchange ) { return false; }
-
-      // Otherwise, we need to create our own. And we don't want to call this
-      // until the user binds to the event, just in case they never do, since it
-      // will create a polling loop and possibly even a hidden Iframe.
-      $( fake_onhashchange.start );
-    },
-
-    // Called only when the last 'hashchange' event is unbound from window.
-    teardown: function() {
-      // If window.onhashchange is supported natively, there's nothing to do..
-      if ( supports_onhashchange ) { return false; }
-
-      // Otherwise, we need to stop ours (if possible).
-      $( fake_onhashchange.stop );
-    }
-
-  });
-
-  // fake_onhashchange does all the work of triggering the window.onhashchange
-  // event for browsers that don't natively support it, including creating a
-  // polling loop to watch for hash changes and in IE 6/7 creating a hidden
-  // Iframe to enable back and forward.
-  fake_onhashchange = (function(){
-    var self = {},
-      timeout_id,
-
-      // Remember the initial hash so it doesn't get triggered immediately.
-      last_hash = get_fragment(),
-
-      fn_retval = function(val){ return val; },
-      history_set = fn_retval,
-      history_get = fn_retval;
-
-    // Start the polling loop.
-    self.start = function() {
-      timeout_id || poll();
-    };
-
-    // Stop the polling loop.
-    self.stop = function() {
-      timeout_id && clearTimeout( timeout_id );
-      timeout_id = undefined;
-    };
-
-    // This polling loop checks every $.fn.hashchange.delay milliseconds to see
-    // if location.hash has changed, and triggers the 'hashchange' event on
-    // window when necessary.
-    function poll() {
-      var hash = get_fragment(),
-        history_hash = history_get( last_hash );
-
-      if ( hash !== last_hash ) {
-        history_set( last_hash = hash, history_hash );
-
-        $(window).trigger( str_hashchange );
-
-      } else if ( history_hash !== last_hash ) {
-        location.href = location.href.replace( /#.*/, '' ) + history_hash;
-      }
-
-      timeout_id = setTimeout( poll, $.fn[ str_hashchange ].delay );
-    };
-
-    //// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    //// vvvvvvvvvvvvvvvvvvv REMOVE IF NOT SUPPORTING IE6/7/8 vvvvvvvvvvvvvvvvvvv
-    //// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    //$.browser.msie && !supports_onhashchange && (function(){
-      //// Not only do IE6/7 need the "magical" Iframe treatment, but so does IE8
-      //// when running in "IE7 compatibility" mode.
-
-      //var iframe,
-        //iframe_src;
-
-      //// When the event is bound and polling starts in IE 6/7, create a hidden
-      //// Iframe for history handling.
-      //self.start = function(){
-        //if ( !iframe ) {
-          //iframe_src = $.fn[ str_hashchange ].src;
-          //iframe_src = iframe_src && iframe_src + get_fragment();
-
-          //// Create hidden Iframe. Attempt to make Iframe as hidden as possible
-          //// by using techniques from http://www.paciellogroup.com/blog/?p=604.
-          //iframe = $('<iframe tabindex="-1" title="empty"/>').hide()
-
-            //// When Iframe has completely loaded, initialize the history and
-            //// start polling.
-            //.one( 'load', function(){
-              //iframe_src || history_set( get_fragment() );
-              //poll();
-            //})
-
-            //// Load Iframe src if specified, otherwise nothing.
-            //.attr( 'src', iframe_src || 'javascript:0' )
-
-            //// Append Iframe after the end of the body to prevent unnecessary
-            //// initial page scrolling (yes, this works).
-            //.insertAfter( 'body' )[0].contentWindow;
-
-          //// Whenever `document.title` changes, update the Iframe's title to
-          //// prettify the back/next history menu entries. Since IE sometimes
-          //// errors with "Unspecified error" the very first time this is set
-          //// (yes, very useful) wrap this with a try/catch block.
-          //doc.onpropertychange = function(){
-            //try {
-              //if ( event.propertyName === 'title' ) {
-                //iframe.document.title = doc.title;
-              //}
-            //} catch(e) {}
-          //};
-
-        //}
-      //};
-
-      //// Override the "stop" method since an IE6/7 Iframe was created. Even
-      //// if there are no longer any bound event handlers, the polling loop
-      //// is still necessary for back/next to work at all!
-      //self.stop = fn_retval;
-
-      //// Get history by looking at the hidden Iframe's location.hash.
-      //history_get = function() {
-        //return get_fragment( iframe.location.href );
-      //};
-
-      //// Set a new history item by opening and then closing the Iframe
-      //// document, *then* setting its location.hash. If document.domain has
-      //// been set, update that as well.
-      //history_set = function( hash, history_hash ) {
-        //var iframe_doc = iframe.document,
-          //domain = $.fn[ str_hashchange ].domain;
-
-        //if ( hash !== history_hash ) {
-          //// Update Iframe with any initial `document.title` that might be set.
-          //iframe_doc.title = doc.title;
-
-          //// Opening the Iframe's document after it has been closed is what
-          //// actually adds a history entry.
-          //iframe_doc.open();
-
-          //// Set document.domain for the Iframe document as well, if necessary.
-          //domain && iframe_doc.write( '<script>document.domain="' + domain + '"</script>' );
-
-          //iframe_doc.close();
-
-          //// Update the Iframe's hash, for great justice.
-          //iframe.location.hash = hash;
-        //}
-      //};
-
-    //})();
-    //// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    //// ^^^^^^^^^^^^^^^^^^^ REMOVE IF NOT SUPPORTING IE6/7/8 ^^^^^^^^^^^^^^^^^^^
-    //// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    return self;
-  })();
-
-})(jQuery,this);
+'use strict';
 
 /**
- * Timeago is a jQuery plugin that makes it easy to support automatically
- * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
+ * jsOnlyLightbox 0.5.3
+ * Copyright © 2014 Felix Hagspiel - http://jslightbox.felixhagspiel.de
  *
- * @name timeago
- * @version 1.4.1
- * @requires jQuery v1.2.3+
- * @author Ryan McGeary
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
- *
- * For usage and examples, visit:
- * http://timeago.yarp.com/
- *
- * Copyright (c) 2008-2015, Ryan McGeary (ryan -[at]- mcgeary [*dot*] org)
+ * @license MIT
+ * - Free for use in both personal and commercial projects
  */
+/* exported Lightbox */
+function Lightbox() {
 
-(function (factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(['jquery'], factory);
-  } else {
-    // Browser globals
-    factory(jQuery);
-  }
-}(function ($) {
-  $.timeago = function(timestamp) {
-    if (timestamp instanceof Date) {
-      return inWords(timestamp);
-    } else if (typeof timestamp === "string") {
-      return inWords($.timeago.parse(timestamp));
-    } else if (typeof timestamp === "number") {
-      return inWords(new Date(timestamp));
-    } else {
-      return inWords($.timeago.datetime(timestamp));
+    /**
+     * Private vars
+     */
+    var CTX = this,
+        isIE8 = false,
+        isIE9 = false,
+        body = document.getElementsByTagName('body')[0],
+        template = '<div class="jslghtbx-contentwrapper" id="jslghtbx-contentwrapper" ></div>',
+        imgRatio = false, // ratio of current image
+        currGroup = false, // current group
+        currThumbnail = false, // first clicked thumbnail
+        currImage = {}, // currently shown image
+        currImages = [], // images belonging to current group
+        isOpen = false, // check if box is open
+        animationEl, // reference to animation-element
+        animationInt, // animation-interval
+        animationChildren = [], // childs to animate
+        animationTimeout, // timeout until animation starts
+    // controls
+        nextBtn = false,
+        prevBtn = false,
+    // resize-vars
+        maxWidth,
+        maxHeight,
+        newImgWidth,
+        newImgHeight;
+
+    /*
+     *   Public attributes
+     */
+    CTX.opt = {};
+    CTX.box = false;
+    CTX.wrapper = false;
+    CTX.thumbnails = [];
+
+    /**
+     * Private methods
+     */
+
+    /**
+     * Get correct height in IE8
+     * @return {number}
+     */
+    function getHeight() {
+        return window.innerHeight || document.documentElement.offsetHeight;
     }
+
+    /**
+     * Get correct width in IE8
+     * @return {number}
+     */
+    function getWidth() {
+        return window.innerWidth || document.documentElement.offsetWidth;
+    }
+
+    /**
+     * Adds eventlisteners cross browser
+     * @param {Object}   el       The element which gets the listener
+     * @param {String}   e        The event type
+     * @param {Function} callback The action to execute on event
+     * @param {Boolean}  capture      The capture mode
+     */
+    function addEvent(el, e, callback, capture) {
+        if (el.addEventListener) {
+            el.addEventListener(e, callback, capture || false);
+        } else if (el.attachEvent) {
+            el.attachEvent('on' + e, callback);
+        }
+    }
+
+    /**
+     * Checks if element has a specific class
+     * @param  {Object}  el        [description]
+     * @param  {String}  className [description]
+     * @return {Boolean}           [description]
+     */
+    function hasClass(el, className) {
+        if (!el || !className) {
+            return;
+        }
+        return (new RegExp('(^|\\s)' + className + '(\\s|$)').test(el.className));
+    }
+
+    /**
+     * Removes class from element
+     * @param  {Object} el
+     * @param  {String} className
+     * @return {Object}
+     */
+    function removeClass(el, className) {
+        if (!el || !className) {
+            return;
+        }
+        el.className = el.className.replace(new RegExp('(?:^|\\s)' + className + '(?!\\S)'), '');
+        return el;
+    }
+
+    /**
+     * Adds class to element
+     * @param  {Object} el
+     * @param  {String} className
+     * @return {Object}
+     */
+    function addClass(el, className) {
+        if (!el || !className) {
+            return;
+        }
+        if (!hasClass(el, className)) {
+            el.className += ' ' + className;
+        }
+        return el;
+    }
+
+    /**
+     * Checks if obj is set
+     * @param  {Object} obj
+     * @return {Boolean}
+     */
+    function isset(obj) {
+        return typeof obj !== 'undefined';
+
+    }
+
+    /**
+     * Get attribute value cross-browser. Returns the attribute as string if found,
+     * otherwise returns false
+     * @param  {Object} obj
+     * @param  {String} attr
+     * @return {boolean || string}
+     */
+    function getAttr(obj, attr) {
+        if (!obj || !isset(obj)) {
+            return false;
+        }
+        var ret;
+        if (obj.getAttribute) {
+            ret = obj.getAttribute(attr);
+        }
+        else if (obj.getAttributeNode) {
+            ret = obj.getAttributeNode(attr).value;
+        }
+        if (isset(ret) && ret !== '') {
+            return ret;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if element has attribute cross-browser
+     * @param  {Object}  obj
+     * @param  {String}  attr
+     * @return {Boolean}
+     */
+    function hasAttr(obj, attr) {
+        if (!obj || !isset(obj)) {
+            return false;
+        }
+        var ret;
+        if (obj.getAttribute) {
+            ret = obj.getAttribute(attr);
+        }
+        else if (obj.getAttributeNode) {
+            ret = obj.getAttributeNode(attr).value;
+        }
+        return typeof ret === 'string';
+
+    }
+
+    /**
+     * Adds clickhandlers to thumbnails
+     * @param  {Object} i
+     */
+    function clckHlpr(i) {
+        addEvent(i, 'click', function (e) {
+            currGroup = getAttr(i, 'data-jslghtbx-group') || false;
+            currThumbnail = i;
+            openBox(i, false, false, false);
+        }, false);
+    }
+
+    /**
+     * Stop event propagation cross browser
+     * @param  {Object} e
+     */
+    function stopPropagation(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        else {
+            e.returnValue = false;
+        }
+    }
+
+    /**
+     * Get thumbnails by group
+     * @param  {String} group
+     * @return {Object}       Array containing the thumbnails
+     */
+    function getByGroup(group) {
+        var arr = [];
+        for (var i = 0; i < CTX.thumbnails.length; i++) {
+            if (getAttr(CTX.thumbnails[i], 'data-jslghtbx-group') === group) {
+                arr.push(CTX.thumbnails[i]);
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * Get the position of thumbnail in group-array
+     * @param  {Object} thumbnail
+     * @param  {String} group
+     * @return {number}
+     */
+    function getPos(thumbnail, group) {
+        var arr = getByGroup(group);
+        for (var i = 0; i < arr.length; i++) {
+            if (getAttr(thumbnail, 'src') === getAttr(arr[i], 'src') &&
+                getAttr(thumbnail, 'data-jslghtbx') === getAttr(arr[i], 'data-jslghtbx')) {
+
+                return i;
+            }
+        }
+    }
+
+    /**
+     * Preloads next and prev images
+     */
+    function preload() {
+        if (!currGroup) {
+            return;
+        }
+        var prev = new Image();
+        var next = new Image();
+        var pos = getPos(currThumbnail, currGroup);
+        if (pos === (currImages.length - 1)) {
+            prev.src = currImages[currImages.length - 1].src;
+            next.src = currImages[0].src;
+        } else if (pos === 0) {
+            prev.src = currImages[currImages.length - 1].src;
+            next.src = currImages[1].src;
+        } else {
+            prev.src = currImages[pos - 1].src;
+            next.src = currImages[pos + 1].src;
+        }
+    }
+
+    /**
+     * Starts the loading animation
+     */
+    function startAnimation() {
+        if (isIE8) {
+            return;
+        }
+        // stop any already running animations
+        stopAnimation();
+        var fnc = function () {
+            addClass(CTX.box, 'jslghtbx-loading');
+            if (!isIE9 && typeof CTX.opt.loadingAnimation === 'number') {
+                var index = 0;
+                animationInt = setInterval(function () {
+                    addClass(animationChildren[index], 'jslghtbx-active');
+                    setTimeout(function () {
+                        removeClass(animationChildren[index], 'jslghtbx-active');
+                    }, CTX.opt.loadingAnimation);
+                    index = index >= animationChildren.length ? 0 : index += 1;
+                }, CTX.opt.loadingAnimation);
+            }
+        };
+        // set timeout to not show loading animation on fast connections
+        animationTimeout = setTimeout(fnc, 500);
+    }
+
+    /**
+     * Stops the animation
+     */
+    function stopAnimation() {
+        if (isIE8) {
+            return;
+        }
+        // hide animation-element
+        removeClass(CTX.box, 'jslghtbx-loading');
+        // stop animation
+        if (!isIE9 && typeof CTX.opt.loadingAnimation !== 'string' && CTX.opt.loadingAnimation) {
+            clearInterval(animationInt);
+            // do not use animationChildren.length here due to IE8/9 bugs
+            for (var i = 0; i < animationChildren.length; i++) {
+                removeClass(animationChildren[i], 'jslghtbx-active');
+            }
+        }
+    }
+
+    /**
+     * Initializes the control arrows
+     */
+    function initControls() {
+        if (!nextBtn) {
+            // create & append next-btn
+            nextBtn = document.createElement('span');
+            addClass(nextBtn, 'jslghtbx-next');
+
+            // add custom images
+            if (CTX.opt.nextImg) {
+                var nextBtnImg = document.createElement('img');
+                nextBtnImg.setAttribute('src', CTX.opt.nextImg);
+                nextBtn.appendChild(nextBtnImg);
+            } else {
+                addClass(nextBtn, 'jslghtbx-no-img');
+            }
+            addEvent(nextBtn, 'click', function (e) {
+                stopPropagation(e); // prevent closing of lightbox
+                CTX.next();
+            }, false);
+            CTX.box.appendChild(nextBtn);
+        }
+        addClass(nextBtn, 'jslghtbx-active');
+        if (!prevBtn) {
+            // create & append next-btn
+            prevBtn = document.createElement('span');
+            addClass(prevBtn, 'jslghtbx-prev');
+
+            // add custom images
+            if (CTX.opt.prevImg) {
+                var prevBtnImg = document.createElement('img');
+                prevBtnImg.setAttribute('src', CTX.opt.prevImg);
+                prevBtn.appendChild(prevBtnImg);
+            } else {
+                addClass(prevBtn, 'jslghtbx-no-img');
+            }
+            addEvent(prevBtn, 'click', function (e) {
+                stopPropagation(e); // prevent closing of lightbox
+                CTX.prev();
+            }, false);
+            CTX.box.appendChild(prevBtn);
+        }
+        addClass(prevBtn, 'jslghtbx-active');
+    }
+
+    /**
+     * Moves controls to correct position
+     */
+    function repositionControls() {
+        if (CTX.opt.responsive && nextBtn && prevBtn) {
+            var btnTop = (getHeight() / 2) - (nextBtn.offsetHeight / 2);
+            nextBtn.style.top = btnTop + 'px';
+            prevBtn.style.top = btnTop + 'px';
+        }
+    }
+
+    /**
+     * Sets options and defaults
+     * @param {Object} opt
+     */
+    function setOpt(opt) {
+        // set options
+        if (!opt) {
+            opt = {};
+        }
+
+        /**
+         * Sets the passed value per default to true if not given
+         * @param {Object || String || Number || Boolean || ...} val
+         * @returns {Boolean}
+         */
+        function setTrueDef(val) {
+            return typeof val === 'boolean' ? val : true;
+        }
+
+        CTX.opt = {
+            // options
+            boxId: opt.boxId || false,
+            controls: setTrueDef(opt.controls),
+            dimensions: setTrueDef(opt.dimensions),
+            captions: setTrueDef(opt.captions),
+            prevImg: typeof opt.prevImg === 'string' ? opt.prevImg : false,
+            nextImg: typeof opt.nextImg === 'string' ? opt.nextImg : false,
+            hideCloseBtn: opt.hideCloseBtn || false,
+            closeOnClick: typeof opt.closeOnClick === 'boolean' ? opt.closeOnClick : true,
+            loadingAnimation: opt.loadingAnimation === undefined ? true : opt.loadingAnimation,
+            animElCount: opt.animElCount || 4,
+            preload: setTrueDef(opt.preload),
+            carousel: setTrueDef(opt.carousel),
+            animation: opt.animation || 400,
+            nextOnClick: setTrueDef(opt.nextOnClick),
+            responsive: setTrueDef(opt.responsive),
+            maxImgSize: opt.maxImgSize || 0.8,
+            keyControls: setTrueDef(opt.keyControls),
+            hideOverflow: opt.hideOverflow || true,
+            // callbacks
+            onopen: opt.onopen || false,
+            onclose: opt.onclose || false,
+            onload: opt.onload || false,
+            onresize: opt.onresize || false,
+            onloaderror: opt.onloaderror || false
+        };
+
+        // load box in custom element
+        if (CTX.opt.boxId) {
+            CTX.box = document.getElementById(CTX.opt);
+        }
+        // create box element if no ID is given
+        else if (!CTX.box && !document.getElementById('jslghtbx')) {
+            var newEl = document.createElement('div');
+            newEl.setAttribute('id', 'jslghtbx');
+            newEl.setAttribute('class', 'jslghtbx');
+            CTX.box = newEl;
+            body.appendChild(CTX.box);
+        }
+        CTX.box.innerHTML = template;
+        if (isIE8) {
+            addClass(CTX.box, 'jslghtbx-ie8');
+        }
+        CTX.wrapper = document.getElementById('jslghtbx-contentwrapper');
+
+        // init regular closebutton
+        if (!CTX.opt.hideCloseBtn) {
+            var closeBtn = document.createElement('span');
+            closeBtn.setAttribute('id', 'jslghtbx-close');
+            closeBtn.setAttribute('class', 'jslghtbx-close');
+            closeBtn.innerHTML = 'X';
+            CTX.box.appendChild(closeBtn);
+            addEvent(closeBtn, 'click', function (e) {
+                stopPropagation(e);
+                CTX.close();
+            }, false);
+        }
+
+        // close lightbox on background-click by default / if true
+        if (!isIE8 && CTX.opt.closeOnClick) {
+            addEvent(CTX.box, 'click', function (e) {
+                CTX.close();
+            }, false);
+        }
+
+        // set loading animation
+        if (typeof CTX.opt.loadingAnimation === 'string') {
+            // set loading GIF
+            animationEl = document.createElement('img');
+            animationEl.setAttribute('src', CTX.opt.loadingAnimation);
+            addClass(animationEl, 'jslghtbx-loading-animation');
+            CTX.box.appendChild(animationEl);
+        } else if (CTX.opt.loadingAnimation) {
+            // set default animation time
+            CTX.opt.loadingAnimation = typeof CTX.opt.loadingAnimation === 'number' ? CTX.opt.loadingAnimation : 200;
+            // create animation elements
+            animationEl = document.createElement('div');
+            addClass(animationEl, 'jslghtbx-loading-animation');
+            var i = 0;
+            while (i < CTX.opt.animElCount) {
+                animationChildren.push(animationEl.appendChild(document.createElement('span')));
+                i++;
+            }
+            CTX.box.appendChild(animationEl);
+        }
+
+        // add resize-eventhandlers
+        if (CTX.opt.responsive) {
+            addEvent(window, 'resize', function (e) {
+                CTX.resize();
+            }, false);
+            addClass(CTX.box, 'jslghtbx-nooverflow'); // hide scrollbars on prev/next
+        }
+        else {
+            removeClass(CTX.box, 'jslghtbx-nooverflow');
+        }
+
+        // add keyboard event handlers
+        if (CTX.opt.keyControls) {
+            addEvent(document, 'keydown', function (e) {
+                if (isOpen) {
+                    stopPropagation(e); // prevent closing of lightbox
+                    if (e.keyCode === 39) {
+                        // show next img on right cursor
+                        CTX.next();
+                    } else if (e.keyCode === 37) {
+                        // show prev img on left cursor
+                        CTX.prev();
+                    } else if (e.keyCode === 27) {
+                        // close lightbox on ESC
+                        CTX.close();
+                    }
+                }
+            }, false);
+        }
+    }
+
+    /**
+     * Opens the lightbox. Either @param el and @param group must be given,
+     * but not both together!
+     * @param  {Object || String}   el      an image element or a link to an image
+     * @param  {String}   group       the name of an image group
+     * @param  {Function} cb          A private callback
+     * @param  {Object} event
+     */
+    function openBox(el, group, cb, event) {
+        if (!el && !group) {
+            return false;
+        }
+        // save images from group
+        currGroup = group || currGroup || getAttr(el, 'data-jslghtbx-group');
+        if (currGroup) {
+            currImages = getByGroup(currGroup);
+            if (typeof el === 'boolean' && !el) {
+                // el is set to false, load first image of group
+                el = currImages[0];
+            }
+        }
+
+        // create new img-element
+        currImage.img = new Image();
+
+        // set el as current thumbnail
+        currThumbnail = el;
+
+        // get correct image-source
+        var src;
+        if (typeof el === 'string') {
+            // string with img-src given
+            src = el;
+        }
+        else if (getAttr(el, 'data-jslghtbx')) {
+            // image-source given
+            src = getAttr(el, 'data-jslghtbx');
+        }
+        else {
+            // no image-source given
+            src = getAttr(el, 'src');
+        }
+        // clear old image ratio for proper resize-values
+        imgRatio = false;
+
+        // add init-class on opening, but not at prev/next
+        if (!isOpen) {
+            if (typeof CTX.opt.animation === 'number') {
+                addClass(currImage.img, 'jslghtbx-animate-transition jslghtbx-animate-init');
+            }
+            isOpen = true;
+
+            // execute open callback
+            if (CTX.opt.onopen) {
+                CTX.opt.onopen();
+            }
+        }
+
+        // hide overflow by default / if set
+        if (!CTX.opt || !isset(CTX.opt.hideOverflow) || CTX.opt.hideOverflow) {
+            body.setAttribute('style', 'overflow: hidden');
+        }
+
+        CTX.box.setAttribute('style', 'padding-top: 0');
+        CTX.wrapper.innerHTML = '';
+        CTX.wrapper.appendChild(currImage.img);
+        // set animation class
+        if (CTX.opt.animation) {
+            addClass(CTX.wrapper, 'jslghtbx-animate');
+        }
+        // set caption
+        var captionText = getAttr(el, 'data-jslghtbx-caption');
+        if (captionText && CTX.opt.captions) {
+            var caption = document.createElement('p');
+            caption.setAttribute('class', 'jslghtbx-caption');
+            caption.innerHTML = captionText;
+            CTX.wrapper.appendChild(caption);
+        }
+
+        addClass(CTX.box, 'jslghtbx-active');
+
+        // show wrapper early to avoid bug where dimensions are not
+        // correct in IE8
+        if (isIE8) {
+            addClass(CTX.wrapper, 'jslghtbx-active');
+        }
+        if (CTX.opt.controls && currImages.length > 1) {
+            initControls();
+            repositionControls();
+        }
+
+        /**
+         * Onerror-handler for the image
+         */
+        currImage.img.onerror = function () {
+            if (CTX.opt.onloaderror) {
+                CTX.opt.onloaderror(event);
+            }
+        };
+        /**
+         * Onload-handler for the image
+         */
+        currImage.img.onload = function () {
+            // store original width here
+            currImage.originalWidth = this.naturalWidth || this.width;
+            currImage.originalHeight = this.naturalHeight || this.height;
+            // use dummyimage for correct dimension calculating in older IE
+            if (isIE8 || isIE9) {
+                var dummyImg = new Image();
+                dummyImg.setAttribute('src', src);
+                currImage.originalWidth = dummyImg.width;
+                currImage.originalHeight = dummyImg.height;
+            }
+            // interval to check if image is ready to show
+            var checkClassInt = setInterval(function () {
+                if (hasClass(CTX.box, 'jslghtbx-active')) {
+                    addClass(CTX.wrapper, 'jslghtbx-wrapper-active');
+                    // set animation
+                    if (typeof CTX.opt.animation === 'number') {
+                        addClass(currImage.img, 'jslghtbx-animate-transition');
+                    }
+                    if (cb) {
+                        cb();
+                    }
+                    // stop Animation
+                    stopAnimation();
+                    // clear animation timeout
+                    clearTimeout(animationTimeout);
+                    // preload previous and next image
+                    if (CTX.opt.preload) {
+                        preload();
+                    }
+                    // set clickhandler on image to show next image
+                    if (CTX.opt.nextOnClick) {
+                        // add cursor pointer
+                        addClass(currImage.img, 'jslghtbx-next-on-click');
+                        addEvent(currImage.img, 'click', function (e) {
+                            stopPropagation(e);
+                            CTX.next();
+                        }, false);
+                    }
+                    // execute onload callback
+                    if (CTX.opt.onload) {
+                        CTX.opt.onload(event);
+                    }
+                    // stop current interval
+                    clearInterval(checkClassInt);
+                    // resize the image
+                    CTX.resize();
+                }
+            }, 10);
+        };
+
+        // set src
+        currImage.img.setAttribute('src', src);
+
+        // start loading animation
+        startAnimation();
+    }
+
+    /*
+     *   Public methods
+     */
+
+    /**
+     * Init-function, must be called once
+     * @param  {Object} opt Custom options
+     */
+    CTX.load = function (opt) {
+        // check for IE8
+        if (navigator.appVersion.indexOf('MSIE 8') > 0) {
+            isIE8 = true;
+        }
+
+        // check for IE9
+        if (navigator.appVersion.indexOf('MSIE 9') > 0) {
+            isIE9 = true;
+        }
+
+        // set options
+        setOpt(opt);
+
+        // Find all thumbnails & add clickhandlers
+        var arr = document.getElementsByTagName('img');
+        for (var i = 0; i < arr.length; i++) {
+            if (hasAttr(arr[i], 'data-jslghtbx')) {
+                CTX.thumbnails.push(arr[i]);
+                clckHlpr(arr[i]);
+            }
+        }
+
+    };
+
+    /**
+     * Public caller for openBox()
+     * @param  {Object || string} el  Image element or a link
+     * @param  {String} group
+     */
+    CTX.open = function (el, group) {
+        // if image and group are given, set group to false
+        // to prevent errors
+        if (el && group) {
+            group = false;
+        }
+        openBox(el, group, false, false);
+    };
+
+    /**
+     * Calculates the new image size and resizes it
+     */
+    CTX.resize = function () {
+        if (!currImage.img) {
+            return;
+        }
+        maxWidth = getWidth();
+        maxHeight = getHeight();
+        var boxWidth = CTX.box.offsetWidth;
+        var boxHeight = CTX.box.offsetHeight;
+        if (!imgRatio && currImage.img && currImage.img.offsetWidth && currImage.img.offsetHeight) {
+            imgRatio = currImage.img.offsetWidth / currImage.img.offsetHeight;
+        }
+
+        // Height of image is too big to fit in viewport
+        if (Math.floor(boxWidth / imgRatio) > boxHeight) {
+            newImgWidth = boxHeight * imgRatio;
+            newImgHeight = boxHeight;
+        }
+        // Width of image is too big to fit in viewport
+        else {
+            newImgWidth = boxWidth;
+            newImgHeight = boxWidth / imgRatio;
+        }
+        // decrease size with modifier
+        newImgWidth = Math.floor(newImgWidth * CTX.opt.maxImgSize);
+        newImgHeight = Math.floor(newImgHeight * CTX.opt.maxImgSize);
+
+        // check if image exceeds maximum size
+        if (CTX.opt.dimensions && newImgHeight > currImage.originalHeight ||
+            CTX.opt.dimensions && newImgWidth > currImage.originalWidth) {
+            newImgHeight = currImage.originalHeight;
+            newImgWidth = currImage.originalWidth;
+        }
+        currImage.img.setAttribute('width', newImgWidth);
+        currImage.img.setAttribute('height', newImgHeight);
+        currImage.img.setAttribute('style', 'margin-top:' + ((getHeight() - newImgHeight) / 2) + 'px');
+
+        // reposition controls after timeout
+        setTimeout(repositionControls, 200);
+
+        // execute resize callback
+        if (CTX.opt.onresize) {
+            CTX.opt.onresize();
+        }
+    };
+
+    /**
+     * Loads the next image
+     */
+    CTX.next = function () {
+        if (!currGroup) {
+            return;
+        }
+        // get position of next image
+        var pos = getPos(currThumbnail, currGroup) + 1;
+        if (currImages[pos]) {
+            currThumbnail = currImages[pos];
+        }
+        else if (CTX.opt.carousel) {
+            currThumbnail = currImages[0];
+        }
+        else {
+            return;
+        }
+        if (typeof CTX.opt.animation === 'number') {
+            removeClass(currImage.img, 'jslghtbx-animating-next');
+            setTimeout(function () {
+                var cb = function () {
+                    setTimeout(function () {
+                        addClass(currImage.img, 'jslghtbx-animating-next');
+                    }, CTX.opt.animation / 2);
+                };
+                openBox(currThumbnail, false, cb, 'next');
+            }, CTX.opt.animation / 2);
+        }
+        else {
+            openBox(currThumbnail, false, false, 'next');
+        }
+    };
+
+    /**
+     * Loads the prev image
+     */
+    CTX.prev = function () {
+        if (!currGroup) {
+            return;
+        }
+        // get position of prev image
+        var pos = getPos(currThumbnail, currGroup) - 1;
+        if (currImages[pos]) {
+            currThumbnail = currImages[pos];
+        }
+        else if (CTX.opt.carousel) {
+            currThumbnail = currImages[currImages.length - 1];
+        }
+        else {
+            return;
+        }
+        // animation stuff
+        if (typeof CTX.opt.animation === 'number') {
+            removeClass(currImage.img, 'jslghtbx-animating-prev');
+            setTimeout(function () {
+                var cb = function () {
+                    setTimeout(function () {
+                        addClass(currImage.img, 'jslghtbx-animating-next');
+                    }, CTX.opt.animation / 2);
+                };
+                openBox(currThumbnail, false, cb, 'prev');
+            }, CTX.opt.animation / 2);
+        }
+        else {
+            openBox(currThumbnail, false, false, 'prev');
+        }
+    };
+
+    /**
+     * Closes the box
+     */
+    CTX.close = function () {
+        // restore Defaults
+        currGroup = false;
+        currThumbnail = false;
+        currImage = {};
+        currImages = [];
+        isOpen = false;
+        removeClass(CTX.box, 'jslghtbx-active');
+        removeClass(CTX.wrapper, 'jslghtbx-wrapper-active');
+        removeClass(nextBtn, 'jslghtbx-active');
+        removeClass(prevBtn, 'jslghtbx-active');
+        CTX.box.setAttribute('style', 'padding-top: 0px');
+
+        // stop animtation
+        stopAnimation();
+
+        // Hide Lightbox if iE8
+        if (isIE8) {
+            CTX.box.setAttribute('style', 'display: none');
+        }
+
+        // show overflow by default / if set
+        if (!CTX.opt || !isset(CTX.opt.hideOverflow) || CTX.opt.hideOverflow) {
+            body.setAttribute('style', 'overflow: auto');
+        }
+
+        // execute close callback
+        if (CTX.opt.onclose) {
+            CTX.opt.onclose();
+        }
+    };
+}
+
+
+/* perfect-scrollbar v0.6.10 */
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var ps = require('../main');
+
+if (typeof define === 'function' && define.amd) {
+  // AMD
+  define(ps);
+} else {
+  // Add to a global object.
+  window.PerfectScrollbar = ps;
+  if (typeof window.Ps === 'undefined') {
+    window.Ps = ps;
+  }
+}
+
+},{"../main":7}],2:[function(require,module,exports){
+'use strict';
+
+function oldAdd(element, className) {
+  var classes = element.className.split(' ');
+  if (classes.indexOf(className) < 0) {
+    classes.push(className);
+  }
+  element.className = classes.join(' ');
+}
+
+function oldRemove(element, className) {
+  var classes = element.className.split(' ');
+  var idx = classes.indexOf(className);
+  if (idx >= 0) {
+    classes.splice(idx, 1);
+  }
+  element.className = classes.join(' ');
+}
+
+exports.add = function (element, className) {
+  if (element.classList) {
+    element.classList.add(className);
+  } else {
+    oldAdd(element, className);
+  }
+};
+
+exports.remove = function (element, className) {
+  if (element.classList) {
+    element.classList.remove(className);
+  } else {
+    oldRemove(element, className);
+  }
+};
+
+exports.list = function (element) {
+  if (element.classList) {
+    return Array.prototype.slice.apply(element.classList);
+  } else {
+    return element.className.split(' ');
+  }
+};
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+var DOM = {};
+
+DOM.e = function (tagName, className) {
+  var element = document.createElement(tagName);
+  element.className = className;
+  return element;
+};
+
+DOM.appendTo = function (child, parent) {
+  parent.appendChild(child);
+  return child;
+};
+
+function cssGet(element, styleName) {
+  return window.getComputedStyle(element)[styleName];
+}
+
+function cssSet(element, styleName, styleValue) {
+  if (typeof styleValue === 'number') {
+    styleValue = styleValue.toString() + 'px';
+  }
+  element.style[styleName] = styleValue;
+  return element;
+}
+
+function cssMultiSet(element, obj) {
+  for (var key in obj) {
+    var val = obj[key];
+    if (typeof val === 'number') {
+      val = val.toString() + 'px';
+    }
+    element.style[key] = val;
+  }
+  return element;
+}
+
+DOM.css = function (element, styleNameOrObject, styleValue) {
+  if (typeof styleNameOrObject === 'object') {
+    // multiple set with object
+    return cssMultiSet(element, styleNameOrObject);
+  } else {
+    if (typeof styleValue === 'undefined') {
+      return cssGet(element, styleNameOrObject);
+    } else {
+      return cssSet(element, styleNameOrObject, styleValue);
+    }
+  }
+};
+
+DOM.matches = function (element, query) {
+  if (typeof element.matches !== 'undefined') {
+    return element.matches(query);
+  } else {
+    if (typeof element.matchesSelector !== 'undefined') {
+      return element.matchesSelector(query);
+    } else if (typeof element.webkitMatchesSelector !== 'undefined') {
+      return element.webkitMatchesSelector(query);
+    } else if (typeof element.mozMatchesSelector !== 'undefined') {
+      return element.mozMatchesSelector(query);
+    } else if (typeof element.msMatchesSelector !== 'undefined') {
+      return element.msMatchesSelector(query);
+    }
+  }
+};
+
+DOM.remove = function (element) {
+  if (typeof element.remove !== 'undefined') {
+    element.remove();
+  } else {
+    if (element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+  }
+};
+
+DOM.queryChildren = function (element, selector) {
+  return Array.prototype.filter.call(element.childNodes, function (child) {
+    return DOM.matches(child, selector);
+  });
+};
+
+module.exports = DOM;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+var EventElement = function (element) {
+  this.element = element;
+  this.events = {};
+};
+
+EventElement.prototype.bind = function (eventName, handler) {
+  if (typeof this.events[eventName] === 'undefined') {
+    this.events[eventName] = [];
+  }
+  this.events[eventName].push(handler);
+  this.element.addEventListener(eventName, handler, false);
+};
+
+EventElement.prototype.unbind = function (eventName, handler) {
+  var isHandlerProvided = (typeof handler !== 'undefined');
+  this.events[eventName] = this.events[eventName].filter(function (hdlr) {
+    if (isHandlerProvided && hdlr !== handler) {
+      return true;
+    }
+    this.element.removeEventListener(eventName, hdlr, false);
+    return false;
+  }, this);
+};
+
+EventElement.prototype.unbindAll = function () {
+  for (var name in this.events) {
+    this.unbind(name);
+  }
+};
+
+var EventManager = function () {
+  this.eventElements = [];
+};
+
+EventManager.prototype.eventElement = function (element) {
+  var ee = this.eventElements.filter(function (eventElement) {
+    return eventElement.element === element;
+  })[0];
+  if (typeof ee === 'undefined') {
+    ee = new EventElement(element);
+    this.eventElements.push(ee);
+  }
+  return ee;
+};
+
+EventManager.prototype.bind = function (element, eventName, handler) {
+  this.eventElement(element).bind(eventName, handler);
+};
+
+EventManager.prototype.unbind = function (element, eventName, handler) {
+  this.eventElement(element).unbind(eventName, handler);
+};
+
+EventManager.prototype.unbindAll = function () {
+  for (var i = 0; i < this.eventElements.length; i++) {
+    this.eventElements[i].unbindAll();
+  }
+};
+
+EventManager.prototype.once = function (element, eventName, handler) {
+  var ee = this.eventElement(element);
+  var onceHandler = function (e) {
+    ee.unbind(eventName, onceHandler);
+    handler(e);
   };
-  var $t = $.timeago;
+  ee.bind(eventName, onceHandler);
+};
 
-  $.extend($.timeago, {
-    settings: {
-      refreshMillis: 60000,
-      allowPast: true,
-      allowFuture: false,
-      localeTitle: false,
-      cutoff: 0,
-      strings: {
-        prefixAgo: null,
-        prefixFromNow: null,
-        suffixAgo: "ago",
-        suffixFromNow: "from now",
-        inPast: 'any moment now',
-        seconds: "less than a minute",
-        minute: "about a minute",
-        minutes: "%d minutes",
-        hour: "about an hour",
-        hours: "about %d hours",
-        day: "a day",
-        days: "%d days",
-        month: "about a month",
-        months: "%d months",
-        year: "about a year",
-        years: "%d years",
-        wordSeparator: " ",
-        numbers: []
+module.exports = EventManager;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+module.exports = (function () {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+               .toString(16)
+               .substring(1);
+  }
+  return function () {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+           s4() + '-' + s4() + s4() + s4();
+  };
+})();
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+var cls = require('./class');
+var dom = require('./dom');
+
+var toInt = exports.toInt = function (x) {
+  return parseInt(x, 10) || 0;
+};
+
+var clone = exports.clone = function (obj) {
+  if (obj === null) {
+    return null;
+  } else if (obj.constructor === Array) {
+    return obj.map(clone);
+  } else if (typeof obj === 'object') {
+    var result = {};
+    for (var key in obj) {
+      result[key] = clone(obj[key]);
+    }
+    return result;
+  } else {
+    return obj;
+  }
+};
+
+exports.extend = function (original, source) {
+  var result = clone(original);
+  for (var key in source) {
+    result[key] = clone(source[key]);
+  }
+  return result;
+};
+
+exports.isEditable = function (el) {
+  return dom.matches(el, "input,[contenteditable]") ||
+         dom.matches(el, "select,[contenteditable]") ||
+         dom.matches(el, "textarea,[contenteditable]") ||
+         dom.matches(el, "button,[contenteditable]");
+};
+
+exports.removePsClasses = function (element) {
+  var clsList = cls.list(element);
+  for (var i = 0; i < clsList.length; i++) {
+    var className = clsList[i];
+    if (className.indexOf('ps-') === 0) {
+      cls.remove(element, className);
+    }
+  }
+};
+
+exports.outerWidth = function (element) {
+  return toInt(dom.css(element, 'width')) +
+         toInt(dom.css(element, 'paddingLeft')) +
+         toInt(dom.css(element, 'paddingRight')) +
+         toInt(dom.css(element, 'borderLeftWidth')) +
+         toInt(dom.css(element, 'borderRightWidth'));
+};
+
+exports.startScrolling = function (element, axis) {
+  cls.add(element, 'ps-in-scrolling');
+  if (typeof axis !== 'undefined') {
+    cls.add(element, 'ps-' + axis);
+  } else {
+    cls.add(element, 'ps-x');
+    cls.add(element, 'ps-y');
+  }
+};
+
+exports.stopScrolling = function (element, axis) {
+  cls.remove(element, 'ps-in-scrolling');
+  if (typeof axis !== 'undefined') {
+    cls.remove(element, 'ps-' + axis);
+  } else {
+    cls.remove(element, 'ps-x');
+    cls.remove(element, 'ps-y');
+  }
+};
+
+exports.env = {
+  isWebKit: 'WebkitAppearance' in document.documentElement.style,
+  supportsTouch: (('ontouchstart' in window) || window.DocumentTouch && document instanceof window.DocumentTouch),
+  supportsIePointer: window.navigator.msMaxTouchPoints !== null
+};
+
+},{"./class":2,"./dom":3}],7:[function(require,module,exports){
+'use strict';
+
+var destroy = require('./plugin/destroy');
+var initialize = require('./plugin/initialize');
+var update = require('./plugin/update');
+
+module.exports = {
+  initialize: initialize,
+  update: update,
+  destroy: destroy
+};
+
+},{"./plugin/destroy":9,"./plugin/initialize":17,"./plugin/update":21}],8:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  handlers: ['click-rail', 'drag-scrollbar', 'keyboard', 'wheel', 'touch'],
+  maxScrollbarLength: null,
+  minScrollbarLength: null,
+  scrollXMarginOffset: 0,
+  scrollYMarginOffset: 0,
+  stopPropagationOnClick: true,
+  suppressScrollX: false,
+  suppressScrollY: false,
+  swipePropagation: true,
+  useBothWheelAxes: false,
+  wheelPropagation: false,
+  wheelSpeed: 1,
+  theme: 'default'
+};
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+var _ = require('../lib/helper');
+var dom = require('../lib/dom');
+var instances = require('./instances');
+
+module.exports = function (element) {
+  var i = instances.get(element);
+
+  if (!i) {
+    return;
+  }
+
+  i.event.unbindAll();
+  dom.remove(i.scrollbarX);
+  dom.remove(i.scrollbarY);
+  dom.remove(i.scrollbarXRail);
+  dom.remove(i.scrollbarYRail);
+  _.removePsClasses(element);
+
+  instances.remove(element);
+};
+
+},{"../lib/dom":3,"../lib/helper":6,"./instances":18}],10:[function(require,module,exports){
+'use strict';
+
+var _ = require('../../lib/helper');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindClickRailHandler(element, i) {
+  function pageOffset(el) {
+    return el.getBoundingClientRect();
+  }
+  var stopPropagation = function (e) { e.stopPropagation(); };
+
+  if (i.settings.stopPropagationOnClick) {
+    i.event.bind(i.scrollbarY, 'click', stopPropagation);
+  }
+  i.event.bind(i.scrollbarYRail, 'click', function (e) {
+    var halfOfScrollbarLength = _.toInt(i.scrollbarYHeight / 2);
+    var positionTop = i.railYRatio * (e.pageY - window.pageYOffset - pageOffset(i.scrollbarYRail).top - halfOfScrollbarLength);
+    var maxPositionTop = i.railYRatio * (i.railYHeight - i.scrollbarYHeight);
+    var positionRatio = positionTop / maxPositionTop;
+
+    if (positionRatio < 0) {
+      positionRatio = 0;
+    } else if (positionRatio > 1) {
+      positionRatio = 1;
+    }
+
+    updateScroll(element, 'top', (i.contentHeight - i.containerHeight) * positionRatio);
+    updateGeometry(element);
+
+    e.stopPropagation();
+  });
+
+  if (i.settings.stopPropagationOnClick) {
+    i.event.bind(i.scrollbarX, 'click', stopPropagation);
+  }
+  i.event.bind(i.scrollbarXRail, 'click', function (e) {
+    var halfOfScrollbarLength = _.toInt(i.scrollbarXWidth / 2);
+    var positionLeft = i.railXRatio * (e.pageX - window.pageXOffset - pageOffset(i.scrollbarXRail).left - halfOfScrollbarLength);
+    var maxPositionLeft = i.railXRatio * (i.railXWidth - i.scrollbarXWidth);
+    var positionRatio = positionLeft / maxPositionLeft;
+
+    if (positionRatio < 0) {
+      positionRatio = 0;
+    } else if (positionRatio > 1) {
+      positionRatio = 1;
+    }
+
+    updateScroll(element, 'left', ((i.contentWidth - i.containerWidth) * positionRatio) - i.negativeScrollAdjustment);
+    updateGeometry(element);
+
+    e.stopPropagation();
+  });
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindClickRailHandler(element, i);
+};
+
+},{"../../lib/helper":6,"../instances":18,"../update-geometry":19,"../update-scroll":20}],11:[function(require,module,exports){
+'use strict';
+
+var _ = require('../../lib/helper');
+var dom = require('../../lib/dom');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindMouseScrollXHandler(element, i) {
+  var currentLeft = null;
+  var currentPageX = null;
+
+  function updateScrollLeft(deltaX) {
+    var newLeft = currentLeft + (deltaX * i.railXRatio);
+    var maxLeft = Math.max(0, i.scrollbarXRail.getBoundingClientRect().left) + (i.railXRatio * (i.railXWidth - i.scrollbarXWidth));
+
+    if (newLeft < 0) {
+      i.scrollbarXLeft = 0;
+    } else if (newLeft > maxLeft) {
+      i.scrollbarXLeft = maxLeft;
+    } else {
+      i.scrollbarXLeft = newLeft;
+    }
+
+    var scrollLeft = _.toInt(i.scrollbarXLeft * (i.contentWidth - i.containerWidth) / (i.containerWidth - (i.railXRatio * i.scrollbarXWidth))) - i.negativeScrollAdjustment;
+    updateScroll(element, 'left', scrollLeft);
+  }
+
+  var mouseMoveHandler = function (e) {
+    updateScrollLeft(e.pageX - currentPageX);
+    updateGeometry(element);
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  var mouseUpHandler = function () {
+    _.stopScrolling(element, 'x');
+    i.event.unbind(i.ownerDocument, 'mousemove', mouseMoveHandler);
+  };
+
+  i.event.bind(i.scrollbarX, 'mousedown', function (e) {
+    currentPageX = e.pageX;
+    currentLeft = _.toInt(dom.css(i.scrollbarX, 'left')) * i.railXRatio;
+    _.startScrolling(element, 'x');
+
+    i.event.bind(i.ownerDocument, 'mousemove', mouseMoveHandler);
+    i.event.once(i.ownerDocument, 'mouseup', mouseUpHandler);
+
+    e.stopPropagation();
+    e.preventDefault();
+  });
+}
+
+function bindMouseScrollYHandler(element, i) {
+  var currentTop = null;
+  var currentPageY = null;
+
+  function updateScrollTop(deltaY) {
+    var newTop = currentTop + (deltaY * i.railYRatio);
+    var maxTop = Math.max(0, i.scrollbarYRail.getBoundingClientRect().top) + (i.railYRatio * (i.railYHeight - i.scrollbarYHeight));
+
+    if (newTop < 0) {
+      i.scrollbarYTop = 0;
+    } else if (newTop > maxTop) {
+      i.scrollbarYTop = maxTop;
+    } else {
+      i.scrollbarYTop = newTop;
+    }
+
+    var scrollTop = _.toInt(i.scrollbarYTop * (i.contentHeight - i.containerHeight) / (i.containerHeight - (i.railYRatio * i.scrollbarYHeight)));
+    updateScroll(element, 'top', scrollTop);
+  }
+
+  var mouseMoveHandler = function (e) {
+    updateScrollTop(e.pageY - currentPageY);
+    updateGeometry(element);
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  var mouseUpHandler = function () {
+    _.stopScrolling(element, 'y');
+    i.event.unbind(i.ownerDocument, 'mousemove', mouseMoveHandler);
+  };
+
+  i.event.bind(i.scrollbarY, 'mousedown', function (e) {
+    currentPageY = e.pageY;
+    currentTop = _.toInt(dom.css(i.scrollbarY, 'top')) * i.railYRatio;
+    _.startScrolling(element, 'y');
+
+    i.event.bind(i.ownerDocument, 'mousemove', mouseMoveHandler);
+    i.event.once(i.ownerDocument, 'mouseup', mouseUpHandler);
+
+    e.stopPropagation();
+    e.preventDefault();
+  });
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindMouseScrollXHandler(element, i);
+  bindMouseScrollYHandler(element, i);
+};
+
+},{"../../lib/dom":3,"../../lib/helper":6,"../instances":18,"../update-geometry":19,"../update-scroll":20}],12:[function(require,module,exports){
+'use strict';
+
+var _ = require('../../lib/helper');
+var dom = require('../../lib/dom');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindKeyboardHandler(element, i) {
+  var hovered = false;
+  i.event.bind(element, 'mouseenter', function () {
+    hovered = true;
+  });
+  i.event.bind(element, 'mouseleave', function () {
+    hovered = false;
+  });
+
+  var shouldPrevent = false;
+  function shouldPreventDefault(deltaX, deltaY) {
+    var scrollTop = element.scrollTop;
+    if (deltaX === 0) {
+      if (!i.scrollbarYActive) {
+        return false;
       }
-    },
+      if ((scrollTop === 0 && deltaY > 0) || (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)) {
+        return !i.settings.wheelPropagation;
+      }
+    }
 
-    inWords: function(distanceMillis) {
-      if(!this.settings.allowPast && ! this.settings.allowFuture) {
-          throw 'timeago allowPast and allowFuture settings can not both be set to false.';
+    var scrollLeft = element.scrollLeft;
+    if (deltaY === 0) {
+      if (!i.scrollbarXActive) {
+        return false;
+      }
+      if ((scrollLeft === 0 && deltaX < 0) || (scrollLeft >= i.contentWidth - i.containerWidth && deltaX > 0)) {
+        return !i.settings.wheelPropagation;
+      }
+    }
+    return true;
+  }
+
+  i.event.bind(i.ownerDocument, 'keydown', function (e) {
+    if (e.isDefaultPrevented && e.isDefaultPrevented()) {
+      return;
+    }
+
+    var focused = dom.matches(i.scrollbarX, ':focus') ||
+                  dom.matches(i.scrollbarY, ':focus');
+
+    if (!hovered && !focused) {
+      return;
+    }
+
+    var activeElement = document.activeElement ? document.activeElement : i.ownerDocument.activeElement;
+    if (activeElement) {
+      // go deeper if element is a webcomponent
+      while (activeElement.shadowRoot) {
+        activeElement = activeElement.shadowRoot.activeElement;
+      }
+      if (_.isEditable(activeElement)) {
+        return;
+      }
+    }
+
+    var deltaX = 0;
+    var deltaY = 0;
+
+    switch (e.which) {
+    case 37: // left
+      deltaX = -30;
+      break;
+    case 38: // up
+      deltaY = 30;
+      break;
+    case 39: // right
+      deltaX = 30;
+      break;
+    case 40: // down
+      deltaY = -30;
+      break;
+    case 33: // page up
+      deltaY = 90;
+      break;
+    case 32: // space bar
+      if (e.shiftKey) {
+        deltaY = 90;
+      } else {
+        deltaY = -90;
+      }
+      break;
+    case 34: // page down
+      deltaY = -90;
+      break;
+    case 35: // end
+      if (e.ctrlKey) {
+        deltaY = -i.contentHeight;
+      } else {
+        deltaY = -i.containerHeight;
+      }
+      break;
+    case 36: // home
+      if (e.ctrlKey) {
+        deltaY = element.scrollTop;
+      } else {
+        deltaY = i.containerHeight;
+      }
+      break;
+    default:
+      return;
+    }
+
+    updateScroll(element, 'top', element.scrollTop - deltaY);
+    updateScroll(element, 'left', element.scrollLeft + deltaX);
+    updateGeometry(element);
+
+    shouldPrevent = shouldPreventDefault(deltaX, deltaY);
+    if (shouldPrevent) {
+      e.preventDefault();
+    }
+  });
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindKeyboardHandler(element, i);
+};
+
+},{"../../lib/dom":3,"../../lib/helper":6,"../instances":18,"../update-geometry":19,"../update-scroll":20}],13:[function(require,module,exports){
+'use strict';
+
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindMouseWheelHandler(element, i) {
+  var shouldPrevent = false;
+
+  function shouldPreventDefault(deltaX, deltaY) {
+    var scrollTop = element.scrollTop;
+    if (deltaX === 0) {
+      if (!i.scrollbarYActive) {
+        return false;
+      }
+      if ((scrollTop === 0 && deltaY > 0) || (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)) {
+        return !i.settings.wheelPropagation;
+      }
+    }
+
+    var scrollLeft = element.scrollLeft;
+    if (deltaY === 0) {
+      if (!i.scrollbarXActive) {
+        return false;
+      }
+      if ((scrollLeft === 0 && deltaX < 0) || (scrollLeft >= i.contentWidth - i.containerWidth && deltaX > 0)) {
+        return !i.settings.wheelPropagation;
+      }
+    }
+    return true;
+  }
+
+  function getDeltaFromEvent(e) {
+    var deltaX = e.deltaX;
+    var deltaY = -1 * e.deltaY;
+
+    if (typeof deltaX === "undefined" || typeof deltaY === "undefined") {
+      // OS X Safari
+      deltaX = -1 * e.wheelDeltaX / 6;
+      deltaY = e.wheelDeltaY / 6;
+    }
+
+    if (e.deltaMode && e.deltaMode === 1) {
+      // Firefox in deltaMode 1: Line scrolling
+      deltaX *= 10;
+      deltaY *= 10;
+    }
+
+    if (deltaX !== deltaX && deltaY !== deltaY/* NaN checks */) {
+      // IE in some mouse drivers
+      deltaX = 0;
+      deltaY = e.wheelDelta;
+    }
+
+    return [deltaX, deltaY];
+  }
+
+  function shouldBeConsumedByChild(deltaX, deltaY) {
+    var child = element.querySelector('textarea:hover, .ps-child:hover');
+    if (child) {
+      if (child.tagName !== 'TEXTAREA' && !window.getComputedStyle(child).overflow.match(/(scroll|auto)/)) {
+        return false;
       }
 
-      var $l = this.settings.strings;
-      var prefix = $l.prefixAgo;
-      var suffix = $l.suffixAgo;
-      if (this.settings.allowFuture) {
-        if (distanceMillis < 0) {
-          prefix = $l.prefixFromNow;
-          suffix = $l.suffixFromNow;
+      var maxScrollTop = child.scrollHeight - child.clientHeight;
+      if (maxScrollTop > 0) {
+        if (!(child.scrollTop === 0 && deltaY > 0) && !(child.scrollTop === maxScrollTop && deltaY < 0)) {
+          return true;
         }
       }
-
-      if(!this.settings.allowPast && distanceMillis >= 0) {
-        return this.settings.strings.inPast;
+      var maxScrollLeft = child.scrollLeft - child.clientWidth;
+      if (maxScrollLeft > 0) {
+        if (!(child.scrollLeft === 0 && deltaX < 0) && !(child.scrollLeft === maxScrollLeft && deltaX > 0)) {
+          return true;
+        }
       }
+    }
+    return false;
+  }
 
-      var seconds = Math.abs(distanceMillis) / 1000;
-      var minutes = seconds / 60;
-      var hours = minutes / 60;
-      var days = hours / 24;
-      var years = days / 365;
+  function mousewheelHandler(e) {
+    var delta = getDeltaFromEvent(e);
 
-      function substitute(stringOrFunction, number) {
-        var string = $.isFunction(stringOrFunction) ? stringOrFunction(number, distanceMillis) : stringOrFunction;
-        var value = ($l.numbers && $l.numbers[number]) || number;
-        return string.replace(/%d/i, value);
+    var deltaX = delta[0];
+    var deltaY = delta[1];
+
+    if (shouldBeConsumedByChild(deltaX, deltaY)) {
+      return;
+    }
+
+    shouldPrevent = false;
+    if (!i.settings.useBothWheelAxes) {
+      // deltaX will only be used for horizontal scrolling and deltaY will
+      // only be used for vertical scrolling - this is the default
+      updateScroll(element, 'top', element.scrollTop - (deltaY * i.settings.wheelSpeed));
+      updateScroll(element, 'left', element.scrollLeft + (deltaX * i.settings.wheelSpeed));
+    } else if (i.scrollbarYActive && !i.scrollbarXActive) {
+      // only vertical scrollbar is active and useBothWheelAxes option is
+      // active, so let's scroll vertical bar using both mouse wheel axes
+      if (deltaY) {
+        updateScroll(element, 'top', element.scrollTop - (deltaY * i.settings.wheelSpeed));
+      } else {
+        updateScroll(element, 'top', element.scrollTop + (deltaX * i.settings.wheelSpeed));
       }
+      shouldPrevent = true;
+    } else if (i.scrollbarXActive && !i.scrollbarYActive) {
+      // useBothWheelAxes and only horizontal bar is active, so use both
+      // wheel axes for horizontal bar
+      if (deltaX) {
+        updateScroll(element, 'left', element.scrollLeft + (deltaX * i.settings.wheelSpeed));
+      } else {
+        updateScroll(element, 'left', element.scrollLeft - (deltaY * i.settings.wheelSpeed));
+      }
+      shouldPrevent = true;
+    }
 
-      var words = seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
-        seconds < 90 && substitute($l.minute, 1) ||
-        minutes < 45 && substitute($l.minutes, Math.round(minutes)) ||
-        minutes < 90 && substitute($l.hour, 1) ||
-        hours < 24 && substitute($l.hours, Math.round(hours)) ||
-        hours < 42 && substitute($l.day, 1) ||
-        days < 30 && substitute($l.days, Math.round(days)) ||
-        days < 45 && substitute($l.month, 1) ||
-        days < 365 && substitute($l.months, Math.round(days / 30)) ||
-        years < 1.5 && substitute($l.year, 1) ||
-        substitute($l.years, Math.round(years));
+    updateGeometry(element);
 
-      var separator = $l.wordSeparator || "";
-      if ($l.wordSeparator === undefined) { separator = " "; }
-      return $.trim([prefix, words, suffix].join(separator));
-    },
+    shouldPrevent = (shouldPrevent || shouldPreventDefault(deltaX, deltaY));
+    if (shouldPrevent) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }
 
-    parse: function(iso8601) {
-      var s = $.trim(iso8601);
-      s = s.replace(/\.\d+/,""); // remove milliseconds
-      s = s.replace(/-/,"/").replace(/-/,"/");
-      s = s.replace(/T/," ").replace(/Z/," UTC");
-      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
-      s = s.replace(/([\+\-]\d\d)$/," $100"); // +09 -> +0900
-      return new Date(s);
-    },
-    datetime: function(elem) {
-      var iso8601 = $t.isTime(elem) ? $(elem).attr("datetime") : $(elem).attr("title");
-      return $t.parse(iso8601);
-    },
-    isTime: function(elem) {
-      // jQuery's `is()` doesn't play well with HTML5 in IE
-      return $(elem).get(0).tagName.toLowerCase() === "time"; // $(elem).is("time");
+  if (typeof window.onwheel !== "undefined") {
+    i.event.bind(element, 'wheel', mousewheelHandler);
+  } else if (typeof window.onmousewheel !== "undefined") {
+    i.event.bind(element, 'mousewheel', mousewheelHandler);
+  }
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindMouseWheelHandler(element, i);
+};
+
+},{"../instances":18,"../update-geometry":19,"../update-scroll":20}],14:[function(require,module,exports){
+'use strict';
+
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+
+function bindNativeScrollHandler(element, i) {
+  i.event.bind(element, 'scroll', function () {
+    updateGeometry(element);
+  });
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindNativeScrollHandler(element, i);
+};
+
+},{"../instances":18,"../update-geometry":19}],15:[function(require,module,exports){
+'use strict';
+
+var _ = require('../../lib/helper');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindSelectionHandler(element, i) {
+  function getRangeNode() {
+    var selection = window.getSelection ? window.getSelection() :
+                    document.getSelection ? document.getSelection() : '';
+    if (selection.toString().length === 0) {
+      return null;
+    } else {
+      return selection.getRangeAt(0).commonAncestorContainer;
+    }
+  }
+
+  var scrollingLoop = null;
+  var scrollDiff = {top: 0, left: 0};
+  function startScrolling() {
+    if (!scrollingLoop) {
+      scrollingLoop = setInterval(function () {
+        if (!instances.get(element)) {
+          clearInterval(scrollingLoop);
+          return;
+        }
+
+        updateScroll(element, 'top', element.scrollTop + scrollDiff.top);
+        updateScroll(element, 'left', element.scrollLeft + scrollDiff.left);
+        updateGeometry(element);
+      }, 50); // every .1 sec
+    }
+  }
+  function stopScrolling() {
+    if (scrollingLoop) {
+      clearInterval(scrollingLoop);
+      scrollingLoop = null;
+    }
+    _.stopScrolling(element);
+  }
+
+  var isSelected = false;
+  i.event.bind(i.ownerDocument, 'selectionchange', function () {
+    if (element.contains(getRangeNode())) {
+      isSelected = true;
+    } else {
+      isSelected = false;
+      stopScrolling();
+    }
+  });
+  i.event.bind(window, 'mouseup', function () {
+    if (isSelected) {
+      isSelected = false;
+      stopScrolling();
     }
   });
 
-  // functions that can be called via $(el).timeago('action')
-  // init is default when no action is given
-  // functions are called with context of a single element
-  var functions = {
-    init: function(){
-      var refresh_el = $.proxy(refresh, this);
-      refresh_el();
-      var $s = $t.settings;
-      if ($s.refreshMillis > 0) {
-        this._timeagoInterval = setInterval(refresh_el, $s.refreshMillis);
+  i.event.bind(window, 'mousemove', function (e) {
+    if (isSelected) {
+      var mousePosition = {x: e.pageX, y: e.pageY};
+      var containerGeometry = {
+        left: element.offsetLeft,
+        right: element.offsetLeft + element.offsetWidth,
+        top: element.offsetTop,
+        bottom: element.offsetTop + element.offsetHeight
+      };
+
+      if (mousePosition.x < containerGeometry.left + 3) {
+        scrollDiff.left = -5;
+        _.startScrolling(element, 'x');
+      } else if (mousePosition.x > containerGeometry.right - 3) {
+        scrollDiff.left = 5;
+        _.startScrolling(element, 'x');
+      } else {
+        scrollDiff.left = 0;
       }
-    },
-    update: function(time){
-      var parsedTime = $t.parse(time);
-      $(this).data('timeago', { datetime: parsedTime });
-      if($t.settings.localeTitle) $(this).attr("title", parsedTime.toLocaleString());
-      refresh.apply(this);
-    },
-    updateFromDOM: function(){
-      $(this).data('timeago', { datetime: $t.parse( $t.isTime(this) ? $(this).attr("datetime") : $(this).attr("title") ) });
-      refresh.apply(this);
-    },
-    dispose: function () {
-      if (this._timeagoInterval) {
-        window.clearInterval(this._timeagoInterval);
-        this._timeagoInterval = null;
-      }
-    }
-  };
 
-  $.fn.timeago = function(action, options) {
-    var fn = action ? functions[action] : functions.init;
-    if(!fn){
-      throw new Error("Unknown function name '"+ action +"' for timeago");
-    }
-    // each over objects here and call the requested function
-    this.each(function(){
-      fn.call(this, options);
-    });
-    return this;
-  };
-
-  function refresh() {
-    //check if it's still visible
-    if(!$.contains(document.documentElement,this)){
-      //stop if it has been removed
-      $(this).timeago("dispose");
-      return this;
-    }
-
-    var data = prepareData(this);
-    var $s = $t.settings;
-
-    if (!isNaN(data.datetime)) {
-      if ( $s.cutoff == 0 || Math.abs(distance(data.datetime)) < $s.cutoff) {
-        $(this).text(inWords(data.datetime));
-      }
-    }
-    return this;
-  }
-
-  function prepareData(element) {
-    element = $(element);
-    if (!element.data("timeago")) {
-      element.data("timeago", { datetime: $t.datetime(element) });
-      var text = $.trim(element.text());
-      if ($t.settings.localeTitle) {
-        element.attr("title", element.data('timeago').datetime.toLocaleString());
-      } else if (text.length > 0 && !($t.isTime(element) && element.attr("title"))) {
-        element.attr("title", text);
-      }
-    }
-    return element.data("timeago");
-  }
-
-  function inWords(date) {
-    return $t.inWords(distance(date));
-  }
-
-  function distance(date) {
-    return (new Date().getTime() - date.getTime());
-  }
-
-  // fix for IE6 suckage
-  document.createElement("abbr");
-  document.createElement("time");
-}));
-
-/////
-// Library functions
-/////
-
-function syntaxHighlight(json) { //http://stackoverflow.com/questions/4810841/
-    if (typeof json != 'string') {
-         json = JSON.stringify(json, undefined, 4);
-    }
-    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
-        if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-                cls = 'key';
-            } else {
-                cls = 'string';
-            }
-        } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-        } else if (/null/.test(match)) {
-            cls = 'null';
+      if (mousePosition.y < containerGeometry.top + 3) {
+        if (containerGeometry.top + 3 - mousePosition.y < 5) {
+          scrollDiff.top = -5;
+        } else {
+          scrollDiff.top = -20;
         }
-        return '<span class="' + cls + '">' + match + '</span>';
-    });
-}
-//FUTURE: modify syntaxHighlight to step through the object and encode each piece while tying a .data() of a an object ref to the span.
-//This might improve performance on full views.
-//Perhaps, modify the string spans to be "<span>val</span>" rather than <span>"val"</span> //REWORK
-//Keep a copy of the original with attribution.
+        _.startScrolling(element, 'y');
+      } else if (mousePosition.y > containerGeometry.bottom - 3) {
+        if (mousePosition.y - containerGeometry.bottom + 3 < 5) {
+          scrollDiff.top = 5;
+        } else {
+          scrollDiff.top = 20;
+        }
+        _.startScrolling(element, 'y');
+      } else {
+        scrollDiff.top = 0;
+      }
 
-function typeParse(value)
-{
-	if( value === null || value === undefined )
-	{ return; }
-
-	if( isInt(value) )
-	{ return parseInt(value); }
-	if( isFloat(value) )
-	{ return parseFloat(value); }
-	if( isBool(value) )
-	{ return parseBool(value); }
-	if( isJSON(value) )
-	{ return JSON.parse(value); }
-
-	return value;
-}
-
-function isInt(n) { //http://stackoverflow.com/questions/3885817/
-    return n != "" && !isNaN(n) && Math.round(n) == n;
-}
-function isFloat(n) {
-    return n != "" && !isNaN(n) && Math.round(n) != n;
-}
-function isBool(n) {
-	return n === "true" || n === "false";
-}
-function isJSON(n) {
-    try {
-        JSON.parse(n);
-    } catch (e) {
-        return false;
+      if (scrollDiff.top === 0 && scrollDiff.left === 0) {
+        stopScrolling();
+      } else {
+        startScrolling();
+      }
     }
+  });
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+  bindSelectionHandler(element, i);
+};
+
+},{"../../lib/helper":6,"../instances":18,"../update-geometry":19,"../update-scroll":20}],16:[function(require,module,exports){
+'use strict';
+
+var _ = require('../../lib/helper');
+var instances = require('../instances');
+var updateGeometry = require('../update-geometry');
+var updateScroll = require('../update-scroll');
+
+function bindTouchHandler(element, i, supportsTouch, supportsIePointer) {
+  function shouldPreventDefault(deltaX, deltaY) {
+    var scrollTop = element.scrollTop;
+    var scrollLeft = element.scrollLeft;
+    var magnitudeX = Math.abs(deltaX);
+    var magnitudeY = Math.abs(deltaY);
+
+    if (magnitudeY > magnitudeX) {
+      // user is perhaps trying to swipe up/down the page
+
+      if (((deltaY < 0) && (scrollTop === i.contentHeight - i.containerHeight)) ||
+          ((deltaY > 0) && (scrollTop === 0))) {
+        return !i.settings.swipePropagation;
+      }
+    } else if (magnitudeX > magnitudeY) {
+      // user is perhaps trying to swipe left/right across the page
+
+      if (((deltaX < 0) && (scrollLeft === i.contentWidth - i.containerWidth)) ||
+          ((deltaX > 0) && (scrollLeft === 0))) {
+        return !i.settings.swipePropagation;
+      }
+    }
+
     return true;
-}
-function parseBool(n) {
-	if( n === "true" ) { return true; }
-	return false;
-}
+  }
 
-function clone(obj) { //http://stackoverflow.com/questions/728360/
-    var copy;
+  function applyTouchMove(differenceX, differenceY) {
+    updateScroll(element, 'top', element.scrollTop - differenceY);
+    updateScroll(element, 'left', element.scrollLeft - differenceX);
 
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
+    updateGeometry(element);
+  }
 
-    // Handle Date
-    if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
+  var startOffset = {};
+  var startTime = 0;
+  var speed = {};
+  var easingLoop = null;
+  var inGlobalTouch = false;
+  var inLocalTouch = false;
+
+  function globalTouchStart() {
+    inGlobalTouch = true;
+  }
+  function globalTouchEnd() {
+    inGlobalTouch = false;
+  }
+
+  function getTouch(e) {
+    if (e.targetTouches) {
+      return e.targetTouches[0];
+    } else {
+      // Maybe IE pointer
+      return e;
     }
+  }
+  function shouldHandle(e) {
+    if (e.targetTouches && e.targetTouches.length === 1) {
+      return true;
+    }
+    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== e.MSPOINTER_TYPE_MOUSE) {
+      return true;
+    }
+    return false;
+  }
+  function touchStart(e) {
+    if (shouldHandle(e)) {
+      inLocalTouch = true;
 
-    // Handle Array
-    if (obj instanceof Array) {
-        copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = clone(obj[i]);
+      var touch = getTouch(e);
+
+      startOffset.pageX = touch.pageX;
+      startOffset.pageY = touch.pageY;
+
+      startTime = (new Date()).getTime();
+
+      if (easingLoop !== null) {
+        clearInterval(easingLoop);
+      }
+
+      e.stopPropagation();
+    }
+  }
+  function touchMove(e) {
+    if (!inLocalTouch && i.settings.swipePropagation) {
+      touchStart(e);
+    }
+    if (!inGlobalTouch && inLocalTouch && shouldHandle(e)) {
+      var touch = getTouch(e);
+
+      var currentOffset = {pageX: touch.pageX, pageY: touch.pageY};
+
+      var differenceX = currentOffset.pageX - startOffset.pageX;
+      var differenceY = currentOffset.pageY - startOffset.pageY;
+
+      applyTouchMove(differenceX, differenceY);
+      startOffset = currentOffset;
+
+      var currentTime = (new Date()).getTime();
+
+      var timeGap = currentTime - startTime;
+      if (timeGap > 0) {
+        speed.x = differenceX / timeGap;
+        speed.y = differenceY / timeGap;
+        startTime = currentTime;
+      }
+
+      if (shouldPreventDefault(differenceX, differenceY)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  }
+  function touchEnd() {
+    if (!inGlobalTouch && inLocalTouch) {
+      inLocalTouch = false;
+
+      clearInterval(easingLoop);
+      easingLoop = setInterval(function () {
+        if (!instances.get(element)) {
+          clearInterval(easingLoop);
+          return;
         }
-        return copy;
-    }
 
-    // Handle Object
-    if (obj instanceof Object) {
-        copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        if (Math.abs(speed.x) < 0.01 && Math.abs(speed.y) < 0.01) {
+          clearInterval(easingLoop);
+          return;
         }
-        return copy;
+
+        applyTouchMove(speed.x * 30, speed.y * 30);
+
+        speed.x *= 0.8;
+        speed.y *= 0.8;
+      }, 10);
     }
+  }
 
-    throw new Error("Unable to copy obj! Its type isn't supported.");
-}
+  if (supportsTouch) {
+    i.event.bind(window, 'touchstart', globalTouchStart);
+    i.event.bind(window, 'touchend', globalTouchEnd);
+    i.event.bind(element, 'touchstart', touchStart);
+    i.event.bind(element, 'touchmove', touchMove);
+    i.event.bind(element, 'touchend', touchEnd);
+  }
 
-// function lengthInUtf8Bytes(str) { //http://stackoverflow.com/questions/5515869/
-//   // Matches only the 10.. bytes that are non-initial characters in a multi-byte sequence.
-//   var m = encodeURIComponent(str).match(/%[89ABab]/g);
-//   return str.length + (m ? m.length : 0);
-// }
-
-function lengthInUtf8Bytes(value) { //based on getByteLen here: http://jsperf.com/utf-8-byte-length/18
-    value = String(value);
-
-    var byteLen = 0;
-    for (var i = 0; i < value.length; i++) {
-        var c = value.charCodeAt(i);
-        byteLen += c < (1 <<  7) ? 1 :
-            c < (1 << 11) ? 2 :
-            c < (1 << 16) ? 3 :
-            c < (1 << 21) ? 4 :
-            c < (1 << 26) ? 5 :
-            c < (1 << 31) ? 6 : Number.NaN;
+  if (supportsIePointer) {
+    if (window.PointerEvent) {
+      i.event.bind(window, 'pointerdown', globalTouchStart);
+      i.event.bind(window, 'pointerup', globalTouchEnd);
+      i.event.bind(element, 'pointerdown', touchStart);
+      i.event.bind(element, 'pointermove', touchMove);
+      i.event.bind(element, 'pointerup', touchEnd);
+    } else if (window.MSPointerEvent) {
+      i.event.bind(window, 'MSPointerDown', globalTouchStart);
+      i.event.bind(window, 'MSPointerUp', globalTouchEnd);
+      i.event.bind(element, 'MSPointerDown', touchStart);
+      i.event.bind(element, 'MSPointerMove', touchMove);
+      i.event.bind(element, 'MSPointerUp', touchEnd);
     }
-    return byteLen;
+  }
 }
 
-function utf8Slice(str,begin,lenInBytes) {
-	//try a naive slice first
-	var nextSlice = lenInBytes;
+module.exports = function (element) {
+  if (!_.env.supportsTouch && !_.env.supportsIePointer) {
+    return;
+  }
 
-	//If the slice is longer in real bytes than the target, that means that diff number of characters had a trailing UTF8 byte.
-	//In the best case, slicing diff less characters will make it perfect. (e.g. if all ending characters are *not* UTF8.
-	//In the worst case, slicing diff less characters will undershoot by diff bytes. (e.g. if all ending characters are UTF8.)
-	do
-	{
-		slice = str.substring(begin,nextSlice);
-		diff = lengthInUtf8Bytes(slice) - lenInBytes;
+  var i = instances.get(element);
+  bindTouchHandler(element, i, _.env.supportsTouch, _.env.supportsIePointer);
+};
 
-		if( diff > 0 )
-		{ nextSlice = nextSlice - diff; }
-	}
-	while( diff > 0 );
+},{"../../lib/helper":6,"../instances":18,"../update-geometry":19,"../update-scroll":20}],17:[function(require,module,exports){
+'use strict';
 
-	return { slice: slice, actualSlice: nextSlice };
+var _ = require('../lib/helper');
+var cls = require('../lib/class');
+var instances = require('./instances');
+var updateGeometry = require('./update-geometry');
+
+// Handlers
+var handlers = {
+  'click-rail': require('./handler/click-rail'),
+  'drag-scrollbar': require('./handler/drag-scrollbar'),
+  'keyboard': require('./handler/keyboard'),
+  'wheel': require('./handler/mouse-wheel'),
+  'touch': require('./handler/touch'),
+  'selection': require('./handler/selection')
+};
+var nativeScrollHandler = require('./handler/native-scroll');
+
+module.exports = function (element, userSettings) {
+  userSettings = typeof userSettings === 'object' ? userSettings : {};
+
+  cls.add(element, 'ps-container');
+
+  // Create a plugin instance.
+  var i = instances.add(element);
+
+  i.settings = _.extend(i.settings, userSettings);
+  cls.add(element, 'ps-theme-' + i.settings.theme);
+
+  i.settings.handlers.forEach(function (handlerName) {
+    handlers[handlerName](element);
+  });
+
+  nativeScrollHandler(element);
+
+  updateGeometry(element);
+};
+
+},{"../lib/class":2,"../lib/helper":6,"./handler/click-rail":10,"./handler/drag-scrollbar":11,"./handler/keyboard":12,"./handler/mouse-wheel":13,"./handler/native-scroll":14,"./handler/selection":15,"./handler/touch":16,"./instances":18,"./update-geometry":19}],18:[function(require,module,exports){
+'use strict';
+
+var _ = require('../lib/helper');
+var cls = require('../lib/class');
+var defaultSettings = require('./default-setting');
+var dom = require('../lib/dom');
+var EventManager = require('../lib/event-manager');
+var guid = require('../lib/guid');
+
+var instances = {};
+
+function Instance(element) {
+  var i = this;
+
+  i.settings = _.clone(defaultSettings);
+  i.containerWidth = null;
+  i.containerHeight = null;
+  i.contentWidth = null;
+  i.contentHeight = null;
+
+  i.isRtl = dom.css(element, 'direction') === "rtl";
+  i.isNegativeScroll = (function () {
+    var originalScrollLeft = element.scrollLeft;
+    var result = null;
+    element.scrollLeft = -1;
+    result = element.scrollLeft < 0;
+    element.scrollLeft = originalScrollLeft;
+    return result;
+  })();
+  i.negativeScrollAdjustment = i.isNegativeScroll ? element.scrollWidth - element.clientWidth : 0;
+  i.event = new EventManager();
+  i.ownerDocument = element.ownerDocument || document;
+
+  function focus() {
+    cls.add(element, 'ps-focus');
+  }
+
+  function blur() {
+    cls.remove(element, 'ps-focus');
+  }
+
+  i.scrollbarXRail = dom.appendTo(dom.e('div', 'ps-scrollbar-x-rail'), element);
+  i.scrollbarX = dom.appendTo(dom.e('div', 'ps-scrollbar-x'), i.scrollbarXRail);
+  i.scrollbarX.setAttribute('tabindex', 0);
+  i.event.bind(i.scrollbarX, 'focus', focus);
+  i.event.bind(i.scrollbarX, 'blur', blur);
+  i.scrollbarXActive = null;
+  i.scrollbarXWidth = null;
+  i.scrollbarXLeft = null;
+  i.scrollbarXBottom = _.toInt(dom.css(i.scrollbarXRail, 'bottom'));
+  i.isScrollbarXUsingBottom = i.scrollbarXBottom === i.scrollbarXBottom; // !isNaN
+  i.scrollbarXTop = i.isScrollbarXUsingBottom ? null : _.toInt(dom.css(i.scrollbarXRail, 'top'));
+  i.railBorderXWidth = _.toInt(dom.css(i.scrollbarXRail, 'borderLeftWidth')) + _.toInt(dom.css(i.scrollbarXRail, 'borderRightWidth'));
+  // Set rail to display:block to calculate margins
+  dom.css(i.scrollbarXRail, 'display', 'block');
+  i.railXMarginWidth = _.toInt(dom.css(i.scrollbarXRail, 'marginLeft')) + _.toInt(dom.css(i.scrollbarXRail, 'marginRight'));
+  dom.css(i.scrollbarXRail, 'display', '');
+  i.railXWidth = null;
+  i.railXRatio = null;
+
+  i.scrollbarYRail = dom.appendTo(dom.e('div', 'ps-scrollbar-y-rail'), element);
+  i.scrollbarY = dom.appendTo(dom.e('div', 'ps-scrollbar-y'), i.scrollbarYRail);
+  i.scrollbarY.setAttribute('tabindex', 0);
+  i.event.bind(i.scrollbarY, 'focus', focus);
+  i.event.bind(i.scrollbarY, 'blur', blur);
+  i.scrollbarYActive = null;
+  i.scrollbarYHeight = null;
+  i.scrollbarYTop = null;
+  i.scrollbarYRight = _.toInt(dom.css(i.scrollbarYRail, 'right'));
+  i.isScrollbarYUsingRight = i.scrollbarYRight === i.scrollbarYRight; // !isNaN
+  i.scrollbarYLeft = i.isScrollbarYUsingRight ? null : _.toInt(dom.css(i.scrollbarYRail, 'left'));
+  i.scrollbarYOuterWidth = i.isRtl ? _.outerWidth(i.scrollbarY) : null;
+  i.railBorderYWidth = _.toInt(dom.css(i.scrollbarYRail, 'borderTopWidth')) + _.toInt(dom.css(i.scrollbarYRail, 'borderBottomWidth'));
+  dom.css(i.scrollbarYRail, 'display', 'block');
+  i.railYMarginHeight = _.toInt(dom.css(i.scrollbarYRail, 'marginTop')) + _.toInt(dom.css(i.scrollbarYRail, 'marginBottom'));
+  dom.css(i.scrollbarYRail, 'display', '');
+  i.railYHeight = null;
+  i.railYRatio = null;
 }
 
-function merge(template,tomerge) {
-	return $.extend({}, template, tomerge);
-
+function getId(element) {
+  if (typeof element.dataset === 'undefined') {
+    return element.getAttribute('data-ps-id');
+  } else {
+    return element.dataset.psId;
+  }
 }
 
-
-//Garbage collection forcing
-//The way this works is due to the phenomenon whereby child nodes of an object with it's innerHTML emptied are removed from memory
-window.garbageBin = null;
-//Here we are creating a 'garbage bin' object to temporarily store elements that are to be discarded
-garbageBin = document.createElement('div');
-garbageBin.style.display = 'none'; //Make sure it is not displayed
-document.body.appendChild(garbageBin);
-
-function discardElement (el)
-{
-	//Move the element to the garbage bin element
-	garbageBin.appendChild(el);
-	//Empty the garbage bin
-	garbageBin.innerHTML = "";
-}
-function discardjQ (el)
-{
-	//Move the element to the garbage bin element
-	garbageBin.appendChild(el[0]);
-	//Empty the garbage bin
-	garbageBin.innerHTML = "";
+function setId(element, id) {
+  if (typeof element.dataset === 'undefined') {
+    element.setAttribute('data-ps-id', id);
+  } else {
+    element.dataset.psId = id;
+  }
 }
 
-function cleanElement (el)
-{
-	el.innerHTML = "";
+function removeId(element) {
+  if (typeof element.dataset === 'undefined') {
+    element.removeAttribute('data-ps-id');
+  } else {
+    delete element.dataset.psId;
+  }
 }
-function cleanjQ(el)
-{
-	el[0].innerHTML = "";
+
+exports.add = function (element) {
+  var newId = guid();
+  setId(element, newId);
+  instances[newId] = new Instance(element);
+  return instances[newId];
+};
+
+exports.remove = function (element) {
+  delete instances[getId(element)];
+  removeId(element);
+};
+
+exports.get = function (element) {
+  return instances[getId(element)];
+};
+
+},{"../lib/class":2,"../lib/dom":3,"../lib/event-manager":4,"../lib/guid":5,"../lib/helper":6,"./default-setting":8}],19:[function(require,module,exports){
+'use strict';
+
+var _ = require('../lib/helper');
+var cls = require('../lib/class');
+var dom = require('../lib/dom');
+var instances = require('./instances');
+var updateScroll = require('./update-scroll');
+
+function getThumbSize(i, thumbSize) {
+  if (i.settings.minScrollbarLength) {
+    thumbSize = Math.max(thumbSize, i.settings.minScrollbarLength);
+  }
+  if (i.settings.maxScrollbarLength) {
+    thumbSize = Math.min(thumbSize, i.settings.maxScrollbarLength);
+  }
+  return thumbSize;
+}
+
+function updateCss(element, i) {
+  var xRailOffset = {width: i.railXWidth};
+  if (i.isRtl) {
+    xRailOffset.left = i.negativeScrollAdjustment + element.scrollLeft + i.containerWidth - i.contentWidth;
+  } else {
+    xRailOffset.left = element.scrollLeft;
+  }
+  if (i.isScrollbarXUsingBottom) {
+    xRailOffset.bottom = i.scrollbarXBottom - element.scrollTop;
+  } else {
+    xRailOffset.top = i.scrollbarXTop + element.scrollTop;
+  }
+  dom.css(i.scrollbarXRail, xRailOffset);
+
+  var yRailOffset = {top: element.scrollTop, height: i.railYHeight};
+  if (i.isScrollbarYUsingRight) {
+    if (i.isRtl) {
+      yRailOffset.right = i.contentWidth - (i.negativeScrollAdjustment + element.scrollLeft) - i.scrollbarYRight - i.scrollbarYOuterWidth;
+    } else {
+      yRailOffset.right = i.scrollbarYRight - element.scrollLeft;
+    }
+  } else {
+    if (i.isRtl) {
+      yRailOffset.left = i.negativeScrollAdjustment + element.scrollLeft + i.containerWidth * 2 - i.contentWidth - i.scrollbarYLeft - i.scrollbarYOuterWidth;
+    } else {
+      yRailOffset.left = i.scrollbarYLeft + element.scrollLeft;
+    }
+  }
+  dom.css(i.scrollbarYRail, yRailOffset);
+
+  dom.css(i.scrollbarX, {left: i.scrollbarXLeft, width: i.scrollbarXWidth - i.railBorderXWidth});
+  dom.css(i.scrollbarY, {top: i.scrollbarYTop, height: i.scrollbarYHeight - i.railBorderYWidth});
+}
+
+module.exports = function (element) {
+  var i = instances.get(element);
+
+  i.containerWidth = element.clientWidth;
+  i.containerHeight = element.clientHeight;
+  i.contentWidth = element.scrollWidth;
+  i.contentHeight = element.scrollHeight;
+
+  var existingRails;
+  if (!element.contains(i.scrollbarXRail)) {
+    existingRails = dom.queryChildren(element, '.ps-scrollbar-x-rail');
+    if (existingRails.length > 0) {
+      existingRails.forEach(function (rail) {
+        dom.remove(rail);
+      });
+    }
+    dom.appendTo(i.scrollbarXRail, element);
+  }
+  if (!element.contains(i.scrollbarYRail)) {
+    existingRails = dom.queryChildren(element, '.ps-scrollbar-y-rail');
+    if (existingRails.length > 0) {
+      existingRails.forEach(function (rail) {
+        dom.remove(rail);
+      });
+    }
+    dom.appendTo(i.scrollbarYRail, element);
+  }
+
+  if (!i.settings.suppressScrollX && i.containerWidth + i.settings.scrollXMarginOffset < i.contentWidth) {
+    i.scrollbarXActive = true;
+    i.railXWidth = i.containerWidth - i.railXMarginWidth;
+    i.railXRatio = i.containerWidth / i.railXWidth;
+    i.scrollbarXWidth = getThumbSize(i, _.toInt(i.railXWidth * i.containerWidth / i.contentWidth));
+    i.scrollbarXLeft = _.toInt((i.negativeScrollAdjustment + element.scrollLeft) * (i.railXWidth - i.scrollbarXWidth) / (i.contentWidth - i.containerWidth));
+  } else {
+    i.scrollbarXActive = false;
+  }
+
+  if (!i.settings.suppressScrollY && i.containerHeight + i.settings.scrollYMarginOffset < i.contentHeight) {
+    i.scrollbarYActive = true;
+    i.railYHeight = i.containerHeight - i.railYMarginHeight;
+    i.railYRatio = i.containerHeight / i.railYHeight;
+    i.scrollbarYHeight = getThumbSize(i, _.toInt(i.railYHeight * i.containerHeight / i.contentHeight));
+    i.scrollbarYTop = _.toInt(element.scrollTop * (i.railYHeight - i.scrollbarYHeight) / (i.contentHeight - i.containerHeight));
+  } else {
+    i.scrollbarYActive = false;
+  }
+
+  if (i.scrollbarXLeft >= i.railXWidth - i.scrollbarXWidth) {
+    i.scrollbarXLeft = i.railXWidth - i.scrollbarXWidth;
+  }
+  if (i.scrollbarYTop >= i.railYHeight - i.scrollbarYHeight) {
+    i.scrollbarYTop = i.railYHeight - i.scrollbarYHeight;
+  }
+
+  updateCss(element, i);
+
+  if (i.scrollbarXActive) {
+    cls.add(element, 'ps-active-x');
+  } else {
+    cls.remove(element, 'ps-active-x');
+    i.scrollbarXWidth = 0;
+    i.scrollbarXLeft = 0;
+    updateScroll(element, 'left', 0);
+  }
+  if (i.scrollbarYActive) {
+    cls.add(element, 'ps-active-y');
+  } else {
+    cls.remove(element, 'ps-active-y');
+    i.scrollbarYHeight = 0;
+    i.scrollbarYTop = 0;
+    updateScroll(element, 'top', 0);
+  }
+};
+
+},{"../lib/class":2,"../lib/dom":3,"../lib/helper":6,"./instances":18,"./update-scroll":20}],20:[function(require,module,exports){
+'use strict';
+
+var instances = require('./instances');
+
+var upEvent = document.createEvent('Event');
+var downEvent = document.createEvent('Event');
+var leftEvent = document.createEvent('Event');
+var rightEvent = document.createEvent('Event');
+var yEvent = document.createEvent('Event');
+var xEvent = document.createEvent('Event');
+var xStartEvent = document.createEvent('Event');
+var xEndEvent = document.createEvent('Event');
+var yStartEvent = document.createEvent('Event');
+var yEndEvent = document.createEvent('Event');
+var lastTop;
+var lastLeft;
+
+upEvent.initEvent('ps-scroll-up', true, true);
+downEvent.initEvent('ps-scroll-down', true, true);
+leftEvent.initEvent('ps-scroll-left', true, true);
+rightEvent.initEvent('ps-scroll-right', true, true);
+yEvent.initEvent('ps-scroll-y', true, true);
+xEvent.initEvent('ps-scroll-x', true, true);
+xStartEvent.initEvent('ps-x-reach-start', true, true);
+xEndEvent.initEvent('ps-x-reach-end', true, true);
+yStartEvent.initEvent('ps-y-reach-start', true, true);
+yEndEvent.initEvent('ps-y-reach-end', true, true);
+
+module.exports = function (element, axis, value) {
+  if (typeof element === 'undefined') {
+    throw 'You must provide an element to the update-scroll function';
+  }
+
+  if (typeof axis === 'undefined') {
+    throw 'You must provide an axis to the update-scroll function';
+  }
+
+  if (typeof value === 'undefined') {
+    throw 'You must provide a value to the update-scroll function';
+  }
+
+  if (axis === 'top' && value <= 0) {
+    element.scrollTop = value = 0; // don't allow negative scroll
+    element.dispatchEvent(yStartEvent);
+  }
+
+  if (axis === 'left' && value <= 0) {
+    element.scrollLeft = value = 0; // don't allow negative scroll
+    element.dispatchEvent(xStartEvent);
+  }
+
+  var i = instances.get(element);
+
+  if (axis === 'top' && value >= i.contentHeight - i.containerHeight) {
+    element.scrollTop = value = i.contentHeight - i.containerHeight; // don't allow scroll past container
+    element.dispatchEvent(yEndEvent);
+  }
+
+  if (axis === 'left' && value >= i.contentWidth - i.containerWidth) {
+    element.scrollLeft = value = i.contentWidth - i.containerWidth; // don't allow scroll past container
+    element.dispatchEvent(xEndEvent);
+  }
+
+  if (!lastTop) {
+    lastTop = element.scrollTop;
+  }
+
+  if (!lastLeft) {
+    lastLeft = element.scrollLeft;
+  }
+
+  if (axis === 'top' && value < lastTop) {
+    element.dispatchEvent(upEvent);
+  }
+
+  if (axis === 'top' && value > lastTop) {
+    element.dispatchEvent(downEvent);
+  }
+
+  if (axis === 'left' && value < lastLeft) {
+    element.dispatchEvent(leftEvent);
+  }
+
+  if (axis === 'left' && value > lastLeft) {
+    element.dispatchEvent(rightEvent);
+  }
+
+  if (axis === 'top') {
+    element.scrollTop = lastTop = value;
+    element.dispatchEvent(yEvent);
+  }
+
+  if (axis === 'left') {
+    element.scrollLeft = lastLeft = value;
+    element.dispatchEvent(xEvent);
+  }
+
+};
+
+},{"./instances":18}],21:[function(require,module,exports){
+'use strict';
+
+var _ = require('../lib/helper');
+var dom = require('../lib/dom');
+var instances = require('./instances');
+var updateGeometry = require('./update-geometry');
+var updateScroll = require('./update-scroll');
+
+module.exports = function (element) {
+  var i = instances.get(element);
+
+  if (!i) {
+    return;
+  }
+
+  // Recalcuate negative scrollLeft adjustment
+  i.negativeScrollAdjustment = i.isNegativeScroll ? element.scrollWidth - element.clientWidth : 0;
+
+  // Recalculate rail margins
+  dom.css(i.scrollbarXRail, 'display', 'block');
+  dom.css(i.scrollbarYRail, 'display', 'block');
+  i.railXMarginWidth = _.toInt(dom.css(i.scrollbarXRail, 'marginLeft')) + _.toInt(dom.css(i.scrollbarXRail, 'marginRight'));
+  i.railYMarginHeight = _.toInt(dom.css(i.scrollbarYRail, 'marginTop')) + _.toInt(dom.css(i.scrollbarYRail, 'marginBottom'));
+
+  // Hide scrollbars not to affect scrollWidth and scrollHeight
+  dom.css(i.scrollbarXRail, 'display', 'none');
+  dom.css(i.scrollbarYRail, 'display', 'none');
+
+  updateGeometry(element);
+
+  // Update top/left scroll to trigger events
+  updateScroll(element, 'top', element.scrollTop);
+  updateScroll(element, 'left', element.scrollLeft);
+
+  dom.css(i.scrollbarXRail, 'display', '');
+  dom.css(i.scrollbarYRail, 'display', '');
+};
+
+},{"../lib/dom":3,"../lib/helper":6,"./instances":18,"./update-geometry":19,"./update-scroll":20}]},{},[1]);
+
+// returns click as decimal (.77) of the total object's width
+function clickPercent(e,obj) {
+	return (e.pageX - obj.getBoundingClientRect().left) / obj.offsetWidth;
+}
+
+// Animation functions
+function scrollToSmooth(el,targetScroll,duration) {
+    // const   scrollHeight = window.scrollY,
+	var beginScroll = el.scrollTop,
+			beginTime = Date.now();
+
+	Logger.get('animation').info('Beginning animation: '+beginTime+' '+beginScroll+' to '+targetScroll);
+    requestAnimationFrame(step);
+    function step () {
+        setTimeout(function() {
+					//Get our time diff to scale against.
+					var now = Date.now();
+
+					if ( now <= beginTime + duration) {
+						//Queue the next frame ahead of time
+						requestAnimationFrame(step);
+
+						//This is probably overcomplicated, but this gets the amount we need to add to the initial scroll for our time
+		        var mod = easeInOut( now, beginTime,duration, beginScroll,targetScroll );
+
+						Logger.get("animation").debug('anim: '+ (now-beginTime) +' + '+mod);
+
+						//Set the scroll absolutely
+						if( beginScroll < targetScroll ) { el.scrollTop = beginScroll + mod; }
+						else { el.scrollTop = beginScroll - mod; }
+
+		      } else {
+						//Final frame, don't schedule another.
+						Logger.get("animation").debug('Ending animation: end:'+ (now > (beginTime + duration))+' s:'+el.scrollTop);
+
+						el.scrollTop = targetScroll;
+		      }
+		  	}, 15 );
+		}
 }
