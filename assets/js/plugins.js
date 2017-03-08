@@ -1,5 +1,5 @@
 /*!
-     * Aersia Player v0.1.5
+     * Aersia Player v0.1.6
      * This file is compiled using Grunt.
       */
     // function easeOutBounce(t, b, c, d) {
